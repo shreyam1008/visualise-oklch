@@ -11,9 +11,11 @@ interface PackageJsonShape {
     };
   };
   homepage?: string;
+  keywords?: string[];
   packageManager?: string;
   scripts?: Record<string, string>;
   version?: string;
+  description?: string;
 }
 
 const packageJson = await Bun.file(`${import.meta.dir}/../package.json`).json() as PackageJsonShape;
@@ -35,8 +37,10 @@ describe('package metadata', () => {
   test('exposes maintainer-facing listing metadata', () => {
     expect(packageJson.author?.name).toBe('Shreyam Adhikari');
     expect(packageJson.author?.url).toBe('https://shreyam1008.com.np');
+    expect(packageJson.description).toContain('native color picker');
     expect(packageJson.homepage).toBe('https://shreyam1008.github.io/visualise-oklch/');
-    expect(packageJson.version).toBe('2.0.3');
+    expect(packageJson.keywords).toContain('picker');
+    expect(packageJson.version).toBe('2.0.4');
   });
 
   test('exposes performance tuning settings', () => {
