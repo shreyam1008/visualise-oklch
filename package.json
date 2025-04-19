@@ -3,7 +3,7 @@
 	"name": "oklch-color-visualiser",
 	"displayName": "OKLCH Preview",
 	"description": "Preview OKLCH colours",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"icon": "icon.png",
 	"publisher": "swiftlydaniel",
 	"repository": {
