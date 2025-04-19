@@ -2,16 +2,20 @@
   "name": "visualise-oklch",
   "displayName": "Visualise OKLCH",
   "description": "Low-overhead inline OKLCH swatches for VS Code, Cursor, Windsurf, VSCodium, and Open VSX-compatible editors.",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "preview": false,
   "license": "Apache-2.0",
   "icon": "icon.png",
   "publisher": "shreyam1008",
+  "author": {
+    "name": "Shreyam Adhikari",
+    "url": "https://shreyam1008.com.np"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/shreyam1008/visualise-oklch.git"
   },
-  "homepage": "https://github.com/shreyam1008/visualise-oklch#readme",
+  "homepage": "https://shreyam1008.github.io/visualise-oklch/",
   "bugs": {
     "url": "https://github.com/shreyam1008/visualise-oklch/issues"
   },

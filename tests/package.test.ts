@@ -1,13 +1,19 @@
 import { describe, expect, test } from 'bun:test';
 
 interface PackageJsonShape {
+  author?: {
+    name?: string;
+    url?: string;
+  };
   contributes?: {
     configuration?: {
       properties?: Record<string, unknown>;
     };
   };
+  homepage?: string;
   packageManager?: string;
   scripts?: Record<string, string>;
+  version?: string;
 }
 
 const packageJson = await Bun.file(`${import.meta.dir}/../package.json`).json() as PackageJsonShape;
@@ -24,6 +30,13 @@ describe('package metadata', () => {
   test('keeps both publish targets wired', () => {
     expect(packageJson.scripts?.['publish:marketplace']).toContain('vsce');
     expect(packageJson.scripts?.['publish:openvsx']).toContain('ovsx');
+  });
+
+  test('exposes maintainer-facing listing metadata', () => {
+    expect(packageJson.author?.name).toBe('Shreyam Adhikari');
+    expect(packageJson.author?.url).toBe('https://shreyam1008.com.np');
+    expect(packageJson.homepage).toBe('https://shreyam1008.github.io/visualise-oklch/');
+    expect(packageJson.version).toBe('2.0.3');
   });
 
   test('exposes performance tuning settings', () => {
