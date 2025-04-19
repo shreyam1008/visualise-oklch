@@ -5,6 +5,7 @@ import { CONFIG_NAMESPACE, getConfig, type ExtensionConfig } from './config';
 import { buildColorPresentationEntries, detectDocumentColors } from './picker';
 import { buildDecorationRenderOptions } from './render';
 import { scanOklchFunctions } from './scanner';
+import { shouldUseCustomDecorations } from './strategy';
 
 interface AppliedDecorationState {
   appliedKeys: Set<string>;
@@ -153,6 +154,7 @@ class OklchDecorationController implements vscode.Disposable {
 
   #config: ExtensionConfig = getConfig();
   #configVersion = 0;
+  #nativeColorDecoratorsEnabled = vscode.workspace.getConfiguration('editor').get<boolean>('colorDecorators', true);
 
   constructor(context: vscode.ExtensionContext) {
     context.subscriptions.push(
@@ -205,11 +207,12 @@ class OklchDecorationController implements vscode.Disposable {
     );
 
     this.#configChangeDisposable = vscode.workspace.onDidChangeConfiguration((event) => {
-      if (!event.affectsConfiguration(CONFIG_NAMESPACE)) {
+      if (!event.affectsConfiguration(CONFIG_NAMESPACE) && !event.affectsConfiguration('editor.colorDecorators')) {
         return;
       }
 
       this.#config = getConfig();
+      this.#nativeColorDecoratorsEnabled = vscode.workspace.getConfiguration('editor').get<boolean>('colorDecorators', true);
       this.#configVersion += 1;
       this.#literalCache.clear();
 
@@ -253,6 +256,11 @@ class OklchDecorationController implements vscode.Disposable {
     hover.appendCodeblock(match.source, 'css');
     hover.appendMarkdown(`\nNormalized: \`${match.swatch.normalized}\``);
     return hover;
+  }
+
+  private canRenderCustomDecorations(document: vscode.TextDocument): boolean {
+    return SUPPORTED_LANGUAGE_IDS.has(document.languageId)
+      && shouldUseCustomDecorations(this.#config.enabled, this.#nativeColorDecoratorsEnabled);
   }
 
   private clearEditor(editor: vscode.TextEditor): void {
@@ -370,7 +378,7 @@ class OklchDecorationController implements vscode.Disposable {
   }
 
   private render(editor: vscode.TextEditor): void {
-    if (!this.#config.enabled || !SUPPORTED_LANGUAGE_IDS.has(editor.document.languageId)) {
+    if (!this.canRenderCustomDecorations(editor.document)) {
       this.clearEditor(editor);
       return;
     }
@@ -440,6 +448,11 @@ class OklchDecorationController implements vscode.Disposable {
   }
 
   private schedule(editor: vscode.TextEditor, delay: number): void {
+    if (!this.canRenderCustomDecorations(editor.document)) {
+      this.clearEditor(editor);
+      return;
+    }
+
     const existing = this.#timers.get(editor);
     if (existing) {
       clearTimeout(existing);
