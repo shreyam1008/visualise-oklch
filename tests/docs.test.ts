@@ -8,6 +8,7 @@ const indexHtml = readFileSync(resolve(docsRoot, 'index.html'), 'utf8');
 describe('docs site', () => {
   test('ships essential crawler assets', () => {
     expect(existsSync(resolve(docsRoot, '.nojekyll'))).toBe(true);
+    expect(existsSync(resolve(docsRoot, 'logo-mark.svg'))).toBe(true);
     expect(existsSync(resolve(docsRoot, 'robots.txt'))).toBe(true);
     expect(existsSync(resolve(docsRoot, 'sitemap.xml'))).toBe(true);
     expect(existsSync(resolve(docsRoot, 'site.webmanifest'))).toBe(true);
@@ -26,6 +27,7 @@ describe('docs site', () => {
   test('includes the interactive playground hooks', () => {
     expect(indexHtml).toContain('data-channel="lightness"');
     expect(indexHtml).toContain('data-output-oklch-full');
+    expect(indexHtml).toContain('data-output-hex-row');
     expect(indexHtml).toContain('data-oklch-ramp');
     expect(indexHtml).toContain('data-hsl-ramp');
     expect(indexHtml).toContain('data-token-cloud');

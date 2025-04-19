@@ -2,7 +2,7 @@
   "name": "visualise-oklch",
   "displayName": "Visualise OKLCH",
   "description": "Low-overhead inline OKLCH swatches for VS Code, Cursor, Windsurf, VSCodium, and Open VSX-compatible editors.",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "preview": false,
   "license": "Apache-2.0",
   "icon": "icon.png",
@@ -111,6 +111,7 @@
     }
   },
   "scripts": {
+    "art:icon": "node scripts/generate-icon.mjs",
     "build": "bun build ./src/extension.ts --outfile ./dist/extension.js --target=node --format=cjs --external=vscode --sourcemap=linked",
     "build:prod": "bun build ./src/extension.ts --outfile ./dist/extension.js --target=node --format=cjs --external=vscode --minify --sourcemap=none",
     "build:watch": "bun build ./src/extension.ts --outfile ./dist/extension.js --target=node --format=cjs --external=vscode --watch --sourcemap=linked",
