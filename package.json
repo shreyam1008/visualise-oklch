@@ -1,14 +1,14 @@
 {
 	"preview": false,
-	"name": "oklch-preview",
+	"name": "oklch-color-visualiser",
 	"displayName": "OKLCH Preview",
 	"description": "Preview OKLCH colours",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"icon": "icon.png",
 	"publisher": "swiftlydaniel",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/SwiftlyDaniel/oklch-preview"
+		"url": "https://github.com/SwiftlyDaniel/oklch-color-visualiser"
 	},
 	"engines": {
 		"vscode": "^1.96.0"
