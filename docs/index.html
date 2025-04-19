@@ -3,24 +3,27 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Visualise OKLCH | Fast OKLCH Preview Extension for VS Code and Open VSX Editors</title>
+    <title>Visualise OKLCH | Interactive OKLCH Color Guide for VS Code, Cursor, Windsurf, and Open VSX</title>
     <meta
       name="description"
-      content="Visualise OKLCH is a lightweight open-source extension that renders inline OKLCH swatches in VS Code, VSCodium, Cursor, Windsurf, and other Open VSX-compatible editors."
+      content="Visualise OKLCH is a lightweight open-source extension by shreyam1008 that previews OKLCH colors inline in VS Code, Cursor, Windsurf, VSCodium, and Open VSX-compatible editors."
     />
     <meta
       name="keywords"
-      content="OKLCH, VS Code extension, Open VSX, Cursor, Windsurf, VSCodium, CSS colors, Tailwind, design tokens"
+      content="OKLCH, OKLCH color picker, OKLCH vs HSL, VS Code extension, Cursor extension, Windsurf extension, Open VSX, CSS color tool, Tailwind OKLCH"
     />
-    <meta name="theme-color" content="#09111f" />
-    <meta name="robots" content="index,follow" />
+    <meta name="author" content="shreyam1008" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta name="theme-color" content="#07111e" />
     <link rel="canonical" href="https://shreyam1008.github.io/visualise-oklch/" />
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="./site.webmanifest" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Visualise OKLCH" />
     <meta property="og:title" content="Visualise OKLCH" />
     <meta
       property="og:description"
-      content="A low-overhead OKLCH preview extension for VS Code and Open VSX-compatible editors."
+      content="An interactive OKLCH guide and low-overhead extension for VS Code, Cursor, Windsurf, VSCodium, and Open VSX editors."
     />
     <meta property="og:url" content="https://shreyam1008.github.io/visualise-oklch/" />
     <meta property="og:image" content="https://shreyam1008.github.io/visualise-oklch/og.svg" />
@@ -28,13 +31,13 @@
     <meta name="twitter:title" content="Visualise OKLCH" />
     <meta
       name="twitter:description"
-      content="Inline OKLCH swatches for VS Code, Cursor, Windsurf, VSCodium, and Open VSX-compatible editors."
+      content="Interactive OKLCH demos, perceptual color comparisons, and an extension for modern VS Code-compatible editors."
     />
     <meta name="twitter:image" content="https://shreyam1008.github.io/visualise-oklch/og.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Sora:wght@400;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css" />
@@ -45,11 +48,20 @@
         "name": "Visualise OKLCH",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Cross-platform",
-        "softwareVersion": "2.0.0",
+        "softwareVersion": "2.0.1",
+        "author": {
+          "@type": "Person",
+          "name": "shreyam1008",
+          "url": "https://github.com/shreyam1008"
+        },
         "license": "https://www.apache.org/licenses/LICENSE-2.0",
         "url": "https://shreyam1008.github.io/visualise-oklch/",
         "downloadUrl": "https://github.com/shreyam1008/visualise-oklch",
-        "description": "A lightweight open-source extension that previews OKLCH colors inline in VS Code and Open VSX-compatible editors.",
+        "sameAs": [
+          "https://github.com/shreyam1008/visualise-oklch",
+          "https://open-vsx.org/extension/shreyam1008/visualise-oklch"
+        ],
+        "description": "A low-overhead extension and interactive guide for previewing OKLCH colors in VS Code and Open VSX-compatible editors.",
         "offers": {
           "@type": "Offer",
           "price": "0",
@@ -59,14 +71,18 @@
     </script>
   </head>
   <body>
-    <div class="ambient ambient-one"></div>
-    <div class="ambient ambient-two"></div>
+    <div class="page-noise" aria-hidden="true"></div>
+    <div class="spotlight spotlight-warm" aria-hidden="true"></div>
+    <div class="spotlight spotlight-cool" aria-hidden="true"></div>
+    <div class="token-cloud" data-token-cloud aria-hidden="true"></div>
+
     <header class="topbar">
       <a class="brand" href="#top">Visualise OKLCH</a>
       <nav class="nav">
-        <a href="#why">Why OKLCH</a>
-        <a href="#performance">Performance</a>
-        <a href="#compatibility">Compatibility</a>
+        <a href="#playground">Playground</a>
+        <a href="#why">Why It Wins</a>
+        <a href="#engine">Behind The Scenes</a>
+        <a href="#ship">Ship It</a>
         <a href="https://github.com/shreyam1008/visualise-oklch">GitHub</a>
       </nav>
     </header>
@@ -74,53 +90,139 @@
     <main id="top" class="page">
       <section class="hero">
         <div class="hero-copy">
-          <p class="eyebrow">Open-source OKLCH previews for modern editors</p>
-          <h1>Preview perceptual color tokens inline without dragging your editor down.</h1>
+          <p class="eyebrow">OKLCH extension + interactive explainer by shreyam1008</p>
+          <h1>See modern CSS color like it deserves to be seen.</h1>
           <p class="lede">
-            Visualise OKLCH renders fast inline swatches for literal <code>oklch(...)</code> values in VS Code,
-            Cursor, Windsurf, VSCodium, and other Open VSX-compatible editors. It is built as a maintained fork of
-            SwiftlyDaniel’s original extension, with a leaner core, real tests, and publish-ready automation.
+            Visualise OKLCH is a maintained fork of SwiftlyDaniel’s original extension. It previews OKLCH colors inline
+            in VS Code, Cursor, Windsurf, VSCodium, and Open VSX-compatible editors, while this site doubles as a
+            live, interactive guide to why OKLCH is a better way to write color.
           </p>
           <div class="cta-row">
             <a class="button button-primary" href="https://github.com/shreyam1008/visualise-oklch">View Source</a>
-            <a class="button button-secondary" href="https://open-vsx.org/">Open VSX Registry</a>
+            <a class="button button-secondary" href="https://open-vsx.org/extension/shreyam1008/visualise-oklch">Open VSX Listing</a>
           </div>
           <ul class="pill-row">
+            <li>Open VSX published</li>
             <li>TypeScript 6 RC</li>
-            <li>Native preview `tsgo` checks</li>
-            <li>54.94 KB packaged VSIX</li>
+            <li>`tsgo` verified</li>
+            <li>54.94 KB VSIX</li>
             <li>Zero runtime color dependency</li>
           </ul>
         </div>
 
-        <div class="hero-panel">
-          <div class="panel-card window">
+        <div class="hero-stage">
+          <div class="hero-orb"></div>
+          <div class="hero-window panel">
             <div class="window-bar">
               <span></span>
               <span></span>
               <span></span>
             </div>
-            <div class="code-preview">
-              <p class="panel-label">Live snippet</p>
-              <pre><code data-sample-code>background: oklch(62.8% 0.258 29.23);</code></pre>
-              <p class="sample-caption" data-sample-label>Pure red from perceptual coordinates</p>
+            <div class="window-content">
+              <p class="panel-kicker">Inline preview</p>
+              <pre><code data-live-code>background: oklch(62.8% 0.258 29.23);</code></pre>
+              <div class="hero-chip-row">
+                <span class="hero-chip" data-live-hex>#ff0000</span>
+                <span class="hero-chip" data-live-rgb>rgb(255 0 0)</span>
+              </div>
             </div>
           </div>
-          <div class="swatch-grid">
-            <div class="swatch-card" style="--swatch: oklch(62.8% 0.258 29.23);">
-              <span class="swatch-tone"></span>
-              <strong>Red</strong>
-              <small>oklch(62.8% 0.258 29.23)</small>
+          <div class="hero-swatch-stack" aria-hidden="true">
+            <div class="mini-swatch" style="--swatch: oklch(72% 0.22 27);"></div>
+            <div class="mini-swatch" style="--swatch: oklch(75% 0.18 140);"></div>
+            <div class="mini-swatch" style="--swatch: oklch(78% 0.17 245);"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="playground" class="section playground">
+        <div class="section-heading">
+          <p class="eyebrow">Interactive Playground</p>
+          <h2>Slide the channels. Watch one color become many useful formats.</h2>
+          <p>
+            OKLCH separates perceptual lightness, chroma, hue, and alpha. This makes it easier to tune tokens with
+            intent instead of wrestling with HSL saturation/lightness quirks.
+          </p>
+        </div>
+
+        <div class="playground-grid">
+          <div class="panel preview-panel">
+            <div class="preview-topline">
+              <span class="preview-dot"></span>
+              <p>Current swatch</p>
             </div>
-            <div class="swatch-card" style="--swatch: oklch(76% 0.204 154);">
-              <span class="swatch-tone"></span>
-              <strong>Green</strong>
-              <small>oklch(76% 0.204 154)</small>
+            <div class="preview-stage">
+              <div class="preview-surface" data-preview-surface></div>
+              <div class="preview-card">
+                <strong data-output-name>Signal Red</strong>
+                <span data-output-oklch>oklch(62.8% 0.258 29.23)</span>
+              </div>
             </div>
-            <div class="swatch-card" style="--swatch: oklch(72% 0.19 255);">
-              <span class="swatch-tone"></span>
-              <strong>Blue</strong>
-              <small>oklch(72% 0.19 255)</small>
+            <div class="format-grid">
+              <article class="format-card">
+                <span>OKLCH</span>
+                <code data-output-oklch-full>oklch(62.8% 0.258 29.23)</code>
+              </article>
+              <article class="format-card">
+                <span>HEX</span>
+                <code data-output-hex>#ff0000</code>
+              </article>
+              <article class="format-card">
+                <span>RGB</span>
+                <code data-output-rgb>rgb(255 0 0)</code>
+              </article>
+              <article class="format-card">
+                <span>HSL Equivalent</span>
+                <code data-output-hsl>hsl(0 100% 50%)</code>
+              </article>
+            </div>
+            <div class="code-block">
+              <p>CSS snippet</p>
+              <pre><code data-output-css>:root {
+  --brand: oklch(62.8% 0.258 29.23);
+}</code></pre>
+            </div>
+          </div>
+
+          <div class="panel controls-panel">
+            <div class="preset-row" data-presets>
+              <button type="button" data-preset="cherry">Cherry</button>
+              <button type="button" data-preset="lagoon">Lagoon</button>
+              <button type="button" data-preset="citrus">Citrus</button>
+              <button type="button" data-preset="orchid">Orchid</button>
+              <button type="button" data-preset="slate">Slate</button>
+            </div>
+
+            <label class="control">
+              <span>Lightness</span>
+              <strong data-lightness-value>62.8%</strong>
+              <input data-channel="lightness" type="range" min="0" max="100" step="0.1" value="62.8" />
+            </label>
+
+            <label class="control">
+              <span>Chroma</span>
+              <strong data-chroma-value>0.258</strong>
+              <input data-channel="chroma" type="range" min="0" max="0.37" step="0.001" value="0.258" />
+            </label>
+
+            <label class="control">
+              <span>Hue</span>
+              <strong data-hue-value>29.23deg</strong>
+              <input data-channel="hue" type="range" min="0" max="360" step="0.01" value="29.23" />
+            </label>
+
+            <label class="control">
+              <span>Alpha</span>
+              <strong data-alpha-value>100%</strong>
+              <input data-channel="alpha" type="range" min="0" max="100" step="1" value="100" />
+            </label>
+
+            <div class="tip-card">
+              <p class="panel-kicker">Why this feels better</p>
+              <p data-live-tip>
+                Raising OKLCH lightness moves brightness more evenly than HSL lightness, which often shifts perceived
+                saturation at the same time.
+              </p>
             </div>
           </div>
         </div>
@@ -128,119 +230,160 @@
 
       <section id="why" class="section">
         <div class="section-heading">
-          <p class="eyebrow">Why OKLCH</p>
-          <h2>A more usable color model for UI systems, design tokens, and Tailwind-era workflows.</h2>
+          <p class="eyebrow">Why It Wins</p>
+          <h2>Same idea, cleaner mental model: perceptual steps instead of guesswork.</h2>
         </div>
+
+        <div class="comparison-grid">
+          <article class="panel ladder-panel">
+            <div class="ladder-heading">
+              <h3>OKLCH lightness ramp</h3>
+              <p>Uniform steps feel like actual steps.</p>
+            </div>
+            <div class="ladder-row" data-oklch-ramp></div>
+          </article>
+
+          <article class="panel ladder-panel">
+            <div class="ladder-heading">
+              <h3>HSL lightness ramp</h3>
+              <p>Equivalent hue and saturation, less predictable perception.</p>
+            </div>
+            <div class="ladder-row" data-hsl-ramp></div>
+          </article>
+        </div>
+
         <div class="feature-grid">
           <article class="feature-card">
-            <h3>Perceptual lightness</h3>
+            <h3>Readable CSS</h3>
             <p>
-              Adjusting the first channel changes perceived brightness more predictably than traditional HSL-style
-              models, which makes token systems easier to tune and reason about.
+              OKLCH reads like design intent. Lightness, chroma, hue, alpha. The channels map cleanly to how people
+              tune real systems.
             </p>
           </article>
           <article class="feature-card">
-            <h3>Chroma that behaves</h3>
+            <h3>Better token authoring</h3>
             <p>
-              Saturation shifts feel more intentional, which is why OKLCH is showing up in Tailwind, design systems,
-              theme editors, and modern CSS tooling.
+              Theme scales and semantic colors are easier to build because brightness shifts do not scramble everything
+              else as aggressively as older models.
             </p>
           </article>
           <article class="feature-card">
-            <h3>Modern CSS-native syntax</h3>
+            <h3>Modern ecosystem support</h3>
             <p>
-              The syntax is readable, composable, and already available in current browsers and editor ecosystems that
-              track modern CSS color specs.
+              OKLCH is already everywhere modern frontend teams care about: Tailwind, design tokens, CSS color specs,
+              and editor tooling.
             </p>
           </article>
         </div>
       </section>
 
-      <section id="performance" class="section split-section">
+      <section id="engine" class="section">
         <div class="section-heading">
-          <p class="eyebrow">Built for editor performance</p>
-          <h2>Minimal extension-host work, even when files get large.</h2>
+          <p class="eyebrow">Behind The Scenes</p>
+          <h2>A color extension should look expensive and run cheap.</h2>
         </div>
-        <div class="split-grid">
-          <article class="panel-card metric-card">
+
+        <div class="engine-grid">
+          <article class="panel engine-card">
             <h3>Shared decoration pools</h3>
             <p>
-              The extension reuses one decoration type per rendered swatch instead of creating a fresh decoration for
-              every match. That cuts allocation churn where the old implementation paid the highest cost.
+              The extension reuses one decoration type per rendered swatch instead of allocating one per match, cutting
+              editor churn where the old implementation was slowest.
             </p>
           </article>
-          <article class="panel-card metric-card">
-            <h3>Auto scan strategy</h3>
+          <article class="panel engine-card">
+            <h3>Visible-range strategy</h3>
             <p>
-              Smaller documents scan in full for correctness. Larger documents switch to padded visible-range scanning
-              so the extension does not waste time decorating code you cannot currently see.
+              Small files scan fully. Large files switch to padded visible-range scanning, so the extension stays
+              useful without touching the whole document on every change.
             </p>
           </article>
-          <article class="panel-card metric-card">
-            <h3>Small package footprint</h3>
+          <article class="panel engine-card">
+            <h3>Native-preview checks</h3>
             <p>
-              The published VSIX contains only the bundled extension, manifest metadata, and project essentials. The
-              current packaged artifact stays under 55 KB.
+              The repo validates with both `typescript@rc` and `tsgo`, alongside Bun tests, coverage, and VSIX package
+              checks.
             </p>
           </article>
-          <article class="panel-card metric-card">
-            <h3>Verified toolchain</h3>
+          <article class="panel engine-card">
+            <h3>Open-source fork with credit</h3>
             <p>
-              This fork is tested with `bun test`, typechecked with both `tsc` and native-preview `tsgo`, and bundled
-              into a single runtime file for fast startup.
+              This project explicitly credits SwiftlyDaniel’s original extension while moving the implementation,
+              release flow, docs, and testing much further forward.
             </p>
           </article>
         </div>
       </section>
 
-      <section id="compatibility" class="section">
+      <section id="ship" class="section">
         <div class="section-heading">
-          <p class="eyebrow">Where it fits</p>
-          <h2>One extension package, multiple editor targets.</h2>
+          <p class="eyebrow">Test And Ship</p>
+          <h2>Built to teach, verify, package, publish, and deploy.</h2>
         </div>
+
+        <div class="ship-grid">
+          <article class="panel command-panel">
+            <h3>Test locally</h3>
+            <pre><code>bun install
+bun run verify
+bun run coverage
+bun run package</code></pre>
+            <p>
+              Tests cover parsing, scanning, docs/package metadata, range strategy, and integration fixtures under the
+              `tests/` folder.
+            </p>
+          </article>
+          <article class="panel command-panel">
+            <h3>Release path</h3>
+            <pre><code>bun run changeset
+git tag vX.Y.Z
+git push origin main --tags</code></pre>
+            <p>
+              GitHub Actions handle CI, Pages deploys, version PRs, and store publishing. Open VSX is already live for
+              this project under the `shreyam1008` namespace.
+            </p>
+          </article>
+        </div>
+
         <div class="compatibility-grid">
           <div class="compatibility-card">
             <strong>VS Code</strong>
-            <span>Primary extension target via the VS Code Marketplace workflow.</span>
+            <span>Primary package target with `vsce` packaging.</span>
           </div>
           <div class="compatibility-card">
             <strong>Open VSX</strong>
-            <span>Publishable to the open registry used by VSCodium and many open-source forks.</span>
+            <span>Published under `shreyam1008.visualise-oklch` for open-source VS Code forks.</span>
           </div>
           <div class="compatibility-card">
-            <strong>Cursor & Windsurf</strong>
-            <span>Works in editors that consume the VS Code extension model and Open VSX-compatible packages.</span>
+            <strong>Cursor + Windsurf</strong>
+            <span>Works in editors that follow the VS Code extension model.</span>
           </div>
           <div class="compatibility-card">
-            <strong>Tailwind & token-heavy repos</strong>
-            <span>Useful anywhere literal OKLCH values show up in CSS, JS, TS, TSX, HTML, MDX, Vue, and related files.</span>
+            <strong>Maintained by shreyam1008</strong>
+            <span>
+              Source, releases, docs, and GitHub Pages live at
+              <a href="https://github.com/shreyam1008/visualise-oklch">github.com/shreyam1008/visualise-oklch</a>.
+            </span>
           </div>
         </div>
       </section>
 
       <section class="section credit-section">
-        <div class="section-heading">
-          <p class="eyebrow">Open source</p>
-          <h2>Maintained fork, clear attribution, publish-ready repo.</h2>
-        </div>
-        <div class="credit-panel">
+        <div class="panel credit-panel">
+          <p class="eyebrow">Credit</p>
+          <h2>Maintained fork of SwiftlyDaniel/oklch-color-visualiser.</h2>
           <p>
-            Visualise OKLCH is a maintained fork of
-            <a href="https://github.com/SwiftlyDaniel/oklch-color-visualiser">SwiftlyDaniel/oklch-color-visualiser</a>.
-            The original extension established the idea; this fork rebuilds the core, expands testing, and adds release
-            automation plus GitHub Pages and Open VSX support.
+            The original extension proved the idea. This fork rebuilds the extension core, adds a proper release flow,
+            ships an interactive project site, and keeps the project active under
+            <a href="https://github.com/shreyam1008">shreyam1008</a>.
           </p>
-          <div class="cta-row">
-            <a class="button button-primary" href="https://github.com/shreyam1008/visualise-oklch">GitHub Repository</a>
-            <a class="button button-secondary" href="https://open-vsx.org/">Open VSX</a>
-          </div>
         </div>
       </section>
     </main>
 
     <footer class="footer">
-      <p>Visualise OKLCH. Apache 2.0. Maintained fork of SwiftlyDaniel/oklch-color-visualiser.</p>
-      <p>&copy; <span data-current-year></span> Open-source project page for GitHub Pages.</p>
+      <p>Visualise OKLCH by shreyam1008. Apache 2.0. Maintained fork of SwiftlyDaniel/oklch-color-visualiser.</p>
+      <p>&copy; <span data-current-year></span> Interactive OKLCH guide for GitHub Pages.</p>
     </footer>
 
     <script src="./app.js" type="module"></script>

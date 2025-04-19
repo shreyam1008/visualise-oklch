@@ -1,10 +1,16 @@
 name: Publish Extension
 
 on:
+  push:
+    tags:
+      - "v*"
   release:
     types:
       - published
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   publish:
@@ -25,8 +31,24 @@ jobs:
       - name: Verify
         run: bun run verify
 
+      - name: Read version
+        id: version
+        run: echo "value=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
       - name: Package extension
-        run: bunx @vscode/vsce package --no-dependencies
+        run: bunx @vscode/vsce package --no-dependencies --out visualise-oklch-${{ steps.version.outputs.value }}.vsix
+
+      - name: Upload VSIX artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: visualise-oklch-vsix
+          path: visualise-oklch-${{ steps.version.outputs.value }}.vsix
+
+      - name: Attach VSIX to GitHub release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: visualise-oklch-${{ steps.version.outputs.value }}.vsix
 
       - name: Publish to VS Code Marketplace
         if: ${{ secrets.VSCE_PAT != '' }}
