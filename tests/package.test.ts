@@ -40,7 +40,7 @@ describe('package metadata', () => {
     expect(packageJson.description).toContain('native color picker');
     expect(packageJson.homepage).toBe('https://shreyam1008.github.io/visualise-oklch/');
     expect(packageJson.keywords).toContain('picker');
-    expect(packageJson.version).toBe('2.0.4');
+    expect(packageJson.version).toBe('2.0.5');
   });
 
   test('exposes performance tuning settings', () => {

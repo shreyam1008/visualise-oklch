@@ -15,6 +15,7 @@ describe('README listing copy', () => {
     expect(readme).toContain('## Credit');
     expect(readme).toContain('## Editing colors');
     expect(readme).toContain('native color picker');
+    expect(readme).toContain('only see one swatch');
     expect(readme).toContain('SwiftlyDaniel/oklch-color-visualiser');
     expect(readme).not.toContain('This repository is a maintained fork');
   });

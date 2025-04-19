@@ -37,6 +37,7 @@ Hover or click the editor color decorator on an OKLCH literal to open the native
 - The first write-back option stays in normalized `oklch(...)`.
 - Traditional `hex`, `rgb(...)`, and `hsl(...)` presentations are also offered.
 - Choosing a presentation writes the selected color directly back into your document.
+- When native editor color decorators are enabled, Visualise OKLCH defers to that built-in path so you only see one swatch.
 
 ## Development
 
