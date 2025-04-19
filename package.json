@@ -1,0 +1,59 @@
+{
+	"preview": false,
+	"name": "oklch-preview",
+	"displayName": "OKLCH Preview",
+	"description": "Preview OKLCH colours",
+	"version": "1.0.0",
+	"icon": "icon.png",
+	"publisher": "swiftlydaniel",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/SwiftlyDaniel/oklch-preview"
+	},
+	"engines": {
+		"vscode": "^1.96.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onLanguage:css",
+		"onLanguage:less",
+		"onLanguage:scss",
+		"onLanguage:sass",
+		"onLanguage:tailwindcss",
+		"onLanguage:javascript",
+		"onLanguage:typescript",
+		"onLanguage:javascriptreact",
+		"onLanguage:typescriptreact",
+		"onLanguage:vue",
+		"onLanguage:html",
+		"onLanguage:php"
+	],
+	"main": "./dist/extension",
+	"contributes": {},
+	"scripts": {
+		"compile": "npm run check-types && node esbuild.js",
+		"check-types": "tsc --noEmit",
+		"watch": "npm-run-all -p watch:*",
+		"watch:esbuild": "node esbuild.js --watch",
+		"watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+		"vscode:prepublish": "npm run package",
+		"package": "npm run check-types && node esbuild.js --production"
+	},
+	"devDependencies": {
+		"@types/culori": "^2.1.1",
+		"@types/node": "20.x",
+		"@types/vscode": "^1.96.0",
+		"@typescript-eslint/eslint-plugin": "^8.28.0",
+		"@typescript-eslint/parser": "^8.28.0",
+		"@vscode/vsce": "^3.2.2",
+		"esbuild": "^0.25.2",
+		"eslint": "^9.23.0",
+		"ovsx": "^0.8.3",
+		"typescript": "^5.8.2"
+	},
+	"dependencies": {
+		"culori": "^4.0.1"
+	}
+}
