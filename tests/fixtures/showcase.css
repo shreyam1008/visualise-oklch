@@ -1,0 +1,12 @@
+:root {
+  --accent: oklch(62.8% 0.258 29.23);
+  --surface: OKLCH(98% 0.003 247 / 96%);
+  --success: oklch(
+    76%
+    0.204
+    154
+  );
+  --lime: oklch(none 0.274 109.6);
+  --invalid-hue: oklch(62% 0.258 45%);
+  --ignore-me: prefixoklch(100% 0 0);
+}
