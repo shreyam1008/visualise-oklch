@@ -13,6 +13,7 @@
       content="OKLCH, OKLCH color picker, OKLCH vs HSL, VS Code extension, Cursor extension, Windsurf extension, Open VSX, CSS color tool, Tailwind OKLCH"
     />
     <meta name="author" content="shreyam1008" />
+    <meta name="google-site-verification" content="nsLMV5dqPB3vxpuq7DPX9iBtRAikKDpxEUJNvMnriTk" />
     <meta name="robots" content="index,follow,max-image-preview:large" />
     <meta name="theme-color" content="#07111e" />
     <link rel="canonical" href="https://shreyam1008.github.io/visualise-oklch/" />
@@ -72,6 +73,12 @@
   </head>
   <body>
     <div class="page-noise" aria-hidden="true"></div>
+    <div class="ambient-grid" aria-hidden="true"></div>
+    <div class="ambient-orbits" aria-hidden="true">
+      <span class="ambient-orbit ambient-orbit-warm"></span>
+      <span class="ambient-orbit ambient-orbit-cool"></span>
+      <span class="ambient-orbit ambient-orbit-lime"></span>
+    </div>
     <div class="spotlight spotlight-warm" aria-hidden="true"></div>
     <div class="spotlight spotlight-cool" aria-hidden="true"></div>
     <div class="token-cloud" data-token-cloud aria-hidden="true"></div>
@@ -115,11 +122,18 @@
             <li>Zero runtime color dependency</li>
           </ul>
           <div class="hero-marquee">
-            <span>oklch(62.8% 0.258 29.23)</span>
-            <span>oklch(76% 0.204 154)</span>
-            <span>oklch(78% 0.17 235)</span>
-            <span>oklch(84% 0.19 128)</span>
-            <span>oklch(68% 0.2 328 / 88%)</span>
+            <div class="hero-marquee-track">
+              <span>oklch(62.8% 0.258 29.23)</span>
+              <span>oklch(76% 0.204 154)</span>
+              <span>oklch(78% 0.17 235)</span>
+              <span>oklch(84% 0.19 128)</span>
+              <span>oklch(68% 0.2 328 / 88%)</span>
+              <span>oklch(62.8% 0.258 29.23)</span>
+              <span>oklch(76% 0.204 154)</span>
+              <span>oklch(78% 0.17 235)</span>
+              <span>oklch(84% 0.19 128)</span>
+              <span>oklch(68% 0.2 328 / 88%)</span>
+            </div>
           </div>
         </div>
 
@@ -408,22 +422,18 @@ git push origin main --tags</code></pre>
         </div>
       </section>
 
-      <section class="section credit-section">
-        <div class="panel credit-panel">
-          <p class="eyebrow">Credit</p>
-          <h2>Maintained fork of SwiftlyDaniel/oklch-color-visualiser.</h2>
-          <p>
-            The original extension proved the idea. This fork rebuilds the extension core, adds a proper release flow,
-            ships an interactive project site, and keeps the project active under
-            <a href="https://github.com/shreyam1008">shreyam1008</a>.
-          </p>
-        </div>
-      </section>
     </main>
 
     <footer class="footer">
-      <p>Visualise OKLCH by shreyam1008. Apache 2.0. Maintained fork of SwiftlyDaniel/oklch-color-visualiser.</p>
-      <p>&copy; <span data-current-year></span> Interactive OKLCH guide for GitHub Pages.</p>
+      <div class="footer-row">
+        <p>Visualise OKLCH by <a href="https://github.com/shreyam1008">shreyam1008</a>.</p>
+        <p><a href="https://shreyam1008.com.np">shreyam1008.com.np</a></p>
+      </div>
+      <p class="footer-note">
+        Maintained fork of
+        <a href="https://github.com/SwiftlyDaniel/oklch-color-visualiser">SwiftlyDaniel/oklch-color-visualiser</a>.
+      </p>
+      <p class="footer-note">&copy; <span data-current-year></span> Lightweight interactive OKLCH guide for GitHub Pages.</p>
     </footer>
 
     <script src="./app.js" type="module"></script>

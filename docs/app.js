@@ -51,8 +51,11 @@ const presetButtons = Array.from(document.querySelectorAll('[data-preset]'));
 const oklchRamp = document.querySelector('[data-oklch-ramp]');
 const hslRamp = document.querySelector('[data-hsl-ramp]');
 const tokenCloud = document.querySelector('[data-token-cloud]');
+const rampStops = [0.94, 0.82, 0.7, 0.58, 0.46, 0.34];
+const rampNodes = { hsl: [], oklch: [] };
 
 const state = { ...presets.cherry };
+let renderFrame = 0;
 
 const linearToSrgb = (channel) => {
   const clamped = clamp(channel, 0, 1);
@@ -225,15 +228,39 @@ const tipFor = ({ chroma, lightness }) => {
   return 'This is the OKLCH sweet spot: tweak lightness for perceived brightness, then tune chroma for intensity without rewriting the entire color.';
 };
 
-const renderSwatch = (target, color, label) => {
+const createRampNode = () => {
   const wrapper = document.createElement('div');
   wrapper.className = 'ladder-swatch';
   const swatch = document.createElement('span');
-  swatch.style.setProperty('--swatch', color);
   const code = document.createElement('code');
-  code.textContent = label;
   wrapper.append(swatch, code);
-  target.append(wrapper);
+  return { code, swatch, wrapper };
+};
+
+const updateRampNode = (node, color, label) => {
+  node.swatch.style.setProperty('--swatch', color);
+  node.code.textContent = label;
+};
+
+const ensureRampNodes = () => {
+  if (!oklchRamp || !hslRamp || rampNodes.oklch.length > 0 || rampNodes.hsl.length > 0) {
+    return;
+  }
+
+  const oklchFragment = document.createDocumentFragment();
+  const hslFragment = document.createDocumentFragment();
+
+  rampStops.forEach(() => {
+    const oklchNode = createRampNode();
+    const hslNode = createRampNode();
+    rampNodes.oklch.push(oklchNode);
+    rampNodes.hsl.push(hslNode);
+    oklchFragment.append(oklchNode.wrapper);
+    hslFragment.append(hslNode.wrapper);
+  });
+
+  oklchRamp.append(oklchFragment);
+  hslRamp.append(hslFragment);
 };
 
 const renderRamps = (hslBase) => {
@@ -241,21 +268,20 @@ const renderRamps = (hslBase) => {
     return;
   }
 
-  oklchRamp.textContent = '';
-  hslRamp.textContent = '';
+  ensureRampNodes();
 
-  [0.94, 0.82, 0.7, 0.58, 0.46, 0.34].forEach((lightness) => {
-    renderSwatch(
-      oklchRamp,
+  rampStops.forEach((lightness, index) => {
+    updateRampNode(
+      rampNodes.oklch[index],
       oklchString({ ...state, alpha: 1, lightness }),
       `${format(lightness * 100, 0)}%`
     );
   });
 
-  [0.94, 0.82, 0.7, 0.58, 0.46, 0.34].forEach((lightness) => {
+  rampStops.forEach((lightness, index) => {
     const rgb = hslToRgb({ ...hslBase, alpha: 1, lightness });
-    renderSwatch(
-      hslRamp,
+    updateRampNode(
+      rampNodes.hsl[index],
       rgbToHex(rgb),
       `${format(lightness * 100, 0)}%`
     );
@@ -326,12 +352,32 @@ const applyState = () => {
   renderRamps(hsl);
 };
 
-const buildCloud = () => {
-  if (!tokenCloud) {
+const scheduleApplyState = () => {
+  if (renderFrame !== 0) {
     return;
   }
 
-  cloudTokens.forEach((token, index) => {
+  renderFrame = window.requestAnimationFrame(() => {
+    renderFrame = 0;
+    applyState();
+  });
+};
+
+const buildCloud = () => {
+  if (!tokenCloud || tokenCloud.childElementCount > 0) {
+    return;
+  }
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) {
+    tokenCloud.hidden = true;
+    return;
+  }
+
+  const tokenLimit = window.matchMedia('(max-width: 900px)').matches ? 5 : cloudTokens.length;
+  const fragment = document.createDocumentFragment();
+
+  cloudTokens.slice(0, tokenLimit).forEach((token, index) => {
     const span = document.createElement('span');
     span.textContent = token;
     span.style.left = `${6 + ((index * 11.5) % 86)}%`;
@@ -339,8 +385,10 @@ const buildCloud = () => {
     span.style.setProperty('--rotate', `${(-18 + (index * 7)) % 24}deg`);
     span.style.setProperty('--dur', `${11 + ((index * 1.3) % 7)}s`);
     span.style.setProperty('--delay', `${(index % 5) * -1.4}s`);
-    tokenCloud.append(span);
+    fragment.append(span);
   });
+
+  tokenCloud.append(fragment);
 };
 
 controls.forEach((input) => {
@@ -359,7 +407,7 @@ controls.forEach((input) => {
     }
 
     updatePresetButtons('');
-    applyState();
+    scheduleApplyState();
   });
 });
 
