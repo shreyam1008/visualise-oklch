@@ -1,0 +1,18 @@
+.theme {
+  --color-surface: oklch(1 0 0);
+  --color-surface-alt: oklch(0.97 0 0);
+  --color-surface-glass: oklch(1 0 0 / 0.8);
+  --color-foreground: oklch(0.145 0 0);
+  --color-muted: oklch(0 0 0 / 0.45);
+  --color-faint: oklch(0 0 0 / 0.35);
+  --color-border: oklch(0 0 0 / 0.08);
+  --color-hover: oklch(0 0 0 / 0.05);
+  --color-active: oklch(0 0 0 / 0.07);
+  --color-primary: oklch(0.145 0 0);
+  --color-on-primary: oklch(1 0 0);
+  --color-backdrop: oklch(0 0 0 / 0.4);
+  --color-danger: oklch(0.577 0.245 27.325);
+  --color-on-danger: oklch(1 0 0);
+  --color-success: oklch(0.627 0.194 149.214);
+  --color-warning: oklch(0.666 0.179 58.318);
+}

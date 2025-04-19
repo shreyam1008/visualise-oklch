@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 
 import { resolveSwatch, type ResolvedSwatch } from './color';
 import { CONFIG_NAMESPACE, getConfig, type ExtensionConfig } from './config';
+import { buildDecorationRenderOptions } from './render';
 import { scanOklchFunctions } from './scanner';
 
 interface AppliedDecorationState {
@@ -250,15 +251,8 @@ class OklchDecorationController implements vscode.Disposable {
 
   private createDecorationType(swatch: ResolvedSwatch): vscode.TextEditorDecorationType {
     return vscode.window.createTextEditorDecorationType({
+      ...buildDecorationRenderOptions(swatch),
       rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed,
-      before: {
-        backgroundColor: swatch.hex,
-        border: `1px solid ${swatch.borderColor}`,
-        contentText: ' ',
-        height: '0.82em',
-        margin: '0 0.42em 0 0.12em',
-        width: '0.82em',
-      },
     });
   }
 

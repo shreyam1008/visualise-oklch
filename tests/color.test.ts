@@ -43,9 +43,18 @@ describe('resolveSwatch', () => {
     expect(parsed).not.toBeNull();
     expect(rgbToHex(oklchToSrgb(parsed!))).toMatch(/^#[0-9a-f]{6}$/);
     expect(resolveSwatch('oklch(72% 0.22 145)')).toMatchObject({
-      borderColor: expect.any(String),
+      darkBorderColor: expect.any(String),
       hex: expect.stringMatching(/^#[0-9a-f]{6}$/),
+      lightBorderColor: expect.any(String),
       normalized: 'oklch(72% 0.22 145)',
+    });
+  });
+
+  test('keeps low-alpha neutrals visible in dark and light themes', () => {
+    expect(resolveSwatch('oklch(0 0 0 / 0.08)')).toMatchObject({
+      darkBorderColor: 'rgba(255, 255, 255, 0.94)',
+      hex: '#00000014',
+      lightBorderColor: 'rgba(15, 23, 42, 0.94)',
     });
   });
 });
