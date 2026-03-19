@@ -32,3 +32,10 @@ export function mergeRanges(ranges: NumericRange[]): NumericRange[] {
 
   return merged;
 }
+
+export function shouldUseCustomDecorations(
+  extensionEnabled: boolean,
+  nativeColorDecoratorsEnabled: boolean,
+): boolean {
+  return extensionEnabled && !nativeColorDecoratorsEnabled;
+}

@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 
-import { expandRanges, mergeRanges } from '../src/strategy';
+import { expandRanges, mergeRanges, shouldUseCustomDecorations } from '../src/strategy';
 
 describe('strategy helpers', () => {
   test('expands ranges within bounds', () => {
@@ -17,5 +17,11 @@ describe('strategy helpers', () => {
       { end: 10, start: 1 },
       { end: 16, start: 14 },
     ]);
+  });
+
+  test('defers to native editor color decorators when they are enabled', () => {
+    expect(shouldUseCustomDecorations(true, true)).toBe(false);
+    expect(shouldUseCustomDecorations(true, false)).toBe(true);
+    expect(shouldUseCustomDecorations(false, false)).toBe(false);
   });
 });
