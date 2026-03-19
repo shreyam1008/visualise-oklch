@@ -15,8 +15,9 @@ export interface RgbColor {
 interface LinearRgbColor extends RgbColor {}
 
 export interface ResolvedSwatch {
-  borderColor: string;
+  darkBorderColor: string;
   hex: string;
+  lightBorderColor: string;
   normalized: string;
   rgb: RgbColor;
 }
@@ -330,17 +331,54 @@ const srgbChannelToLinear = (value: number): number => {
   return ((value + 0.055) / 1.055) ** 2.4;
 };
 
-const outlineColorFor = ({ alpha, blue, green, red }: RgbColor): string => {
+const DARK_EDITOR_LUMINANCE = 0.045;
+const LIGHT_EDITOR_LUMINANCE = 0.985;
+const DARK_OUTLINE_RGB = '15, 23, 42';
+const LIGHT_OUTLINE_RGB = '255, 255, 255';
+
+const relativeLuminanceFor = ({ blue, green, red }: RgbColor): number => {
   const linearRed = srgbChannelToLinear(red);
   const linearGreen = srgbChannelToLinear(green);
   const linearBlue = srgbChannelToLinear(blue);
-  const luminance = (0.2126 * linearRed) + (0.7152 * linearGreen) + (0.0722 * linearBlue);
+  return (0.2126 * linearRed) + (0.7152 * linearGreen) + (0.0722 * linearBlue);
+};
 
-  if (alpha < 0.35) {
-    return 'rgba(15, 23, 42, 0.42)';
+const compositeLuminanceFor = (foregroundLuminance: number, alpha: number, backgroundLuminance: number): number => (
+  (foregroundLuminance * alpha) + (backgroundLuminance * (1 - alpha))
+);
+
+const outlineStrengthFor = (alpha: number): number => {
+  if (alpha <= 0.08) {
+    return 0.92;
   }
 
-  return luminance > 0.72 ? 'rgba(15, 23, 42, 0.28)' : 'rgba(255, 255, 255, 0.32)';
+  if (alpha <= 0.16) {
+    return 0.82;
+  }
+
+  if (alpha <= 0.3) {
+    return 0.72;
+  }
+
+  if (alpha <= 0.5) {
+    return 0.58;
+  }
+
+  return 0.42;
+};
+
+const outlineColorForTheme = (rgb: RgbColor, editorBackgroundLuminance: number): string => {
+  const swatchLuminance = relativeLuminanceFor(rgb);
+  const compositedLuminance = compositeLuminanceFor(swatchLuminance, rgb.alpha, editorBackgroundLuminance);
+  const prefersDarkOutline = compositedLuminance > 0.56;
+  const outlineRgb = prefersDarkOutline ? DARK_OUTLINE_RGB : LIGHT_OUTLINE_RGB;
+
+  const contrastGap = Math.abs(compositedLuminance - editorBackgroundLuminance);
+  const outlineStrength = contrastGap < 0.12
+    ? Math.min(0.94, outlineStrengthFor(rgb.alpha) + 0.18)
+    : outlineStrengthFor(rgb.alpha);
+
+  return `rgba(${outlineRgb}, ${formatNumber(outlineStrength, 2)})`;
 };
 
 export const formatNormalizedOklch = ({ alpha, chroma, hueDegrees, lightness }: ParsedOklch): string => {
@@ -359,8 +397,9 @@ export const resolveSwatch = (input: string): ResolvedSwatch | null => {
 
   const rgb = oklchToSrgb(parsed);
   return {
-    borderColor: outlineColorFor(rgb),
+    darkBorderColor: outlineColorForTheme(rgb, DARK_EDITOR_LUMINANCE),
     hex: rgbToHex(rgb),
+    lightBorderColor: outlineColorForTheme(rgb, LIGHT_EDITOR_LUMINANCE),
     normalized: formatNormalizedOklch(parsed),
     rgb,
   };
