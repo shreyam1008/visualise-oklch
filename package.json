@@ -2,7 +2,7 @@
   "name": "visualise-oklch",
   "displayName": "Visualise OKLCH",
   "description": "Low-overhead inline OKLCH swatches with native color picker editing for VS Code, Cursor, Windsurf, VSCodium, and Open VSX-compatible editors.",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "preview": false,
   "license": "Apache-2.0",
   "icon": "icon.png",

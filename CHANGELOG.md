@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.5
+
+- Fixed duplicate swatches after native picker support by deferring to the editor's built-in color decorators when they are enabled.
+- Kept the custom decoration path only as a fallback when native color decorators are turned off.
+
 ## 2.0.4
 
 - Added native editor color picker support for OKLCH literals with OKLCH-first, hex, rgb, and hsl write-back presentations.
