@@ -48,7 +48,7 @@
         "name": "Visualise OKLCH",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Cross-platform",
-        "softwareVersion": "2.0.1",
+        "softwareVersion": "2.0.2",
         "author": {
           "@type": "Person",
           "name": "shreyam1008",
@@ -77,7 +77,13 @@
     <div class="token-cloud" data-token-cloud aria-hidden="true"></div>
 
     <header class="topbar">
-      <a class="brand" href="#top">Visualise OKLCH</a>
+      <a class="brand" href="#top">
+        <img src="./logo-mark.svg" alt="" width="40" height="40" />
+        <span>
+          <strong>Visualise OKLCH</strong>
+          <small>by shreyam1008</small>
+        </span>
+      </a>
       <nav class="nav">
         <a href="#playground">Playground</a>
         <a href="#why">Why It Wins</a>
@@ -108,10 +114,19 @@
             <li>54.94 KB VSIX</li>
             <li>Zero runtime color dependency</li>
           </ul>
+          <div class="hero-marquee">
+            <span>oklch(62.8% 0.258 29.23)</span>
+            <span>oklch(76% 0.204 154)</span>
+            <span>oklch(78% 0.17 235)</span>
+            <span>oklch(84% 0.19 128)</span>
+            <span>oklch(68% 0.2 328 / 88%)</span>
+          </div>
         </div>
 
         <div class="hero-stage">
           <div class="hero-orb"></div>
+          <div class="hero-beam hero-beam-one"></div>
+          <div class="hero-beam hero-beam-two"></div>
           <div class="hero-window panel">
             <div class="window-bar">
               <span></span>
@@ -131,6 +146,9 @@
             <div class="mini-swatch" style="--swatch: oklch(72% 0.22 27);"></div>
             <div class="mini-swatch" style="--swatch: oklch(75% 0.18 140);"></div>
             <div class="mini-swatch" style="--swatch: oklch(78% 0.17 245);"></div>
+          </div>
+          <div class="hero-logo panel">
+            <img src="./logo-mark.svg" alt="Visualise OKLCH logo" width="160" height="160" />
           </div>
         </div>
       </section>
@@ -252,6 +270,19 @@
           </article>
         </div>
 
+        <div class="equivalent-row panel">
+          <div>
+            <p class="panel-kicker">Equivalent color writing</p>
+            <h3>One modern source, many legacy outputs.</h3>
+          </div>
+          <div class="equivalent-codes">
+            <code data-output-oklch-row>oklch(62.8% 0.258 29.23)</code>
+            <code data-output-hex-row>#ff0000</code>
+            <code data-output-rgb-row>rgb(255 0 0)</code>
+            <code data-output-hsl-row>hsl(0 100% 50%)</code>
+          </div>
+        </div>
+
         <div class="feature-grid">
           <article class="feature-card">
             <h3>Readable CSS</h3>
@@ -312,6 +343,15 @@
               release flow, docs, and testing much further forward.
             </p>
           </article>
+        </div>
+
+        <div class="spectrum-ribbon panel" aria-hidden="true">
+          <span style="--swatch: oklch(74% 0.23 25)"></span>
+          <span style="--swatch: oklch(82% 0.21 80)"></span>
+          <span style="--swatch: oklch(84% 0.19 128)"></span>
+          <span style="--swatch: oklch(78% 0.16 190)"></span>
+          <span style="--swatch: oklch(76% 0.17 235)"></span>
+          <span style="--swatch: oklch(70% 0.19 310)"></span>
         </div>
       </section>
 

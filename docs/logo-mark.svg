@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Visualise OKLCH logo</title>
+  <desc id="desc">A prismatic spiral mark built from warm, lime, and cool color arcs around a dark core.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#07111e" />
+      <stop offset="100%" stop-color="#0d1a2d" />
+    </linearGradient>
+    <linearGradient id="warm" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="oklch(74% 0.23 28)" />
+      <stop offset="100%" stop-color="oklch(64% 0.19 8)" />
+    </linearGradient>
+    <linearGradient id="lime" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="oklch(84% 0.19 128)" />
+      <stop offset="100%" stop-color="oklch(74% 0.17 165)" />
+    </linearGradient>
+    <linearGradient id="cool" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="oklch(80% 0.16 235)" />
+      <stop offset="100%" stop-color="oklch(74% 0.18 200)" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="138" fill="url(#bg)" />
+  <circle cx="180" cy="134" r="70" fill="rgba(255,255,255,0.08)" />
+  <g fill="none" stroke-linecap="round" filter="url(#glow)">
+    <path d="M126 176 A162 162 0 0 1 356 140" stroke="url(#warm)" stroke-width="68" />
+    <path d="M388 170 A146 146 0 0 1 322 360" stroke="url(#cool)" stroke-width="62" />
+    <path d="M292 388 A122 122 0 0 1 120 250" stroke="url(#lime)" stroke-width="56" />
+  </g>
+  <circle cx="256" cy="256" r="74" fill="#08111f" stroke="rgba(255,255,255,0.08)" stroke-width="2" />
+  <rect x="228" y="228" width="56" height="56" rx="18" transform="rotate(45 256 256)" fill="rgba(255,255,255,0.9)" />
+  <circle cx="320" cy="132" r="10" fill="rgba(255,255,255,0.7)" />
+  <circle cx="354" cy="346" r="8" fill="rgba(255,255,255,0.55)" />
+</svg>

@@ -28,15 +28,19 @@ const selectors = {
   css: document.querySelector('[data-output-css]'),
   hue: document.querySelector('[data-hue-value]'),
   hsl: document.querySelector('[data-output-hsl]'),
+  hslRow: document.querySelector('[data-output-hsl-row]'),
   hex: document.querySelector('[data-output-hex]'),
+  hexRow: document.querySelector('[data-output-hex-row]'),
   hexHero: document.querySelector('[data-live-hex]'),
   lightness: document.querySelector('[data-lightness-value]'),
   liveCode: document.querySelector('[data-live-code]'),
   name: document.querySelector('[data-output-name]'),
   oklch: document.querySelector('[data-output-oklch]'),
   oklchFull: document.querySelector('[data-output-oklch-full]'),
+  oklchRow: document.querySelector('[data-output-oklch-row]'),
   previewSurface: document.querySelector('[data-preview-surface]'),
   rgb: document.querySelector('[data-output-rgb]'),
+  rgbRow: document.querySelector('[data-output-rgb-row]'),
   rgbHero: document.querySelector('[data-live-rgb]'),
   tip: document.querySelector('[data-live-tip]'),
   year: document.querySelector('[data-current-year]'),
@@ -57,14 +61,6 @@ const linearToSrgb = (channel) => {
   }
 
   return (1.055 * (clamped ** (1 / 2.4))) - 0.055;
-};
-
-const srgbToLinear = (channel) => {
-  if (channel <= 0.04045) {
-    return channel / 12.92;
-  }
-
-  return ((channel + 0.055) / 1.055) ** 2.4;
 };
 
 const inGamut = ({ red, green, blue }) => (
@@ -308,11 +304,15 @@ const applyState = () => {
   selectors.name.textContent = state.name;
   selectors.oklch.textContent = oklch;
   selectors.oklchFull.textContent = oklch;
+  selectors.oklchRow.textContent = oklch;
   selectors.hex.textContent = hex;
   selectors.hexHero.textContent = hex;
+  selectors.hexRow.textContent = `hex ${hex}`;
   selectors.rgb.textContent = rgbEquivalent;
   selectors.rgbHero.textContent = rgbEquivalent;
+  selectors.rgbRow.textContent = rgbEquivalent;
   selectors.hsl.textContent = hslEquivalent;
+  selectors.hslRow.textContent = hslEquivalent;
   selectors.liveCode.textContent = `background: ${oklch};`;
   selectors.css.textContent = `:root {\n  --brand: ${oklch};\n  --brand-hex: ${hex};\n}`;
   selectors.previewSurface.style.background =
@@ -336,7 +336,9 @@ const buildCloud = () => {
     span.textContent = token;
     span.style.left = `${6 + ((index * 11.5) % 86)}%`;
     span.style.top = `${7 + ((index * 8.5) % 78)}%`;
-    span.style.transform = `rotate(${(-18 + (index * 7)) % 24}deg)`;
+    span.style.setProperty('--rotate', `${(-18 + (index * 7)) % 24}deg`);
+    span.style.setProperty('--dur', `${11 + ((index * 1.3) % 7)}s`);
+    span.style.setProperty('--delay', `${(index % 5) * -1.4}s`);
     tokenCloud.append(span);
   });
 };

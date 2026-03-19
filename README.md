@@ -81,15 +81,6 @@ For Open VSX publishing, the registry is [open-vsx.org](https://open-vsx.org/). 
 
 For VS Code Marketplace publishing, add a `VSCE_PAT` secret. Without that token, the repo can still package the VSIX and publish to Open VSX.
 
-## Site
-
-The project site lives in `docs/` and deploys to GitHub Pages with no build step. It is plain HTML/CSS/JS and includes:
-
-- interactive OKLCH sliders and equivalent CSS outputs
-- perceptual OKLCH vs HSL comparison ramps
-- Open Graph and structured data metadata
-- `robots.txt`, `sitemap.xml`, `site.webmanifest`, and `.nojekyll`
-
 ## License
 
 Apache 2.0. See [LICENSE](./LICENSE).

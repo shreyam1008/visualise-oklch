@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.2
+
+- Replaced the public brand with a new chromatic spiral logo and updated the extension/store icon assets.
+- Turned the GitHub Pages site into a more animated, art-directed interactive color experience.
+- Tightened README copy and refreshed public-facing docs/tests around the new site and assets.
+
 ## 2.0.1
 
 - Rebuilt the GitHub Pages site into an interactive OKLCH explainer with live sliders, equivalence outputs, and stronger SEO assets.
