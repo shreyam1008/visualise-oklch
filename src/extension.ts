@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 
 import { resolveSwatch, type ResolvedSwatch } from './color';
 import { CONFIG_NAMESPACE, getConfig, type ExtensionConfig } from './config';
+import { buildColorPresentationEntries, detectDocumentColors } from './picker';
 import { buildDecorationRenderOptions } from './render';
 import { scanOklchFunctions } from './scanner';
 
@@ -42,6 +43,8 @@ const SUPPORTED_LANGUAGE_IDS = new Set([
   'vue',
 ]);
 
+const SUPPORTED_DOCUMENT_SELECTOR = Array.from(SUPPORTED_LANGUAGE_IDS);
+
 class LruCache<K, V> {
   readonly #limit: number;
   readonly #store = new Map<K, V>();
@@ -79,6 +82,64 @@ class LruCache<K, V> {
     if (oldestKey !== undefined) {
       this.#store.delete(oldestKey);
     }
+  }
+}
+
+interface CachedDocumentColors {
+  colors: vscode.ColorInformation[];
+  version: number;
+}
+
+class OklchDocumentColorProvider implements vscode.DocumentColorProvider {
+  readonly #cache = new WeakMap<vscode.TextDocument, CachedDocumentColors>();
+
+  provideColorPresentations(
+    color: vscode.Color,
+    context: { document: vscode.TextDocument; range: vscode.Range },
+    token: vscode.CancellationToken,
+  ): vscode.ProviderResult<vscode.ColorPresentation[]> {
+    if (token.isCancellationRequested || !SUPPORTED_LANGUAGE_IDS.has(context.document.languageId) || !getConfig().enabled) {
+      return [];
+    }
+
+    return buildColorPresentationEntries({
+      alpha: color.alpha,
+      blue: color.blue,
+      green: color.green,
+      red: color.red,
+    }).map((entry) => {
+      const presentation = new vscode.ColorPresentation(entry.label);
+      presentation.textEdit = new vscode.TextEdit(context.range, entry.text);
+      return presentation;
+    });
+  }
+
+  provideDocumentColors(
+    document: vscode.TextDocument,
+    token: vscode.CancellationToken,
+  ): vscode.ProviderResult<vscode.ColorInformation[]> {
+    if (token.isCancellationRequested || !SUPPORTED_LANGUAGE_IDS.has(document.languageId) || !getConfig().enabled) {
+      return [];
+    }
+
+    const cached = this.#cache.get(document);
+    if (cached?.version === document.version) {
+      return cached.colors;
+    }
+
+    const text = document.getText();
+    const colors = detectDocumentColors(text).map((match) => {
+      const range = new vscode.Range(document.positionAt(match.start), document.positionAt(match.end));
+      const color = new vscode.Color(match.rgb.red, match.rgb.green, match.rgb.blue, match.rgb.alpha);
+      return new vscode.ColorInformation(range, color);
+    });
+
+    this.#cache.set(document, {
+      colors,
+      version: document.version,
+    });
+
+    return colors;
   }
 }
 
@@ -426,6 +487,7 @@ let controller: OklchDecorationController | undefined;
 
 export const activate = (context: vscode.ExtensionContext): void => {
   controller = new OklchDecorationController(context);
+  context.subscriptions.push(vscode.languages.registerColorProvider(SUPPORTED_DOCUMENT_SELECTOR, new OklchDocumentColorProvider()));
 };
 
 export const deactivate = (): void => {

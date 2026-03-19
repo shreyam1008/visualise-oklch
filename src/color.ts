@@ -12,6 +12,13 @@ export interface RgbColor {
   red: number;
 }
 
+export interface HslColor {
+  alpha: number;
+  hueDegrees: number;
+  lightness: number;
+  saturation: number;
+}
+
 interface LinearRgbColor extends RgbColor {}
 
 export interface ResolvedSwatch {
@@ -331,6 +338,54 @@ const srgbChannelToLinear = (value: number): number => {
   return ((value + 0.055) / 1.055) ** 2.4;
 };
 
+export const rgbToHsl = ({ alpha, blue, green, red }: RgbColor): HslColor => {
+  const max = Math.max(red, green, blue);
+  const min = Math.min(red, green, blue);
+  const delta = max - min;
+  const lightness = (max + min) / 2;
+  const saturation = delta === 0 ? 0 : delta / (1 - Math.abs((2 * lightness) - 1));
+
+  let hueDegrees = 0;
+  if (delta !== 0) {
+    if (max === red) {
+      hueDegrees = 60 * (((green - blue) / delta) % 6);
+    } else if (max === green) {
+      hueDegrees = 60 * (((blue - red) / delta) + 2);
+    } else {
+      hueDegrees = 60 * (((red - green) / delta) + 4);
+    }
+  }
+
+  return {
+    alpha,
+    hueDegrees: wrapDegrees(hueDegrees),
+    lightness,
+    saturation,
+  };
+};
+
+export const srgbToOklch = ({ alpha, blue, green, red }: RgbColor): ParsedOklch => {
+  const linearRed = srgbChannelToLinear(red);
+  const linearGreen = srgbChannelToLinear(green);
+  const linearBlue = srgbChannelToLinear(blue);
+
+  const l = Math.cbrt((0.4122214708 * linearRed) + (0.5363325363 * linearGreen) + (0.0514459929 * linearBlue));
+  const m = Math.cbrt((0.2119034982 * linearRed) + (0.6806995451 * linearGreen) + (0.1073969566 * linearBlue));
+  const s = Math.cbrt((0.0883024619 * linearRed) + (0.2817188376 * linearGreen) + (0.6299787005 * linearBlue));
+
+  const lightness = clamp((0.2104542553 * l) + (0.793617785 * m) - (0.0040720468 * s), 0, 1);
+  const a = (1.9779984951 * l) - (2.428592205 * m) + (0.4505937099 * s);
+  const b = (0.0259040371 * l) + (0.7827717662 * m) - (0.808675766 * s);
+  const chroma = Math.hypot(a, b);
+
+  return {
+    alpha: clamp(alpha, 0, 1),
+    chroma: chroma < 0.0001 ? 0 : chroma,
+    hueDegrees: chroma < 0.0001 ? 0 : wrapDegrees(Math.atan2(b, a) * (180 / Math.PI)),
+    lightness,
+  };
+};
+
 const DARK_EDITOR_LUMINANCE = 0.045;
 const LIGHT_EDITOR_LUMINANCE = 0.985;
 const DARK_OUTLINE_RGB = '15, 23, 42';
@@ -387,6 +442,16 @@ export const formatNormalizedOklch = ({ alpha, chroma, hueDegrees, lightness }: 
   const huePart = formatNumber(hueDegrees, 2);
   const alphaPart = alpha < 1 ? ` / ${formatNumber(alpha * 100, 2)}%` : '';
   return `oklch(${lightnessPart} ${chromaPart} ${huePart}${alphaPart})`;
+};
+
+export const formatRgbCss = ({ alpha, blue, green, red }: RgbColor): string => {
+  const base = `rgb(${Math.round(clamp(red, 0, 1) * 255)} ${Math.round(clamp(green, 0, 1) * 255)} ${Math.round(clamp(blue, 0, 1) * 255)})`;
+  return alpha < 1 ? base.replace(')', ` / ${formatNumber(alpha * 100, 2)}%)`) : base;
+};
+
+export const formatHslCss = ({ alpha, hueDegrees, lightness, saturation }: HslColor): string => {
+  const base = `hsl(${formatNumber(hueDegrees, 2)} ${formatNumber(saturation * 100, 2)}% ${formatNumber(lightness * 100, 2)}%)`;
+  return alpha < 1 ? base.replace(')', ` / ${formatNumber(alpha * 100, 2)}%)`) : base;
 };
 
 export const resolveSwatch = (input: string): ResolvedSwatch | null => {
