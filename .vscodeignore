@@ -10,7 +10,9 @@ src/**
 tests/**
 .cursorrules
 .bun-version
+.nojekyll
 .gitignore
+index.html
 .npmrc
 .nvmrc
 .oxlintrc.json
@@ -18,6 +20,7 @@ tests/**
 *.ts
 **/.vscode-test.*
 **/tsconfig.json
+PUBLISHING.md
 bun.lock
 CHANGELOG.md
 screenshot.png

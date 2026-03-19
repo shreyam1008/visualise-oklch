@@ -2,15 +2,15 @@
 
 Low-overhead inline OKLCH swatches for VS Code and Open VSX-compatible editors such as VSCodium, Cursor, and Windsurf.
 
-This repository is a maintained fork of [SwiftlyDaniel/oklch-color-visualiser](https://github.com/SwiftlyDaniel/oklch-color-visualiser). Credit for the original extension idea and initial implementation belongs to SwiftlyDaniel.
+Built and maintained by [Shreyam Adhikari](https://shreyam1008.com.np) ([`shreyam1008`](https://github.com/shreyam1008)).
 
 Live site: [shreyam1008.github.io/visualise-oklch](https://shreyam1008.github.io/visualise-oklch/)
 
 Open VSX: [shreyam1008.visualise-oklch](https://open-vsx.org/extension/shreyam1008/visualise-oklch)
 
-## Why this fork exists
+## Why this exists
 
-The original project was small and useful, but it had stopped moving. This fork rebuilds the core around a lighter decoration strategy, modern TypeScript validation, and a proper test/release pipeline.
+Visualise OKLCH focuses on one job: render OKLCH inline previews with almost no editor overhead while staying small, modern, and easy to maintain. The current codebase is built around pooled decorations, bounded scanning, fast Bun-based verification, and a simple release pipeline.
 
 ## Highlights
 
@@ -57,7 +57,7 @@ The repo has a real `tests/` folder and is meant to be teachable to maintainers.
 - `bun run coverage` prints source coverage for the extension logic.
 - `bun run verify` is the full gate: lint, `tsgo`, `tsc`, tests, and production bundle.
 
-If you want to inspect or extend test cases, start in [tests/color.test.ts](/vsk/PM/visualise-oklch/tests/color.test.ts), [tests/integration.test.ts](/vsk/PM/visualise-oklch/tests/integration.test.ts), and [tests/docs.test.ts](/vsk/PM/visualise-oklch/tests/docs.test.ts).
+If you want to inspect or extend test cases, start in [`tests/color.test.ts`](https://github.com/shreyam1008/visualise-oklch/blob/main/tests/color.test.ts), [`tests/integration.test.ts`](https://github.com/shreyam1008/visualise-oklch/blob/main/tests/integration.test.ts), and [`tests/docs.test.ts`](https://github.com/shreyam1008/visualise-oklch/blob/main/tests/docs.test.ts).
 
 ## Settings
 
@@ -80,6 +80,12 @@ This repo uses Changesets for version PRs and release bookkeeping.
 For Open VSX publishing, the registry is [open-vsx.org](https://open-vsx.org/). You need an Open VSX namespace matching your chosen publisher plus an `OVSX_PAT` secret in GitHub Actions.
 
 For VS Code Marketplace publishing, add a `VSCE_PAT` secret. Without that token, the repo can still package the VSIX and publish to Open VSX.
+
+For the exact listing/icon/site refresh workflow, see [PUBLISHING.md](https://github.com/shreyam1008/visualise-oklch/blob/main/PUBLISHING.md).
+
+## Credit
+
+Visualise OKLCH builds on the original idea introduced in [SwiftlyDaniel/oklch-color-visualiser](https://github.com/SwiftlyDaniel/oklch-color-visualiser). That original project is credited here and in the site footer, while this repository continues the implementation, release flow, docs, and maintenance under `shreyam1008`.
 
 ## License
 

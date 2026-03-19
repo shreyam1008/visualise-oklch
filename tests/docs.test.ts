@@ -23,6 +23,7 @@ describe('docs site', () => {
     expect(indexHtml).toContain('Visualise OKLCH');
     expect(indexHtml).toContain('Open VSX');
     expect(indexHtml).toContain('google-site-verification');
+    expect(indexHtml).toContain('Shreyam Adhikari');
     expect(indexHtml).toContain('"@type": "SoftwareApplication"');
     expect(indexHtml).toContain('name="description"');
     expect(indexHtml).toContain('property="og:image"');
@@ -40,7 +41,9 @@ describe('docs site', () => {
   test('keeps attribution compact in the footer', () => {
     expect(indexHtml).toContain('shreyam1008.com.np');
     expect(indexHtml).toContain('SwiftlyDaniel/oklch-color-visualiser');
+    expect(indexHtml).toContain('Original idea credit:');
     expect(indexHtml).not.toContain('section class="section credit-section"');
+    expect(indexHtml).not.toContain('maintained fork of SwiftlyDaniel');
   });
 
   test('routes the repo root to the interactive docs site', () => {
