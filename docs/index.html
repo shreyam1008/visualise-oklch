@@ -49,7 +49,7 @@
         "name": "Visualise OKLCH",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Cross-platform",
-        "softwareVersion": "2.0.3",
+        "softwareVersion": "2.0.4",
         "author": {
           "@type": "Person",
           "name": "Shreyam Adhikari",
@@ -115,6 +115,7 @@
           </div>
           <ul class="pill-row">
             <li>Open VSX published</li>
+            <li>Native picker editing</li>
             <li>TypeScript 6 RC</li>
             <li>`tsgo` verified</li>
             <li>54.94 KB VSIX</li>
@@ -172,7 +173,8 @@
           <h2>Slide the channels. Watch one color become many useful formats.</h2>
           <p>
             OKLCH separates perceptual lightness, chroma, hue, and alpha. This makes it easier to tune tokens with
-            intent instead of wrestling with HSL saturation/lightness quirks.
+            intent instead of wrestling with HSL saturation/lightness quirks. In the extension, the editor's native
+            color picker can write the result back as OKLCH first, with hex/rgb/hsl fallbacks.
           </p>
         </div>
 
@@ -298,6 +300,13 @@
 
         <div class="feature-grid">
           <article class="feature-card">
+            <h3>Native color editing</h3>
+            <p>
+              Hover or click the editor color decorator to open the built-in picker, then write the selected color back
+              as normalized OKLCH or switch to hex, rgb, and hsl presentations.
+            </p>
+          </article>
+          <article class="feature-card">
             <h3>Readable CSS</h3>
             <p>
               OKLCH reads like design intent. Lightness, chroma, hue, alpha. The channels map cleanly to how people
@@ -383,7 +392,7 @@ bun run coverage
 bun run package</code></pre>
             <p>
               Tests cover parsing, scanning, docs/package metadata, range strategy, and integration fixtures under the
-              `tests/` folder.
+              `tests/` folder, including the native picker helper paths and OKLCH presentation formatting.
             </p>
           </article>
           <article class="panel command-panel">

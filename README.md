@@ -17,6 +17,7 @@ Visualise OKLCH focuses on one job: render OKLCH inline previews with almost no 
 - Shared decoration types per unique swatch instead of per-match allocation.
 - Auto strategy for large files: full scans for smaller documents, padded visible-range scans for bigger ones.
 - Zero runtime color dependency in the extension bundle.
+- Native editor color picker support with OKLCH-first write-back plus hex, rgb, and hsl presentation options.
 - Typechecked with `typescript@rc` and the native preview `tsgo` path side-by-side.
 - Tested with fixture-driven unit coverage for parsing, scanning, and integration cases.
 - Ready for both VS Code Marketplace and [Open VSX](https://open-vsx.org/).
@@ -28,6 +29,14 @@ Visualise OKLCH focuses on one job: render OKLCH inline previews with almost no 
 - Cursor
 - Windsurf
 - Open VSX consumers that support standard VS Code extensions
+
+## Editing colors
+
+Hover or click the editor color decorator on an OKLCH literal to open the native color picker.
+
+- The first write-back option stays in normalized `oklch(...)`.
+- Traditional `hex`, `rgb(...)`, and `hsl(...)` presentations are also offered.
+- Choosing a presentation writes the selected color directly back into your document.
 
 ## Development
 

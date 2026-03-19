@@ -22,6 +22,7 @@ describe('docs site', () => {
     expect(indexHtml).toContain('https://shreyam1008.github.io/visualise-oklch/');
     expect(indexHtml).toContain('Visualise OKLCH');
     expect(indexHtml).toContain('Open VSX');
+    expect(indexHtml).toContain('Native picker editing');
     expect(indexHtml).toContain('google-site-verification');
     expect(indexHtml).toContain('Shreyam Adhikari');
     expect(indexHtml).toContain('"@type": "SoftwareApplication"');
@@ -36,6 +37,7 @@ describe('docs site', () => {
     expect(indexHtml).toContain('data-oklch-ramp');
     expect(indexHtml).toContain('data-hsl-ramp');
     expect(indexHtml).toContain('data-token-cloud');
+    expect(indexHtml).toContain('built-in picker');
   });
 
   test('keeps attribution compact in the footer', () => {

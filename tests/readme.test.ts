@@ -13,6 +13,8 @@ describe('README listing copy', () => {
 
   test('keeps credit present without leading the page', () => {
     expect(readme).toContain('## Credit');
+    expect(readme).toContain('## Editing colors');
+    expect(readme).toContain('native color picker');
     expect(readme).toContain('SwiftlyDaniel/oklch-color-visualiser');
     expect(readme).not.toContain('This repository is a maintained fork');
   });

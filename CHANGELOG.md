@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.4
+
+- Added native editor color picker support for OKLCH literals with OKLCH-first, hex, rgb, and hsl write-back presentations.
+- Documented the picker workflow in the README and public site.
+- Published the updated package so Open VSX reflects the new editing capability.
+
 ## 2.0.3
 
 - Refined the public-facing copy so the extension, docs, and listing read as the actively maintained Visualise OKLCH project.
