@@ -1,0 +1,38 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "categories": {
+    "correctness": "error",
+    "pedantic": "warn",
+    "suspicious": "error"
+  },
+  "env": {
+    "node": true
+  },
+  "ignorePatterns": [
+    "coverage/**",
+    "dist/**",
+    "docs/**",
+    "node_modules/**",
+    "*.vsix"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "**/*.ts"
+      ],
+      "plugins": [
+        "typescript",
+        "oxc",
+        "unicorn"
+      ],
+      "rules": {
+        "max-classes-per-file": "off",
+        "max-lines": "off",
+        "max-lines-per-function": "off",
+        "typescript/no-explicit-any": "error",
+        "unicorn/consistent-function-scoping": "off",
+        "unicorn/no-array-reduce": "off"
+      }
+    }
+  ]
+}
