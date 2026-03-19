@@ -22,6 +22,7 @@ describe('docs site', () => {
     expect(indexHtml).toContain('https://shreyam1008.github.io/visualise-oklch/');
     expect(indexHtml).toContain('Visualise OKLCH');
     expect(indexHtml).toContain('Open VSX');
+    expect(indexHtml).toContain('google-site-verification');
     expect(indexHtml).toContain('"@type": "SoftwareApplication"');
     expect(indexHtml).toContain('name="description"');
     expect(indexHtml).toContain('property="og:image"');
@@ -34,6 +35,12 @@ describe('docs site', () => {
     expect(indexHtml).toContain('data-oklch-ramp');
     expect(indexHtml).toContain('data-hsl-ramp');
     expect(indexHtml).toContain('data-token-cloud');
+  });
+
+  test('keeps attribution compact in the footer', () => {
+    expect(indexHtml).toContain('shreyam1008.com.np');
+    expect(indexHtml).toContain('SwiftlyDaniel/oklch-color-visualiser');
+    expect(indexHtml).not.toContain('section class="section credit-section"');
   });
 
   test('routes the repo root to the interactive docs site', () => {
