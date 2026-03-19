@@ -3,10 +3,13 @@ import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const docsRoot = resolve(import.meta.dir, '..', 'docs');
+const repoRoot = resolve(import.meta.dir, '..');
 const indexHtml = readFileSync(resolve(docsRoot, 'index.html'), 'utf8');
+const rootIndexHtml = readFileSync(resolve(repoRoot, 'index.html'), 'utf8');
 
 describe('docs site', () => {
   test('ships essential crawler assets', () => {
+    expect(existsSync(resolve(repoRoot, '.nojekyll'))).toBe(true);
     expect(existsSync(resolve(docsRoot, '.nojekyll'))).toBe(true);
     expect(existsSync(resolve(docsRoot, 'logo-mark.svg'))).toBe(true);
     expect(existsSync(resolve(docsRoot, 'robots.txt'))).toBe(true);
@@ -31,5 +34,11 @@ describe('docs site', () => {
     expect(indexHtml).toContain('data-oklch-ramp');
     expect(indexHtml).toContain('data-hsl-ramp');
     expect(indexHtml).toContain('data-token-cloud');
+  });
+
+  test('routes the repo root to the interactive docs site', () => {
+    expect(rootIndexHtml).toContain('window.location.replace("./docs/")');
+    expect(rootIndexHtml).toContain('Open the site');
+    expect(rootIndexHtml).toContain('./docs/logo-mark.svg');
   });
 });

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Visualise OKLCH</title>
+    <meta
+      name="description"
+      content="Visualise OKLCH redirects to the interactive project site for the maintained fork by shreyam1008."
+    />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta name="theme-color" content="#07111e" />
+    <meta http-equiv="refresh" content="0; url=./docs/" />
+    <link rel="canonical" href="https://shreyam1008.github.io/visualise-oklch/" />
+    <link rel="icon" href="./docs/favicon.svg" type="image/svg+xml" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #07111e;
+        --panel: rgba(9, 20, 36, 0.82);
+        --copy: #eef5ff;
+        --copy-dim: #b9c8df;
+        --line: rgba(196, 221, 255, 0.14);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 18% 12%, rgba(255, 112, 81, 0.26), transparent 24%),
+          radial-gradient(circle at 82% 18%, rgba(75, 156, 255, 0.24), transparent 24%),
+          radial-gradient(circle at 50% 100%, rgba(120, 255, 168, 0.12), transparent 28%),
+          linear-gradient(180deg, #07111e 0%, #091424 100%);
+        color: var(--copy);
+        font-family: Sora, system-ui, sans-serif;
+      }
+
+      body::before {
+        content: "oklch(76% 0.204 154)  oklch(62.8% 0.258 29.23)  oklch(78% 0.17 235)";
+        position: fixed;
+        inset: auto 0 10vh;
+        color: rgba(255, 255, 255, 0.07);
+        font: 600 0.9rem/1.5 "IBM Plex Mono", ui-monospace, monospace;
+        text-align: center;
+        letter-spacing: 0.16em;
+        white-space: nowrap;
+        animation: drift 22s linear infinite;
+      }
+
+      .shell {
+        position: relative;
+        width: min(92vw, 42rem);
+        padding: 2rem;
+        border: 1px solid var(--line);
+        border-radius: 1.75rem;
+        background: var(--panel);
+        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(20px);
+        text-align: center;
+      }
+
+      .shell::before,
+      .shell::after {
+        content: "";
+        position: absolute;
+        inset: auto;
+        border-radius: 999px;
+        filter: blur(36px);
+        opacity: 0.72;
+        pointer-events: none;
+      }
+
+      .shell::before {
+        top: -3rem;
+        left: -3rem;
+        width: 7rem;
+        height: 7rem;
+        background: rgba(255, 118, 84, 0.28);
+      }
+
+      .shell::after {
+        right: -2rem;
+        bottom: -2rem;
+        width: 8rem;
+        height: 8rem;
+        background: rgba(98, 163, 255, 0.22);
+      }
+
+      .logo {
+        width: 6rem;
+        height: 6rem;
+        margin: 0 auto 1.25rem;
+        display: block;
+        animation: float 4s ease-in-out infinite;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 3rem);
+        line-height: 1;
+      }
+
+      p {
+        margin: 1rem 0 0;
+        color: var(--copy-dim);
+        font-size: 1rem;
+        line-height: 1.7;
+      }
+
+      .actions {
+        margin-top: 1.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.85rem;
+      }
+
+      a {
+        padding: 0.85rem 1.1rem;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--copy);
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      a.primary {
+        background: linear-gradient(135deg, rgba(255, 112, 81, 0.92), rgba(90, 151, 255, 0.92));
+        border-color: transparent;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+      }
+
+      @keyframes drift {
+        from {
+          transform: translateX(8%);
+        }
+        to {
+          transform: translateX(-8%);
+        }
+      }
+    </style>
+    <script>
+      window.location.replace("./docs/");
+    </script>
+  </head>
+  <body>
+    <main class="shell">
+      <img class="logo" src="./docs/logo-mark.svg" alt="Visualise OKLCH logo" width="96" height="96" />
+      <h1>Interactive OKLCH guide loading.</h1>
+      <p>
+        The redesigned Visualise OKLCH site lives in <code>/docs</code>. This page immediately forwards there so your
+        project URL stops showing the plain GitHub README view.
+      </p>
+      <div class="actions">
+        <a class="primary" href="./docs/">Open the site</a>
+        <a href="https://github.com/shreyam1008/visualise-oklch">GitHub</a>
+        <a href="https://open-vsx.org/extension/shreyam1008/visualise-oklch">Open VSX</a>
+      </div>
+    </main>
+  </body>
+</html>
