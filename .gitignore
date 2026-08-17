@@ -2,5 +2,6 @@ coverage
 dist
 node_modules
 out
+site-dist
 .vscode-test
 *.vsix

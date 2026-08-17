@@ -1,10 +1,12 @@
 # Visualise OKLCH
 
+Public product metadata and release state are recorded in [`product.json`](product.json) and [`docs/distribution-log.md`](docs/distribution-log.md).
+
 Low-overhead inline OKLCH swatches for VS Code and Open VSX-compatible editors such as VSCodium, Cursor, and Windsurf.
 
 Built and maintained by [Shreyam Adhikari](https://shreyam1008.com.np) ([`shreyam1008`](https://github.com/shreyam1008)).
 
-Live site: [shreyam1008.github.io/visualise-oklch](https://shreyam1008.github.io/visualise-oklch/)
+Canonical site (prepared; migration not yet publicly verified): [visualise-oklch.shreyam1008.com.np](https://visualise-oklch.shreyam1008.com.np/)
 
 Open VSX: [shreyam1008.visualise-oklch](https://open-vsx.org/extension/shreyam1008/visualise-oklch)
 
@@ -92,6 +94,8 @@ For Open VSX publishing, the registry is [open-vsx.org](https://open-vsx.org/). 
 For VS Code Marketplace publishing, add a `VSCE_PAT` secret. Without that token, the repo can still package the VSIX and publish to Open VSX.
 
 For the exact listing/icon/site refresh workflow, see [PUBLISHING.md](https://github.com/shreyam1008/visualise-oklch/blob/main/PUBLISHING.md).
+
+Domain migration and public distribution status are tracked in [docs/domain-release.md](docs/domain-release.md) and [docs/distribution-log.md](docs/distribution-log.md).
 
 ## Credit
 
