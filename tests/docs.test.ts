@@ -5,11 +5,9 @@ import { resolve } from 'node:path';
 const docsRoot = resolve(import.meta.dir, '..', 'docs');
 const repoRoot = resolve(import.meta.dir, '..');
 const indexHtml = readFileSync(resolve(docsRoot, 'index.html'), 'utf8');
-const rootIndexHtml = readFileSync(resolve(repoRoot, 'index.html'), 'utf8');
 
 describe('docs site', () => {
   test('ships essential crawler assets', () => {
-    expect(existsSync(resolve(repoRoot, '.nojekyll'))).toBe(true);
     expect(existsSync(resolve(docsRoot, '.nojekyll'))).toBe(true);
     expect(existsSync(resolve(docsRoot, 'logo-mark.svg'))).toBe(true);
     expect(existsSync(resolve(docsRoot, 'robots.txt'))).toBe(true);
@@ -19,7 +17,7 @@ describe('docs site', () => {
   });
 
   test('contains canonical SEO metadata', () => {
-    expect(indexHtml).toContain('https://shreyam1008.github.io/visualise-oklch/');
+    expect(indexHtml).toContain('https://visualise-oklch.shreyam1008.com.np/');
     expect(indexHtml).toContain('Visualise OKLCH');
     expect(indexHtml).toContain('Open VSX');
     expect(indexHtml).toContain('Native picker editing');
@@ -48,9 +46,8 @@ describe('docs site', () => {
     expect(indexHtml).not.toContain('maintained fork of SwiftlyDaniel');
   });
 
-  test('routes the repo root to the interactive docs site', () => {
-    expect(rootIndexHtml).toContain('window.location.replace("./docs/")');
-    expect(rootIndexHtml).toContain('Open the site');
-    expect(rootIndexHtml).toContain('./docs/logo-mark.svg');
+  test('uses docs as the Pages root without a JavaScript redirect', () => {
+    expect(existsSync(resolve(repoRoot, 'index.html'))).toBe(false);
+    expect(indexHtml).not.toContain('window.location.replace');
   });
 });

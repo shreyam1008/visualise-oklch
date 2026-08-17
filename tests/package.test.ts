@@ -38,7 +38,7 @@ describe('package metadata', () => {
     expect(packageJson.author?.name).toBe('Shreyam Adhikari');
     expect(packageJson.author?.url).toBe('https://shreyam1008.com.np');
     expect(packageJson.description).toContain('native color picker');
-    expect(packageJson.homepage).toBe('https://shreyam1008.github.io/visualise-oklch/');
+    expect(packageJson.homepage).toBe('https://visualise-oklch.shreyam1008.com.np/');
     expect(packageJson.keywords).toContain('picker');
     expect(packageJson.version).toBe('2.0.5');
   });

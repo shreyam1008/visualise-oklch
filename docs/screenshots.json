@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "screenshots": [
+    {
+      "path": "screenshot.png",
+      "alt": "Visualise OKLCH color controls displayed inside Visual Studio Code",
+      "platform": "Visual Studio Code",
+      "capturedVersion": "pre-2.0.5",
+      "capturedAt": "2025-04-19",
+      "workflow": "Open the extension against a public sample stylesheet, capture only the editor and picker, and verify that no private workspace data is visible. Re-capture for the next release."
+    }
+  ]
+}

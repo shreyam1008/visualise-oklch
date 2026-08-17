@@ -1,9 +1,6 @@
 name: Publish Extension
 
 on:
-  push:
-    tags:
-      - "v*"
   release:
     types:
       - published
@@ -15,6 +12,12 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    concurrency:
+      group: publish-${{ github.event.release.tag_name || github.sha }}
+      cancel-in-progress: false
+    env:
+      OVSX_PAT: ${{ secrets.OVSX_PAT }}
+      VSCE_PAT: ${{ secrets.VSCE_PAT }}
 
     steps:
       - name: Checkout repository
@@ -35,6 +38,17 @@ jobs:
         id: version
         run: echo "value=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
 
+      - name: Verify release tag matches package version
+        if: github.event_name == 'release'
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          PACKAGE_VERSION: ${{ steps.version.outputs.value }}
+        run: |
+          test "$RELEASE_TAG" = "v$PACKAGE_VERSION" || {
+            echo "Release tag $RELEASE_TAG does not match package version v$PACKAGE_VERSION" >&2
+            exit 1
+          }
+
       - name: Package extension
         run: bunx @vscode/vsce package --no-dependencies --out visualise-oklch-${{ steps.version.outputs.value }}.vsix
 
@@ -51,13 +65,9 @@ jobs:
           files: visualise-oklch-${{ steps.version.outputs.value }}.vsix
 
       - name: Publish to VS Code Marketplace
-        if: ${{ secrets.VSCE_PAT != '' }}
+        if: github.event_name == 'release' && env.VSCE_PAT != ''
         run: bun run publish:marketplace
-        env:
-          VSCE_PAT: ${{ secrets.VSCE_PAT }}
 
       - name: Publish to Open VSX Registry
-        if: ${{ secrets.OVSX_PAT != '' }}
+        if: github.event_name == 'release' && env.OVSX_PAT != ''
         run: bun run publish:openvsx
-        env:
-          OVSX_PAT: ${{ secrets.OVSX_PAT }}

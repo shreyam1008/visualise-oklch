@@ -2,7 +2,7 @@
   "name": "Visualise OKLCH",
   "short_name": "OKLCH",
   "description": "Interactive OKLCH guide and extension project site by shreyam1008.",
-  "start_url": "/visualise-oklch/",
+  "start_url": "https://visualise-oklch.shreyam1008.com.np/",
   "display": "standalone",
   "background_color": "#07111e",
   "theme_color": "#07111e",

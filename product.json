@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "slug": "visualise-oklch",
+  "name": "Visualise OKLCH",
+  "summary": "A VS Code extension for visualizing and editing OKLCH colors with a native color-picker workflow.",
+  "visibility": "public",
+  "portfolioApproved": true,
+  "lifecycle": "released",
+  "repository": "https://github.com/shreyam1008/visualise-oklch",
+  "canonicalUrl": "https://visualise-oklch.shreyam1008.com.np/",
+  "creatorUrl": "https://shreyam1008.com.np/me",
+  "versionSource": "package.json",
+  "verifyCommand": "bun install --frozen-lockfile && bun run verify && bun run build:site",
+  "changelog": "CHANGELOG.md",
+  "securityPolicy": "SECURITY.md",
+  "installDocs": "README.md",
+  "rollbackDocs": "PUBLISHING.md",
+  "screenshotManifest": "docs/screenshots.json",
+  "distributions": [
+    {
+      "channel": "Product website",
+      "status": "prepared",
+      "url": "https://visualise-oklch.shreyam1008.com.np/",
+      "version": "2.0.5"
+    },
+    {
+      "channel": "Git tag",
+      "status": "live",
+      "url": "https://github.com/shreyam1008/visualise-oklch/releases/tag/v2.0.5",
+      "version": "2.0.5",
+      "verifiedAt": "2026-08-17"
+    },
+    {
+      "channel": "Open VSX",
+      "status": "live",
+      "url": "https://open-vsx.org/extension/shreyam1008/visualise-oklch",
+      "version": "2.0.5",
+      "verifiedAt": "2026-08-17"
+    },
+    {
+      "channel": "Visual Studio Marketplace",
+      "status": "planned",
+      "version": "2.0.5"
+    }
+  ]
+}
