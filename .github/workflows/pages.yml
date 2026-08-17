@@ -32,7 +32,9 @@ jobs:
         uses: actions/configure-pages@v6
 
       - name: Build root Pages artifact
-        run: node scripts/prepare-pages.mjs "${{ steps.pages.outputs.base_url }}"
+        # configure-pages temporarily reports http:// during custom-domain TLS
+        # provisioning; the site's canonical destination remains HTTPS.
+        run: node scripts/prepare-pages.mjs "https://visualise-oklch.shreyam1008.com.np"
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5
