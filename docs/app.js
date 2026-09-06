@@ -218,11 +218,11 @@ const tipFor = ({ chroma, lightness }) => {
   }
 
   if (lightness > 0.82) {
-    return 'High OKLCH lightness keeps bright colors readable while making the brightness move feel more perceptually even than HSL.';
+    return 'Try reducing chroma for a pale surface. High lightness does not guarantee readable text: check contrast against the actual background.';
   }
 
   if (lightness < 0.38) {
-    return 'Dark OKLCH colors tend to hold character better than HSL darks, which often collapse into muddy or oversaturated results.';
+    return 'Try a low-chroma dark tone for text or a dark surface. Very dark colors have less room for chroma within sRGB.';
   }
 
   return 'This is the OKLCH sweet spot: tweak lightness for perceived brightness, then tune chroma for intensity without rewriting the entire color.';
@@ -291,6 +291,7 @@ const renderRamps = (hslBase) => {
 const updatePresetButtons = (activeKey) => {
   presetButtons.forEach((button) => {
     button.classList.toggle('is-active', button.dataset.preset === activeKey);
+    button.setAttribute('aria-pressed', String(button.dataset.preset === activeKey));
   });
 };
 
@@ -348,6 +349,20 @@ const applyState = () => {
   selectors.hue.textContent = `${format(state.hue, 2)}deg`;
   selectors.alpha.textContent = `${format(state.alpha, 0)}%`;
   selectors.tip.textContent = tipFor(normalized);
+
+  document.querySelectorAll('[data-formula]').forEach((element) => {
+    element.textContent = selectors[element.dataset.formula].textContent;
+  });
+  document.querySelector('[data-gamut-note]').textContent = inGamut(oklchToLinear(normalized))
+    ? 'Within sRGB. HEX, RGB and HSL are rounded representations of this color.'
+    : 'Outside sRGB. HEX, RGB and HSL reduce chroma to fit sRGB while keeping lightness and hue. Your browser’s OKLCH preview may differ.';
+  document.querySelectorAll('[data-lesson-ramp]').forEach((ramp) => {
+    const channel = ramp.dataset.lessonRamp;
+    const maximum = { lightness: 1, chroma: 0.3, hue: 360 }[channel];
+    const stops = Array.from({ length: 25 }, (_, index) =>
+      rgbString(oklchToSrgb({ ...normalized, alpha: 1, [channel]: maximum * index / 24 })));
+    ramp.style.background = `linear-gradient(to right, ${stops.join(', ')})`;
+  });
 
   renderRamps(hsl);
 };
@@ -407,6 +422,7 @@ controls.forEach((input) => {
     }
 
     updatePresetButtons('');
+    state.name = 'Your custom color';
     scheduleApplyState();
   });
 });

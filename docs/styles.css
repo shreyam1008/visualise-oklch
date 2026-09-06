@@ -244,12 +244,10 @@ input {
 .hero,
 .section {
   position: relative;
+  scroll-margin-top: 6rem;
 }
 
-.section {
-  content-visibility: auto;
-  contain-intrinsic-size: 920px;
-}
+.hero > *, .ship-grid > *, .playground-grid > * { min-width: 0; }
 
 .hero {
   display: grid;
@@ -596,6 +594,21 @@ input {
   max-width: 58rem;
   margin-bottom: 1.6rem;
 }
+
+.color-anatomy { padding: clamp(1rem, 3vw, 2rem); margin-bottom: 1rem; }
+.formula { display: flex; flex-wrap: wrap; align-items: start; gap: clamp(0.7rem, 2vw, 1.7rem); padding: 1.5rem 0 2rem; }
+.formula code { font-size: clamp(1.05rem, 3vw, 2rem); color: #d4f7ec; }
+.formula > div { display: grid; gap: 0.5rem; }
+.formula span, .ramp-labels { font-size: 0.8rem; color: var(--copy-dim); }
+.channel-lessons { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
+.channel-lessons h3 { font-size: 1rem; margin: 0; }
+.channel-lessons h3 b { display: inline-grid; place-items: center; width: 2rem; height: 2rem; margin-right: 0.35rem; border: 1px solid var(--line); border-radius: 0.6rem; color: #d4f7ec; }
+.channel-lessons p, .lesson-note, .gamut-note { color: var(--copy-dim); line-height: 1.7; font-size: 0.92rem; }
+.channel-ramp { height: 3.5rem; border-radius: 0.75rem; border: 1px solid var(--line); }
+.ramp-labels { display: flex; justify-content: space-between; margin-top: 0.5rem; }
+.lesson-note a, .command-panel p a { text-decoration: underline; text-underline-offset: 3px; }
+.gamut-note { border-left: 2px solid #b4ddc9; padding-left: 0.8rem; }
+@media (max-width: 760px) { .channel-lessons { grid-template-columns: 1fr; } }
 
 .playground-grid {
   display: grid;
@@ -992,6 +1005,7 @@ input {
 
   .hero-stage {
     min-height: 32rem;
+    overflow: clip;
   }
 
   .hero-logo {

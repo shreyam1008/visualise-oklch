@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Visualise OKLCH | Interactive OKLCH Color Guide for VS Code, Cursor, Windsurf, and Open VSX</title>
+    <title>Visualise OKLCH — Color Playground &amp; VS Code Extension</title>
     <meta
       name="description"
-      content="Visualise OKLCH is a lightweight open-source extension by shreyam1008 that previews OKLCH colors inline in VS Code, Cursor, Windsurf, VSCodium, and Open VSX-compatible editors."
+      content="Learn OKLCH lightness, chroma and hue with live color ramps. Build CSS palettes and install Visualise OKLCH for inline color previews in VS Code and Open VSX editors."
     />
     <meta
       name="keywords"
@@ -93,6 +93,7 @@
       </a>
       <nav class="nav">
         <a href="#playground">Playground</a>
+        <a href="#install">Install &amp; Use</a>
         <a href="#why">Why It Wins</a>
         <a href="#engine">Behind The Scenes</a>
         <a href="#ship">Ship It</a>
@@ -173,11 +174,43 @@
           <p class="eyebrow">Interactive Playground</p>
           <h2>Slide the channels. Watch one color become many useful formats.</h2>
           <p>
-            OKLCH separates perceptual lightness, chroma, hue, and alpha. This makes it easier to tune tokens with
-            intent instead of wrestling with HSL saturation/lightness quirks. In the extension, the editor's native
-            color picker can write the result back as OKLCH first, with hex/rgb/hsl fallbacks, and the extension
-            defers to the built-in decorator path so the swatch only appears once.
+            Read it as lightness, colorfulness, and an angle around the color wheel. The “OK” comes from Oklab,
+            the perceptual color space behind OKLCH. Change one channel below and see what stays the same.
           </p>
+        </div>
+
+        <div class="color-anatomy panel">
+          <p class="panel-kicker">Anatomy of your color</p>
+          <div class="formula" aria-label="OKLCH channels">
+            <code>oklch(</code>
+            <div><code data-formula="lightness">62.8%</code><span>L · lightness</span></div>
+            <div><code data-formula="chroma">0.258</code><span>C · chroma</span></div>
+            <div><code data-formula="hue">29.23</code><span>H · hue</span></div>
+            <code>/</code><div><code data-formula="alpha">100%</code><span>opacity · optional</span></div>
+            <code>)</code>
+          </div>
+          <div class="channel-lessons">
+            <article>
+              <h3><b>L</b> From dark to light</h3>
+              <p>0% is black; 100% is white. In between, L describes perceived lightness. Try it for a theme’s tonal steps.</p>
+              <div class="channel-ramp" data-lesson-ramp="lightness" aria-hidden="true"></div>
+              <div class="ramp-labels"><span>0% · dark</span><span>100% · light</span></div>
+            </article>
+            <article>
+              <h3><b>C</b> From neutral to vivid</h3>
+              <p>0 removes the color, leaving gray. Increase C to add colorfulness. The displayable limit depends on L and H.</p>
+              <div class="channel-ramp" data-lesson-ramp="chroma" aria-hidden="true"></div>
+              <div class="ramp-labels"><span>0 · neutral</span><span>0.3 · vivid</span></div>
+            </article>
+            <article>
+              <h3><b>H</b> Around the color wheel</h3>
+              <p>Hue is an angle: 0° and 360° meet. Rotate it to explore color families. At C = 0, hue has no visible effect.</p>
+              <div class="channel-ramp" data-lesson-ramp="hue" aria-hidden="true"></div>
+              <div class="ramp-labels"><span>0°</span><span>180°</span><span>360°</span></div>
+            </article>
+          </div>
+          <p class="lesson-note">Each ramp varies only its named channel before conversion, holding the others at your selected values. Ramps are opaque sRGB previews; chroma is reduced where needed to fit. Alpha controls transparency: 0% is invisible, 100% is opaque.</p>
+          <p class="lesson-note">Explore further: <a href="https://oklch.com/">OKLCH.com’s graphs and gamut tools</a> · <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/color_value/oklch">MDN’s CSS reference</a>.</p>
         </div>
 
         <div class="playground-grid">
@@ -207,10 +240,11 @@
                 <code data-output-rgb>rgb(255 0 0)</code>
               </article>
               <article class="format-card">
-                <span>HSL Equivalent</span>
+                <span>HSL (sRGB)</span>
                 <code data-output-hsl>hsl(0 100% 50%)</code>
               </article>
             </div>
+            <p class="gamut-note" data-gamut-note></p>
             <div class="code-block">
               <p>CSS snippet</p>
               <pre><code data-output-css>:root {
@@ -229,31 +263,31 @@
             </div>
 
             <label class="control">
-              <span>Lightness</span>
+              <span>L · Lightness — dark to light</span>
               <strong data-lightness-value>62.8%</strong>
               <input data-channel="lightness" type="range" min="0" max="100" step="0.1" value="62.8" />
             </label>
 
             <label class="control">
-              <span>Chroma</span>
+              <span>C · Chroma — neutral to vivid</span>
               <strong data-chroma-value>0.258</strong>
               <input data-channel="chroma" type="range" min="0" max="0.37" step="0.001" value="0.258" />
             </label>
 
             <label class="control">
-              <span>Hue</span>
+              <span>H · Hue — angle around the wheel</span>
               <strong data-hue-value>29.23deg</strong>
               <input data-channel="hue" type="range" min="0" max="360" step="0.01" value="29.23" />
             </label>
 
             <label class="control">
-              <span>Alpha</span>
+              <span>Alpha · Opacity — transparent to solid</span>
               <strong data-alpha-value>100%</strong>
               <input data-channel="alpha" type="range" min="0" max="100" step="1" value="100" />
             </label>
 
             <div class="tip-card">
-              <p class="panel-kicker">Why this feels better</p>
+              <p class="panel-kicker">Try this with your color</p>
               <p data-live-tip>
                 Raising OKLCH lightness moves brightness more evenly than HSL lightness, which often shifts perceived
                 saturation at the same time.
@@ -289,7 +323,7 @@
 
         <div class="equivalent-row panel">
           <div>
-            <p class="panel-kicker">Equivalent color writing</p>
+            <p class="panel-kicker">Color formats &amp; sRGB fallbacks</p>
             <h3>One modern source, many legacy outputs.</h3>
           </div>
           <div class="equivalent-codes">
@@ -330,6 +364,38 @@
             </p>
           </article>
         </div>
+      </section>
+
+      <section id="install" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">From playground to editor</p>
+          <h2>Make your next color change in context.</h2>
+          <p>Use the playground without installing anything. Add the extension when you want inline previews and the built-in picker while editing CSS.</p>
+        </div>
+        <div class="ship-grid">
+          <article class="panel command-panel">
+            <h3>1. Install Visualise OKLCH</h3>
+            <p>In VS Code’s Extensions view, search for <strong>Visualise OKLCH</strong> by <strong>shreyam1008</strong>, or run:</p>
+            <pre><code>code --install-extension shreyam1008.visualise-oklch</code></pre>
+            <p>Using an Open VSX editor such as VSCodium? Install from the <a href="https://open-vsx.org/extension/shreyam1008/visualise-oklch">Open VSX listing</a>. For VS Code, use the <a href="https://marketplace.visualstudio.com/items?itemName=shreyam1008.visualise-oklch">Marketplace listing</a>.</p>
+          </article>
+          <article class="panel command-panel">
+            <h3>2. Try a small CSS palette</h3>
+            <pre><code>:root {
+  --surface: oklch(96% 0.015 255);
+  --accent:  oklch(60% 0.16 255);
+  --ink:     oklch(25% 0.03 255);
+}
+
+.card {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--accent);
+}</code></pre>
+            <p>Paste into a CSS file, then hover the color swatch to open the picker. Keep H at 255 for a shared color family; adjust L for tone and C for a quieter surface or stronger accent.</p>
+          </article>
+        </div>
+        <p class="lesson-note">Check text contrast against its actual background before shipping. OKLCH lightness alone does not guarantee accessible contrast; transparency and gamut mapping also affect the rendered result.</p>
       </section>
 
       <section id="engine" class="section">
