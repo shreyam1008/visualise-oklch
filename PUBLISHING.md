@@ -41,6 +41,8 @@ git push origin vX.Y.Z
 
 Publishing the GitHub release triggers the registry workflow once. It verifies that the release tag exactly matches `package.json`, packages the VSIX, attaches it to the release, and publishes only to registries whose repository token is configured. A manual workflow run packages an artifact but does not publish to either registry.
 
+The `shreyam1008` Visual Studio Marketplace publisher is now created. The signed-in web dashboard can upload `visualise-oklch-2.0.5.vsix` directly; the unattended alternative is to create a Marketplace PAT and store it as the repository `VSCE_PAT` secret. Never commit or paste that token into source or chat.
+
 ## Rollback
 
 - A published extension version is immutable. Fix a bad release with a new patch version; do not reuse its tag or overwrite its VSIX.
