@@ -10,6 +10,10 @@ Canonical site (live; verified 6 September 2026 UTC): [visualise-oklch.shreyam10
 
 Open VSX: [shreyam1008.visualise-oklch](https://open-vsx.org/extension/shreyam1008/visualise-oklch)
 
+VS Code Marketplace: [Install Visualise OKLCH](https://marketplace.visualstudio.com/items?itemName=shreyam1008.visualise-oklch)
+
+All install links and publication status: [distribution tracker](https://shreyam1008.com.np/projects/#distribution-visualise-oklch).
+
 ## Why this exists
 
 Visualise OKLCH focuses on one job: render OKLCH inline previews with almost no editor overhead while staying small, modern, and easy to maintain. The current codebase is built around pooled decorations, bounded scanning, fast Bun-based verification, and a simple release pipeline.

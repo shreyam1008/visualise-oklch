@@ -40,9 +40,10 @@
     },
     {
       "channel": "Visual Studio Marketplace",
-      "status": "prepared",
+      "status": "live",
       "url": "https://marketplace.visualstudio.com/items?itemName=shreyam1008.visualise-oklch",
-      "version": "2.0.5"
+      "version": "2.0.5",
+      "verifiedAt": "2026-09-06"
     }
   ]
 }
