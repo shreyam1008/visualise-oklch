@@ -6,7 +6,7 @@
 | --- | --- | --- | --- |
 | dbterm | `https://dbterm.shreyam1008.com.np/` | `gh-pages` (site plus APT metadata) | **Live** |
 | GoBarryGo | `https://gobarrygo.shreyam1008.com.np/` | GitHub Actions | **Prepared; deployment and public checks pending** |
-| Visualise OKLCH | `https://visualise-oklch.shreyam1008.com.np/` | GitHub Actions | **Prepared; deployment and public checks pending** |
+| Visualise OKLCH | `https://visualise-oklch.shreyam1008.com.np/` | GitHub Actions | **Live; verified 6 September 2026 UTC** |
 | shre-skills | `https://skills.shreyam1008.com.np/` | GitHub Actions | **Prepared; deployment and public checks pending** |
 
 ## Contract

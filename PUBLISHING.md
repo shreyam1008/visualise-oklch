@@ -54,4 +54,4 @@ The `shreyam1008` Visual Studio Marketplace publisher is now created. The signed
 - Open VSX listing refreshes only when a new extension version is published.
 - If the icon on Open VSX still looks old, check that `package.json` points to `icon.png`, then publish a new version.
 - GitHub Pages deploys automatically from `main`.
-- The custom domain is **prepared, not publicly verified** until the checks in `docs/domain-release.md` pass.
+- The custom domain is **live; verified 6 September 2026 UTC**. Re-run the checks in `docs/domain-release.md` after any Pages or DNS change.

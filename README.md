@@ -6,7 +6,7 @@ Low-overhead inline OKLCH swatches for VS Code and Open VSX-compatible editors s
 
 Built and maintained by [Shreyam Adhikari](https://shreyam1008.com.np) ([`shreyam1008`](https://github.com/shreyam1008)).
 
-Canonical site (prepared; migration not yet publicly verified): [visualise-oklch.shreyam1008.com.np](https://visualise-oklch.shreyam1008.com.np/)
+Canonical site (live; verified 6 September 2026 UTC): [visualise-oklch.shreyam1008.com.np](https://visualise-oklch.shreyam1008.com.np/)
 
 Open VSX: [shreyam1008.visualise-oklch](https://open-vsx.org/extension/shreyam1008/visualise-oklch)
 
