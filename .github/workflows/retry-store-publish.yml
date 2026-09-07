@@ -1,0 +1,82 @@
+name: Publish Released VSIX to Store
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing published release tag (for example v2.1.0)
+        required: true
+        type: string
+      registry:
+        description: Store to publish or retry
+        required: true
+        type: choice
+        options:
+          - marketplace
+          - openvsx
+
+permissions:
+  contents: read
+
+concurrency:
+  group: store-${{ inputs.registry }}-${{ inputs.release_tag }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check publishing authentication
+        env:
+          PUBLISH_TOKEN: ${{ secrets[inputs.registry == 'marketplace' && 'VSCE_PAT' || 'OVSX_PAT'] }}
+        run: |
+          if [ -z "$PUBLISH_TOKEN" ]; then
+            echo '::error::Store publishing authentication is missing. No store update was attempted.'
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - run: bun install --frozen-lockfile
+
+      - name: Download and verify the existing release asset
+        id: asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+          REPOSITORY: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo 'Expected a stable vX.Y.Z tag'; exit 1; }
+          version="${RELEASE_TAG#v}"
+          asset="visualise-oklch-$version.vsix"
+          gh api "repos/$REPOSITORY/releases/tags/$RELEASE_TAG" > release.json
+          jq -e '.draft == false and .prerelease == false' release.json > /dev/null
+          digest="$(jq -er --arg name "$asset" '.assets[] | select(.name == $name) | .digest' release.json)"
+          [[ "$digest" =~ ^sha256:[0-9a-f]{64}$ ]] || { echo 'Release asset has no verifiable SHA-256 digest'; exit 1; }
+          gh release download "$RELEASE_TAG" --repo "$REPOSITORY" --pattern "$asset"
+          printf '%s  %s\n' "${digest#sha256:}" "$asset" | sha256sum --check -
+          unzip -p "$asset" extension/package.json | jq -e --arg version "$version" '.name == "visualise-oklch" and .publisher == "shreyam1008" and .version == $version' > /dev/null
+          printf 'path=%s\n' "$asset" >> "$GITHUB_OUTPUT"
+
+      - name: Publish exact VSIX to Marketplace
+        if: inputs.registry == 'marketplace'
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: bunx @vscode/vsce publish --packagePath "${{ steps.asset.outputs.path }}" --skip-duplicate
+
+      - name: Publish exact VSIX to Open VSX
+        if: inputs.registry == 'openvsx'
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        run: bunx ovsx publish "${{ steps.asset.outputs.path }}" --skip-duplicate
+
+      - name: Record publication submission
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+          REGISTRY: ${{ inputs.registry }}
+        run: |
+          printf 'Submitted verified %s VSIX to %s (or version already exists). Check the public listing after registry validation.\n' "$RELEASE_TAG" "$REGISTRY" >> "$GITHUB_STEP_SUMMARY"

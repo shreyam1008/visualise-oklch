@@ -58,6 +58,8 @@ The `shreyam1008` Visual Studio Marketplace publisher exists. The signed-in web 
 - The custom domain is **live; verified 6 September 2026 UTC**. Re-run the checks in `docs/domain-release.md` after any Pages or DNS change.
 # Authentication audit — 7 September 2026
 
+To finish or retry an already-published release, run **Publish Released VSIX to Store** from Actions with `release_tag=v2.1.0` and either `marketplace` or `openvsx`. It requires that registry's configured secret, downloads the existing GitHub release asset, checks its GitHub SHA-256 digest and package identity/version, and publishes those exact bytes. It never rebuilds or replaces the release asset. Duplicate versions are skipped; check the public listing after registry validation. This workflow is committed but not authenticated until the owner authorizes the required secret setup.
+
 Both public registries currently serve 2.0.5; GitHub has released 2.1.0. Repository publishing secrets are not configured. Release jobs now upload the same built VSIX to each authenticated registry and explicitly warn if authentication is absent. A green artifact build is not a successful store publication.
 
 For future unattended publishing, authorize a publisher identity once, then publish matching GitHub releases. Do not publish every main commit. Microsoft now recommends [Entra workload identity publishing](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#secure-automated-publishing-to-visual-studio-marketplace); global Azure DevOps PATs retire on 1 December 2026. Tenant/identity setup and publisher membership are owner-controlled prerequisites, not configured here. The existing VSCE_PAT lane is a transitional option, not the long-term recommendation.
