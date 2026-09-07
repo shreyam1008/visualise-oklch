@@ -66,8 +66,21 @@ jobs:
 
       - name: Publish to VS Code Marketplace
         if: github.event_name == 'release' && env.VSCE_PAT != ''
-        run: bun run publish:marketplace
+        run: bunx @vscode/vsce publish --packagePath visualise-oklch-${{ steps.version.outputs.value }}.vsix
 
       - name: Publish to Open VSX Registry
         if: github.event_name == 'release' && env.OVSX_PAT != ''
-        run: bun run publish:openvsx
+        run: bunx ovsx publish visualise-oklch-${{ steps.version.outputs.value }}.vsix
+
+      - name: Report registry authentication gaps
+        if: always() && github.event_name == 'release'
+        run: |
+          if [ -z "$VSCE_PAT" ]; then
+            echo '::warning::Marketplace was NOT published: VSCE_PAT is not configured.'
+            echo '- Marketplace: NOT published (missing authentication).' >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -z "$OVSX_PAT" ]; then
+            echo '::warning::Open VSX was NOT published: OVSX_PAT is not configured.'
+            echo '- Open VSX: NOT published (missing authentication).' >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo 'A GitHub release asset is not evidence of a store update. Verify each public listing version.' >> "$GITHUB_STEP_SUMMARY"

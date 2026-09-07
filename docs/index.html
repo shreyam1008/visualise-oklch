@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Visualise OKLCH — Color Playground &amp; VS Code Extension</title>
+    <title>OKLCH to HEX, RGB &amp; HSL Converter | Visualise OKLCH</title>
     <meta
       name="description"
-      content="Learn OKLCH lightness, chroma and hue with live color ramps. Build CSS palettes and install Visualise OKLCH for inline color previews in VS Code and Open VSX editors."
+      content="Convert OKLCH to HEX, RGB, HSL, HWB and Oklab with a live color picker. See how lightness changes RGB channels, then edit colors in the Visualise OKLCH VS Code extension."
     />
     <meta
       name="keywords"
@@ -21,18 +21,18 @@
     <link rel="manifest" href="./site.webmanifest" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Visualise OKLCH" />
-    <meta property="og:title" content="Visualise OKLCH" />
+    <meta property="og:title" content="OKLCH Color Converter &amp; Lightness Explorer" />
     <meta
       property="og:description"
-      content="An interactive OKLCH guide and low-overhead extension for VS Code, Cursor, Windsurf, VSCodium, and Open VSX editors."
+      content="One color, six linked formats. Convert OKLCH, HEX, RGB, HSL, HWB and Oklab, and explore how lightness affects the RGB channels."
     />
     <meta property="og:url" content="https://visualise-oklch.shreyam1008.com.np/" />
     <meta property="og:image" content="https://visualise-oklch.shreyam1008.com.np/og.svg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Visualise OKLCH" />
+    <meta name="twitter:title" content="OKLCH Color Converter &amp; Lightness Explorer" />
     <meta
       name="twitter:description"
-      content="Interactive OKLCH demos, perceptual color comparisons, and an extension for modern VS Code-compatible editors."
+      content="Convert six CSS color formats and see smooth OKLCH lightness become nonlinear RGB values. Includes the Visualise OKLCH VS Code extension."
     />
     <meta name="twitter:image" content="https://visualise-oklch.shreyam1008.com.np/og.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -49,7 +49,7 @@
         "name": "Visualise OKLCH",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Cross-platform",
-        "softwareVersion": "2.0.5",
+        "softwareVersion": "2.1.0",
         "author": {
           "@type": "Person",
           "name": "Shreyam Adhikari",
@@ -57,12 +57,13 @@
         },
         "license": "https://www.apache.org/licenses/LICENSE-2.0",
         "url": "https://visualise-oklch.shreyam1008.com.np/",
-        "downloadUrl": "https://github.com/shreyam1008/visualise-oklch",
+        "downloadUrl": "https://github.com/shreyam1008/visualise-oklch/releases/tag/v2.1.0",
         "sameAs": [
           "https://github.com/shreyam1008/visualise-oklch",
-          "https://open-vsx.org/extension/shreyam1008/visualise-oklch"
+          "https://open-vsx.org/extension/shreyam1008/visualise-oklch",
+          "https://marketplace.visualstudio.com/items?itemName=shreyam1008.visualise-oklch"
         ],
-        "description": "A low-overhead extension and interactive guide for previewing OKLCH colors in VS Code and Open VSX-compatible editors.",
+        "description": "A free VS Code extension with an OKLCH editor and a companion website for converting OKLCH, HEX, RGB, HSL, HWB and Oklab colors.",
         "offers": {
           "@type": "Offer",
           "price": "0",
@@ -72,6 +73,7 @@
     </script>
   </head>
   <body>
+    <a class="skip-link" href="#playground">Skip to color converter</a>
     <div class="page-noise" aria-hidden="true"></div>
     <div class="ambient-grid" aria-hidden="true"></div>
     <div class="ambient-orbits" aria-hidden="true">
@@ -92,7 +94,8 @@
         </span>
       </a>
       <nav class="nav">
-        <a href="#playground">Playground</a>
+        <a href="#playground">Color converter</a>
+        <a href="#lightness-lab">Lightness explorer</a>
         <a href="#install">Install &amp; Use</a>
         <a href="#why">Why It Wins</a>
         <a href="#engine">Behind The Scenes</a>
@@ -120,7 +123,7 @@
             <li>Native picker editing</li>
             <li>TypeScript 6 RC</li>
             <li>`tsgo` verified</li>
-            <li>54.94 KB VSIX</li>
+            <li>83 KB VSIX · v2.1.0 release</li>
             <li>Zero runtime color dependency</li>
           </ul>
           <div class="hero-marquee">
@@ -171,15 +174,16 @@
 
       <section id="playground" class="section playground">
         <div class="section-heading">
-          <p class="eyebrow">Interactive Playground</p>
-          <h2>Slide the channels. Watch one color become many useful formats.</h2>
+          <p class="eyebrow">Interactive color converter</p>
+          <h2>OKLCH to HEX, RGB, HSL—and back.</h2>
           <p>
-            Read it as lightness, colorfulness, and an angle around the color wheel. The “OK” comes from Oklab,
-            the perceptual color space behind OKLCH. Change one channel below and see what stays the same.
+            Move a slider or type a color in any format. All six representations update together.
+            Change just L to see how perceived lightness moves RGB, HEX and HSL below.
           </p>
         </div>
 
-        <div class="color-anatomy panel">
+        <details class="color-anatomy panel">
+          <summary>New to OKLCH? Read the lightness, chroma and hue guide</summary>
           <p class="panel-kicker">Anatomy of your color</p>
           <div class="formula" aria-label="OKLCH channels">
             <code>oklch(</code>
@@ -211,7 +215,7 @@
           </div>
           <p class="lesson-note">Each ramp varies only its named channel before conversion, holding the others at your selected values. Ramps are opaque sRGB previews; chroma is reduced where needed to fit. Alpha controls transparency: 0% is invisible, 100% is opaque.</p>
           <p class="lesson-note">Explore further: <a href="https://oklch.com/">OKLCH.com’s graphs and gamut tools</a> · <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/color_value/oklch">MDN’s CSS reference</a>.</p>
-        </div>
+        </details>
 
         <div class="playground-grid">
           <div class="panel preview-panel">
@@ -229,22 +233,42 @@
             <div class="format-grid">
               <article class="format-card">
                 <span>OKLCH</span>
-                <code data-output-oklch-full>oklch(62.8% 0.258 29.23)</code>
+                <code data-output-oklch-full hidden>oklch(62.8% 0.258 29.23)</code>
+                <input aria-label="OKLCH color" data-format-input="oklch" value="oklch(62.8% 0.258 29.23)" spellcheck="false" autocomplete="off" />
+                <button type="button" data-copy-format="oklch" aria-label="Copy OKLCH">Copy</button>
               </article>
               <article class="format-card">
                 <span>HEX</span>
-                <code data-output-hex>#ff0000</code>
+                <code data-output-hex hidden>#ff0000</code>
+                <input aria-label="HEX color" data-format-input="hex" value="#ff0000" spellcheck="false" autocomplete="off" />
+                <button type="button" data-copy-format="hex" aria-label="Copy HEX">Copy</button>
               </article>
               <article class="format-card">
                 <span>RGB</span>
-                <code data-output-rgb>rgb(255 0 0)</code>
+                <code data-output-rgb hidden>rgb(255 0 0)</code>
+                <input aria-label="RGB color" data-format-input="rgb" value="rgb(255 0 0)" spellcheck="false" autocomplete="off" />
+                <button type="button" data-copy-format="rgb" aria-label="Copy RGB">Copy</button>
               </article>
               <article class="format-card">
                 <span>HSL (sRGB)</span>
-                <code data-output-hsl>hsl(0 100% 50%)</code>
+                <code data-output-hsl hidden>hsl(0 100% 50%)</code>
+                <input aria-label="HSL color" data-format-input="hsl" value="hsl(0 100% 50%)" spellcheck="false" autocomplete="off" />
+                <button type="button" data-copy-format="hsl" aria-label="Copy HSL">Copy</button>
+              </article>
+              <article class="format-card">
+                <span>HWB (sRGB)</span>
+                <input aria-label="HWB color" data-format-input="hwb" value="hwb(0 0% 0%)" spellcheck="false" autocomplete="off" />
+                <button type="button" data-copy-format="hwb" aria-label="Copy HWB">Copy</button>
+              </article>
+              <article class="format-card">
+                <span>Oklab</span>
+                <input aria-label="Oklab color" data-format-input="oklab" value="oklab(0.628 0.22515 0.12591)" spellcheck="false" autocomplete="off" />
+                <button type="button" data-copy-format="oklab" aria-label="Copy Oklab">Copy</button>
               </article>
             </div>
+            <p class="converter-status" data-converter-status role="status">Everything runs locally in your browser. No color data is uploaded.</p>
             <p class="gamut-note" data-gamut-note></p>
+            <a class="text-link" href="#lightness-lab">Watch this color’s RGB channels change with lightness →</a>
             <div class="code-block">
               <p>CSS snippet</p>
               <pre><code data-output-css>:root {
@@ -271,7 +295,7 @@
             <label class="control">
               <span>C · Chroma — neutral to vivid</span>
               <strong data-chroma-value>0.258</strong>
-              <input data-channel="chroma" type="range" min="0" max="0.37" step="0.001" value="0.258" />
+              <input data-channel="chroma" type="range" min="0" max="0.4" step="0.0001" value="0.258" />
             </label>
 
             <label class="control">
@@ -294,6 +318,36 @@
               </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section id="lightness-lab" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">One channel moves. Watch the rest.</p>
+          <h2>Smooth lightness. Uneven RGB numbers.</h2>
+          <p>These curves sweep OKLCH L from 0% to 100%, holding your chroma and hue fixed. RGB values follow nonlinear curves, not equal increments. Near the sRGB boundary, chroma reduction can also create bends and plateaus. The values are deterministic—not random.</p>
+        </div>
+        <div class="lightness-explorer panel">
+          <div class="lab-control">
+            <label for="lab-lightness">Move lightness <output data-lab-value>62.8%</output></label>
+            <input id="lab-lightness" data-channel="lightness" type="range" min="0" max="100" step="0.1" value="62.8" />
+            <p data-fixed-channels>Chroma 0.258 · hue 29.23° stay fixed</p>
+          </div>
+          <div class="chart-legend"><span class="red">Red</span><span class="green">Green</span><span class="blue">Blue</span><span>RGB channels: 0–255</span></div>
+          <svg class="rgb-chart" viewBox="0 0 600 270" role="img" aria-labelledby="rgb-chart-title rgb-chart-description">
+            <title id="rgb-chart-title">RGB channels across OKLCH lightness</title>
+            <desc id="rgb-chart-description">Red, green and blue channel values for a constant chroma and hue. A vertical line marks the selected lightness. Exact values are listed in the table below.</desc>
+            <path class="chart-grid" d="M50 25H550M50 115H550M50 205H550M50 25V205M300 25V205M550 25V205" />
+            <text x="7" y="30">255</text><text x="7" y="120">128</text><text x="25" y="210">0</text>
+            <text x="50" y="245">L 0%</text><text x="280" y="245">50%</text><text x="515" y="245">100%</text>
+            <path data-rgb-curve="red" class="red-curve" /><path data-rgb-curve="green" class="green-curve" /><path data-rgb-curve="blue" class="blue-curve" />
+            <line data-chart-cursor x1="364" x2="364" y1="25" y2="205" />
+            <circle data-channel-point="red" r="5" /><circle data-channel-point="green" r="5" /><circle data-channel-point="blue" r="5" />
+          </svg>
+          <div class="experiment-ramp" data-experiment-ramp aria-hidden="true"></div>
+          <div class="channel-readouts" data-channel-readouts></div>
+          <p class="lesson-note" data-step-note>Channel differences compare the current color with a color 10 lightness points darker, at the same C and H.</p>
+          <div class="table-scroll"><table class="conversion-table"><caption>Equal 10-point lightness steps, unequal RGB steps. These samples are opaque; alpha is independent.</caption><thead><tr><th scope="col">OKLCH L</th><th scope="col">HEX</th><th scope="col">RGB</th><th scope="col">Δ RGB from previous row</th><th scope="col">sRGB</th></tr></thead><tbody data-lightness-table></tbody></table></div>
         </div>
       </section>
 
@@ -468,10 +522,11 @@ bun run package</code></pre>
             <h3>Release path</h3>
             <pre><code>bun run changeset
 git tag vX.Y.Z
-git push origin main --tags</code></pre>
+git push origin main --tags
+# Then publish the matching GitHub release</code></pre>
             <p>
-              GitHub Actions handle CI, Pages deploys, version PRs, and store publishing. Open VSX is already live for
-              this project under the `shreyam1008` namespace.
+              Site changes on main deploy to Pages. Publishing a matching GitHub release builds the VSIX and triggers
+              store publishing when registry authentication is configured. A main push or tag alone does not update either store.
             </p>
           </article>
         </div>

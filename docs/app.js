@@ -1,3 +1,4 @@
+import * as colorTools from './color-tools.js';
 const presets = {
   cherry: { alpha: 100, chroma: 0.258, hue: 29.23, lightness: 62.8, name: 'Signal Red' },
   lagoon: { alpha: 100, chroma: 0.165, hue: 218, lightness: 74, name: 'Lagoon Blue' },
@@ -57,73 +58,7 @@ const rampNodes = { hsl: [], oklch: [] };
 const state = { ...presets.cherry };
 let renderFrame = 0;
 
-const linearToSrgb = (channel) => {
-  const clamped = clamp(channel, 0, 1);
-  if (clamped <= 0.0031308) {
-    return 12.92 * clamped;
-  }
-
-  return (1.055 * (clamped ** (1 / 2.4))) - 0.055;
-};
-
-const inGamut = ({ red, green, blue }) => (
-  red >= 0 && red <= 1 && green >= 0 && green <= 1 && blue >= 0 && blue <= 1
-);
-
-const oklchToLinear = ({ lightness, chroma, hue, alpha }) => {
-  const hueRadians = hue * (Math.PI / 180);
-  const a = chroma * Math.cos(hueRadians);
-  const b = chroma * Math.sin(hueRadians);
-
-  const lComponent = lightness + (0.3963377774 * a) + (0.2158037573 * b);
-  const mComponent = lightness - (0.1055613458 * a) - (0.0638541728 * b);
-  const sComponent = lightness - (0.0894841775 * a) - (1.291485548 * b);
-
-  const l = lComponent ** 3;
-  const m = mComponent ** 3;
-  const s = sComponent ** 3;
-
-  return {
-    alpha,
-    blue: (-0.0041960863 * l) - (0.7034186147 * m) + (1.707614701 * s),
-    green: (-1.2684380046 * l) + (2.6097574011 * m) - (0.3413193965 * s),
-    red: (4.0767416621 * l) - (3.3077115913 * m) + (0.2309699292 * s),
-  };
-};
-
-const gamutMap = (oklch) => {
-  const start = oklchToLinear(oklch);
-  if (oklch.chroma === 0 || inGamut(start)) {
-    return start;
-  }
-
-  let low = 0;
-  let high = oklch.chroma;
-  let best = oklchToLinear({ ...oklch, chroma: 0 });
-
-  for (let index = 0; index < 24; index += 1) {
-    const chroma = (low + high) / 2;
-    const candidate = oklchToLinear({ ...oklch, chroma });
-    if (inGamut(candidate)) {
-      best = candidate;
-      low = chroma;
-    } else {
-      high = chroma;
-    }
-  }
-
-  return best;
-};
-
-const oklchToSrgb = (oklch) => {
-  const linear = gamutMap(oklch);
-  return {
-    alpha: linear.alpha,
-    blue: linearToSrgb(linear.blue),
-    green: linearToSrgb(linear.green),
-    red: linearToSrgb(linear.red),
-  };
-};
+const oklchToSrgb = (color) => colorTools.oklchToSrgb({ ...color, hueDegrees: color.hue });
 
 const toByte = (value) => Math.round(clamp(value, 0, 1) * 255);
 const toHexByte = (value) => toByte(value).toString(16).padStart(2, '0');
@@ -301,6 +236,7 @@ const updateControls = () => {
     if (channel === 'lightness') {
       input.value = String(state.lightness);
     } else if (channel === 'chroma') {
+      input.max = String(Math.max(0.4, state.chroma));
       input.value = String(state.chroma);
     } else if (channel === 'hue') {
       input.value = String(state.hue);
@@ -319,7 +255,9 @@ const applyState = () => {
   };
 
   const oklch = oklchString(normalized);
-  const rgb = oklchToSrgb(normalized);
+  const canonical = { ...normalized, hueDegrees: normalized.hue };
+  const rgb = colorTools.oklchToSrgb(canonical);
+  renderConverter(canonical);
   const hex = rgbToHex(rgb);
   const hsl = rgbToHsl(rgb);
   const hslEquivalent = hslString(hsl);
@@ -353,7 +291,7 @@ const applyState = () => {
   document.querySelectorAll('[data-formula]').forEach((element) => {
     element.textContent = selectors[element.dataset.formula].textContent;
   });
-  document.querySelector('[data-gamut-note]').textContent = inGamut(oklchToLinear(normalized))
+  document.querySelector('[data-gamut-note]').textContent = colorTools.isOklchInSrgbGamut(canonical)
     ? 'Within sRGB. HEX, RGB and HSL are rounded representations of this color.'
     : 'Outside sRGB. HEX, RGB and HSL reduce chroma to fit sRGB while keeping lightness and hue. Your browser’s OKLCH preview may differ.';
   document.querySelectorAll('[data-lesson-ramp]').forEach((ramp) => {
@@ -423,6 +361,7 @@ controls.forEach((input) => {
 
     updatePresetButtons('');
     state.name = 'Your custom color';
+    updateControls();
     scheduleApplyState();
   });
 });
@@ -445,6 +384,73 @@ if (selectors.year) {
   selectors.year.textContent = String(new Date().getFullYear());
 }
 
+const formatInputs = [...document.querySelectorAll('[data-format-input]')];
+const converterStatus = document.querySelector('[data-converter-status]');
+let currentFormats = {};
+let sampleKey = '';
+let samples = [];
+const signed = (value) => `${value >= 0 ? '+' : ''}${Math.round(value)}`;
+const channelNames = ['red', 'green', 'blue'];
+function renderConverter(color) {
+  currentFormats = colorTools.colorFormats(color);
+  formatInputs.forEach((input) => {
+    if (input !== document.activeElement) {
+      input.value = currentFormats[input.dataset.formatInput];
+      input.removeAttribute('aria-invalid');
+    }
+  });
+  if (!formatInputs.some((input) => input.getAttribute('aria-invalid') === 'true')) {
+    converterStatus.textContent = 'All six formats are linked. Numeric CSS colors only; conversions stay in your browser. Rounded sRGB formats may lose wide-gamut color and precision.';
+  }
+  document.querySelector('[data-lab-value]').textContent = `${format(state.lightness, 1)}%`;
+  document.querySelector('[data-fixed-channels]').textContent = `Fixed C ${format(state.chroma, 4)} · H ${format(state.hue, 2)}° · opaque samples`;
+  const key = `${color.chroma}/${color.hueDegrees}`;
+  if (key !== sampleKey) {
+    sampleKey = key;
+    samples = colorTools.lightnessSamples(color);
+    for (const channel of channelNames) {
+      document.querySelector(`[data-rgb-curve="${channel}"]`).setAttribute('d', samples.map((s, i) => `${i ? 'L' : 'M'}${50 + s.lightness * 5},${205 - s[channel] / 255 * 180}`).join(' '));
+    }
+    document.querySelector('[data-experiment-ramp]').style.background = `linear-gradient(to right, ${samples.map((s) => s.hex).join(',')})`;
+    const rows = samples.filter((s) => s.lightness % 10 === 0).map((s, i, stops) => {
+      const row = document.createElement('tr');
+      const delta = i ? channelNames.map((c) => signed(s[c] - stops[i - 1][c])).join(' / ') : '—';
+      [`${s.lightness}%`, s.hex, channelNames.map((c) => Math.round(s[c])).join(' / '), delta, s.inGamut ? 'In gamut' : 'Chroma reduced'].forEach((text) => {
+        const cell = document.createElement('td'); cell.textContent = text; row.append(cell);
+      });
+      return row;
+    });
+    document.querySelector('[data-lightness-table]').replaceChildren(...rows);
+  }
+  const rgb = colorTools.oklchToSrgb({ ...color, alpha: 1 });
+  const previous = colorTools.oklchToSrgb({ ...color, lightness: Math.max(0, color.lightness - 0.1), alpha: 1 });
+  const x = 50 + color.lightness * 500;
+  const cursor = document.querySelector('[data-chart-cursor]');
+  cursor.setAttribute('x1', x); cursor.setAttribute('x2', x);
+  document.querySelector('[data-channel-readouts]').replaceChildren(...channelNames.map((channel) => {
+    const point = document.querySelector(`[data-channel-point="${channel}"]`);
+    point.setAttribute('cx', x); point.setAttribute('cy', 205 - rgb[channel] * 180);
+    const card = document.createElement('div'); card.className = `channel-readout ${channel}`;
+    card.textContent = `${channel.toUpperCase()} ${Math.round(rgb[channel] * 255)}  (${signed((rgb[channel] - previous[channel]) * 255)})`;
+    return card;
+  }));
+  document.querySelector('[data-step-note]').textContent = `Channel changes from L ${format(Math.max(0, state.lightness - 10), 1)}% to ${format(state.lightness, 1)}%, with identical C and H. Curves use chroma-reduced sRGB where needed; they are not raw OKLCH channels.`;
+}
+formatInputs.forEach((input) => {
+  input.addEventListener('input', () => {
+    const parsed = colorTools.parseColorInput(input.value);
+    input.setAttribute('aria-invalid', String(!parsed));
+    if (!parsed) { converterStatus.textContent = 'Enter a complete numeric HEX, RGB, HSL, HWB, Oklab or OKLCH color. Your last valid color is kept.'; return; }
+    Object.assign(state, { lightness: parsed.lightness * 100, chroma: parsed.chroma, hue: parsed.hueDegrees, alpha: parsed.alpha * 100, name: 'Your custom color' });
+    converterStatus.textContent = 'All formats updated. OKLCH and Oklab preserve wide-gamut color; HEX, RGB, HSL and HWB use sRGB.';
+    updateControls(); updatePresetButtons(''); scheduleApplyState();
+  });
+  input.addEventListener('blur', () => { if (input.getAttribute('aria-invalid') !== 'true') input.value = currentFormats[input.dataset.formatInput]; });
+});
+document.querySelectorAll('[data-copy-format]').forEach((button) => button.addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(currentFormats[button.dataset.copyFormat]); converterStatus.textContent = `${button.dataset.copyFormat.toUpperCase()} copied.`; }
+  catch { converterStatus.textContent = 'Clipboard unavailable. Select the value and copy it manually.'; }
+}));
 buildCloud();
 updateControls();
 updatePresetButtons('cherry');

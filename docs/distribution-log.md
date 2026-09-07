@@ -19,3 +19,10 @@ The release VSIX was verified and installed locally in VS Code as `shreyam1008.v
 Marketplace and Open VSX publisher dashboards are accessible, but uploading the new VSIX is pending: Chrome rejected local file selection because the browser extension lacks file-URL access. No registry tokens were configured in GitHub when checked. A successful GitHub workflow therefore does not establish publication to either registry; verify their public version after completing the uploads.
 
 Do not promote a workflow artifact or local VSIX as a Marketplace release. Update this file only after checking the public listing while signed out.
+# Website converter follow-up — 7 September 2026
+
+The website now links editable OKLCH, HEX, RGB, HSL, HWB and Oklab fields, including alpha and copy actions. A cached fixed-C/H lightness sweep shows RGB curves, channel deltas and gamut-mapped samples. Color math is shared with the extension; the additional browser helper is 7.4 KB uncompressed, with no runtime dependency. This is website-only functionality, not a new extension version.
+
+Browser verification covered all six editable inputs, alpha, incomplete values retaining the last valid color, keyboard lightness adjustment and rendered curve/table data. Technical SEO includes converter-focused metadata, canonical URL, truthful application schema, static explanatory content and sitemap date. Search indexing/ranking and publisher badges are not claimed.
+
+Anonymous store checks and signed-in dashboards still report **2.0.5** for both registries. GitHub **2.1.0** remains the downloadable release. Missing repository publishing secrets and blocked browser local-file uploads remain unresolved. See PUBLISHING.md for the authentication audit; Git-only portfolio evidence lives in `shreyam1008/buggy/docs/projects/backlinks.md`.

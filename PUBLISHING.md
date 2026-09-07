@@ -56,3 +56,10 @@ The `shreyam1008` Visual Studio Marketplace publisher exists. The signed-in web 
 - GitHub Pages deploys automatically when site files on `main` change.
 - Store updates are separate from a GitHub push. Installed clients receive newer store versions according to their extension auto-update settings, only after the version is published to the store they use.
 - The custom domain is **live; verified 6 September 2026 UTC**. Re-run the checks in `docs/domain-release.md` after any Pages or DNS change.
+# Authentication audit — 7 September 2026
+
+Both public registries currently serve 2.0.5; GitHub has released 2.1.0. Repository publishing secrets are not configured. Release jobs now upload the same built VSIX to each authenticated registry and explicitly warn if authentication is absent. A green artifact build is not a successful store publication.
+
+For future unattended publishing, authorize a publisher identity once, then publish matching GitHub releases. Do not publish every main commit. Microsoft now recommends [Entra workload identity publishing](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#secure-automated-publishing-to-visual-studio-marketplace); global Azure DevOps PATs retire on 1 December 2026. Tenant/identity setup and publisher membership are owner-controlled prerequisites, not configured here. The existing VSCE_PAT lane is a transitional option, not the long-term recommendation.
+
+Open VSX [merged trusted publishing support](https://github.com/eclipse-openvsx/openvsx/pull/2000) on 21 August 2026. The live signed-in settings inspected on 7 September did not expose a Trusted Publishers tab; merged server code is not proof this account can use the feature. Confirm production availability and narrowly bind repository/workflow/extension before replacing the existing OVSX_PAT lane. Never store tokens in Git or this document.
