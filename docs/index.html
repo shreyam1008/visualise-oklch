@@ -336,10 +336,11 @@
 
         <div class="feature-grid">
           <article class="feature-card">
-            <h3>Native color editing</h3>
+            <h3>Edit in OKLCH</h3>
             <p>
-              Hover or click the editor color decorator to open the built-in picker, then write the selected color back
-              as normalized OKLCH or switch to hex, rgb, and hsl presentations.
+              Place the cursor inside a color and run Visualise OKLCH: Edit Color in OKLCH from the command palette
+              or right-click menu. Adjust L, C, H, and alpha independently, see the sRGB boundary, and Apply one undoable edit.
+              The built-in picker remains available from the color swatch for quick sRGB edits.
             </p>
           </article>
           <article class="feature-card">
@@ -392,7 +393,7 @@
   color: var(--ink);
   border: 1px solid var(--accent);
 }</code></pre>
-            <p>Paste into a CSS file, then hover the color swatch to open the picker. Keep H at 255 for a shared color family; adjust L for tone and C for a quieter surface or stronger accent.</p>
+            <p>Paste into a CSS file, place the cursor inside a color, and run Edit Color in OKLCH. Keep H at 255 for a shared color family; adjust L for tone and C for a quieter surface or stronger accent. Stripes mark colors outside sRGB; Fit to sRGB reduces chroma when you want a displayable sRGB value.</p>
           </article>
         </div>
         <p class="lesson-note">Check text contrast against its actual background before shipping. OKLCH lightness alone does not guarantee accessible contrast; transparency and gamut mapping also affect the rendered result.</p>

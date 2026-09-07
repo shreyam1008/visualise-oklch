@@ -24,6 +24,7 @@ Visualise OKLCH focuses on one job: render OKLCH inline previews with almost no 
 - Auto strategy for large files: full scans for smaller documents, padded visible-range scans for bigger ones.
 - Zero runtime color dependency in the extension bundle.
 - Native editor color picker support with OKLCH-first write-back plus hex, rgb, and hsl presentation options.
+- On-demand OKLCH editor with lightness/chroma plane, independent L/C/H/alpha controls, and a marked sRGB gamut boundary.
 - Typechecked with `typescript@rc` and the native preview `tsgo` path side-by-side.
 - Tested with fixture-driven unit coverage for parsing, scanning, and integration cases.
 - Ready for both VS Code Marketplace and [Open VSX](https://open-vsx.org/).
@@ -38,12 +39,26 @@ Visualise OKLCH focuses on one job: render OKLCH inline previews with almost no 
 
 ## Editing colors
 
+For direct OKLCH editing, place the cursor inside a color and run **Visualise OKLCH: Edit Color in OKLCH** from the command palette or editor right-click menu.
+
+- Adjust L, C, H, and alpha independently with sliders, number fields, or the lightness/chroma plane.
+- Stripes mark colors outside sRGB. **Fit to sRGB** reduces chroma at the current lightness and hue; it is optional. Chroma is not limited to 0.4: type larger values in the number field when needed.
+- **Apply color** writes one undoable edit. Previewing or closing the panel does not modify your file. Save the file normally afterward.
+- The picker opens only on demand. Rendering stays in the webview, is coalesced to animation frames, and does not send document edits while dragging.
+- If the document changes while the picker is open, reopen the picker before applying, so it cannot overwrite another edit.
+
 Hover or click the editor color decorator on an OKLCH literal to open the native color picker.
 
 - The first write-back option stays in normalized `oklch(...)`.
 - Traditional `hex`, `rgb(...)`, and `hsl(...)` presentations are also offered.
 - Choosing a presentation writes the selected color directly back into your document.
 - When native editor color decorators are enabled, Visualise OKLCH defers to that built-in path so you only see one swatch.
+
+The built-in popup uses sRGB/HSV controls; its hue and saturation are not OKLCH H and C. VS Code's public color-provider API supplies RGBA values and text presentations, not custom popup axes. Unchanged colors and alpha-only edits preserve the original OKLCH channels; other native-picker edits convert from sRGB. Use the OKLCH editor to retain independent channels and out-of-sRGB chroma.
+
+Literal parsing follows the CSS ranges: L uses 0–1 or 0–100%; C uses numbers or percentages where 100% means 0.4; H uses degrees or angle units. Comma-separated OKLCH is invalid. Literal `none` components are preserved when another channel changes. Context-dependent expressions such as `var()`, `calc()`, and relative colors are not evaluated. Previews use conservative constant-lightness, constant-hue chroma reduction into sRGB; they are not a browser- or monitor-specific wide-gamut simulation.
+
+References: [CSS Color 4 OKLCH definition](https://www.w3.org/TR/css-color-4/#specifying-oklab-oklch), [VS Code color API](https://code.visualstudio.com/api/references/vscode-api#DocumentColorProvider).
 
 ## Development
 
@@ -89,9 +104,9 @@ This repo uses Changesets for version PRs and release bookkeeping.
 
 1. Add a changeset with `bun run changeset`.
 2. Merge the version PR created by the `Version Packages` workflow.
-3. Push a version tag like `v2.0.1`, or create a GitHub release from that tag.
-4. The `Publish Extension` workflow can run from either a pushed tag or a published GitHub release.
-5. The workflow packages the VSIX, uploads it to the workflow run, and publishes to stores when `VSCE_PAT` and `OVSX_PAT` are configured.
+3. Push a matching version tag and publish a GitHub release from that tag.
+4. The `Publish Extension` workflow runs on a published GitHub release. A tag push alone does not publish. A manual run only builds an artifact.
+5. The workflow packages the VSIX, attaches it to the release, and publishes to stores only when their respective `VSCE_PAT` and `OVSX_PAT` secrets are configured. A GitHub push alone never updates a store listing.
 
 For Open VSX publishing, the registry is [open-vsx.org](https://open-vsx.org/). You need an Open VSX namespace matching your chosen publisher plus an `OVSX_PAT` secret in GitHub Actions.
 

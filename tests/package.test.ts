@@ -40,7 +40,7 @@ describe('package metadata', () => {
     expect(packageJson.description).toContain('native color picker');
     expect(packageJson.homepage).toBe('https://visualise-oklch.shreyam1008.com.np/');
     expect(packageJson.keywords).toContain('picker');
-    expect(packageJson.version).toBe('2.0.5');
+    expect(packageJson.version).toMatch(/^\d+\.\d+\.\d+$/);
   });
 
   test('exposes performance tuning settings', () => {

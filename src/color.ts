@@ -31,6 +31,7 @@ export interface ResolvedSwatch {
 
 const FUNCTION_PATTERN = /^\s*oklch\s*\(([\s\S]+)\)\s*$/i;
 const NUMBER_PATTERN = /^([+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?)\s*(%|deg|grad|rad|turn)?$/i;
+const OKLCH_CHROMA_PERCENT_SCALE = 0.4;
 
 const clamp = (value: number, min: number, max: number): number => Math.min(max, Math.max(min, value));
 
@@ -144,7 +145,7 @@ const parseLightness = (token: string): number | null => {
     return null;
   }
 
-  return clamp(parsed.value > 1 ? parsed.value / 100 : parsed.value, 0, 1);
+  return clamp(parsed.value, 0, 1);
 };
 
 const parseChroma = (token: string): number | null => {
@@ -154,7 +155,7 @@ const parseChroma = (token: string): number | null => {
   }
 
   if (parsed.unit === '%') {
-    return Math.max(0, parsed.value / 100);
+    return Math.max(0, (parsed.value / 100) * OKLCH_CHROMA_PERCENT_SCALE);
   }
 
   if (parsed.unit.length > 0) {
@@ -219,7 +220,11 @@ export const parseOklch = (input: string): ParsedOklch | null => {
   }
 
   const [channelsSource, alphaSource] = split;
-  const channels = splitTopLevel(channelsSource.replaceAll(',', ' '));
+  if (channelsSource.includes(',')) {
+    return null;
+  }
+
+  const channels = splitTopLevel(channelsSource);
   if (channels.length !== 3) {
     return null;
   }
@@ -228,7 +233,7 @@ export const parseOklch = (input: string): ParsedOklch | null => {
   const lightness = parseLightness(lightnessToken);
   const chroma = parseChroma(chromaToken);
   const hueDegrees = parseHue(hueToken);
-  const alpha = alphaSource ? parseAlpha(alphaSource) : 1;
+  const alpha = alphaSource === undefined ? 1 : parseAlpha(alphaSource);
 
   if (lightness === null || chroma === null || hueDegrees === null || alpha === null) {
     return null;
@@ -252,13 +257,50 @@ const linearToSrgb = (channel: number): number => {
 };
 
 const isInLinearSrgbGamut = ({ blue, green, red }: LinearRgbColor): boolean => (
-  red >= 0
-  && red <= 1
-  && green >= 0
-  && green <= 1
-  && blue >= 0
-  && blue <= 1
+  red >= -1e-7
+  && red <= 1 + 1e-7
+  && green >= -1e-7
+  && green <= 1 + 1e-7
+  && blue >= -1e-7
+  && blue <= 1 + 1e-7
 );
+
+export const isOklchInSrgbGamut = (parsed: ParsedOklch): boolean => isInLinearSrgbGamut(oklchToLinearSrgb(parsed));
+
+export const maxSrgbChroma = (lightness: number, hueDegrees: number, upperBound = 0.5): number => {
+  const normalizedLightness = clamp(lightness, 0, 1);
+  const normalizedUpperBound = Math.max(0, upperBound);
+
+  if (normalizedLightness === 0 || normalizedLightness === 1 || normalizedUpperBound === 0) {
+    return 0;
+  }
+
+  const boundaryCandidate: ParsedOklch = {
+    alpha: 1,
+    chroma: normalizedUpperBound,
+    hueDegrees: wrapDegrees(hueDegrees),
+    lightness: normalizedLightness,
+  };
+  if (isOklchInSrgbGamut(boundaryCandidate)) {
+    return normalizedUpperBound;
+  }
+
+  let low = 0;
+  let high = normalizedUpperBound;
+  for (let iteration = 0; iteration < 20; iteration += 1) {
+    const candidateChroma = (low + high) / 2;
+    if (isOklchInSrgbGamut({
+      ...boundaryCandidate,
+      chroma: candidateChroma,
+    })) {
+      low = candidateChroma;
+    } else {
+      high = candidateChroma;
+    }
+  }
+
+  return low;
+};
 
 const oklchToLinearSrgb = ({ alpha, chroma, hueDegrees, lightness }: ParsedOklch): LinearRgbColor => {
   const hueRadians = hueDegrees * (Math.PI / 180);
@@ -282,13 +324,17 @@ const oklchToLinearSrgb = ({ alpha, chroma, hueDegrees, lightness }: ParsedOklch
 };
 
 const gamutMappedLinearSrgb = (parsed: ParsedOklch): LinearRgbColor => {
+  if (parsed.lightness <= 0 || parsed.lightness >= 1) {
+    const channel = clamp(parsed.lightness, 0, 1);
+    return { alpha: parsed.alpha, red: channel, green: channel, blue: channel };
+  }
   const initial = oklchToLinearSrgb(parsed);
   if (parsed.chroma === 0 || isInLinearSrgbGamut(initial)) {
     return initial;
   }
 
   let low = 0;
-  let high = parsed.chroma;
+  let high = Math.min(parsed.chroma, 0.5);
   let best = oklchToLinearSrgb({
     ...parsed,
     chroma: 0,
@@ -320,6 +366,17 @@ export const oklchToSrgb = (parsed: ParsedOklch): RgbColor => {
     blue: linearToSrgb(mapped.blue),
     green: linearToSrgb(mapped.green),
     red: linearToSrgb(mapped.red),
+  };
+};
+
+// For gamut diagrams only: clipped pixels outside sRGB must be visibly marked.
+export const oklchToClippedSrgb = (parsed: ParsedOklch): RgbColor => {
+  const linear = oklchToLinearSrgb(parsed);
+  return {
+    alpha: parsed.alpha,
+    red: linearToSrgb(linear.red),
+    green: linearToSrgb(linear.green),
+    blue: linearToSrgb(linear.blue),
   };
 };
 

@@ -1,0 +1,28 @@
+export const pickerHtml = (cspSource: string, scriptUri: string, nonce: string): string => `<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-${nonce}'; style-src ${cspSource} 'unsafe-inline';">
+<title>OKLCH Color</title><style>
+*{box-sizing:border-box}body{margin:0;padding:24px;color:var(--vscode-foreground,#ddd);background:var(--vscode-editor-background,#181818);font-family:var(--vscode-font-family,system-ui);font-size:13px}
+main{max-width:560px;margin:auto}h1{font-size:20px;font-weight:600;margin:0 0 8px}p{line-height:1.5;margin:0 0 18px}.muted{color:var(--vscode-descriptionForeground,#aaa)}
+.preview{height:64px;border-radius:8px;overflow:hidden;border:1px solid var(--vscode-panel-border,#555);background:repeating-conic-gradient(#888 0% 25%,#bbb 0% 50%) 0/16px 16px}.preview div{height:100%}code{display:block;padding:12px 0;overflow-wrap:anywhere;font-family:var(--vscode-editor-font-family,monospace)}
+.plane{position:relative;width:100%;height:200px;touch-action:none;cursor:crosshair;border:1px solid var(--vscode-panel-border,#555);border-radius:6px;overflow:hidden}.plane canvas{width:100%;height:100%;display:block}.marker{pointer-events:none;position:absolute;width:12px;height:12px;border:2px solid white;border-radius:50%;box-shadow:0 0 0 1px #111;transform:translate(-50%,-50%)}
+.axes{display:flex;justify-content:space-between;font-size:11px;margin:6px 0 20px}.channel{margin:16px 0}.label{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}label{font-weight:600}.number{display:flex;align-items:center;gap:6px}input[type=number]{width:95px;padding:5px 7px;color:var(--vscode-input-foreground,#ddd);background:var(--vscode-input-background,#303030);border:1px solid var(--vscode-input-border,#555);border-radius:3px;font:inherit}
+.track{position:relative;height:20px;border-radius:4px}input[type=range]{appearance:none;width:100%;height:20px;display:block;margin:0;background:transparent;cursor:pointer;position:relative;z-index:1}input[type=range]::-webkit-slider-thumb{appearance:none;width:10px;height:26px;border:2px solid white;box-shadow:0 0 0 1px #222;border-radius:3px;background:transparent}.boundary{position:absolute;top:0;bottom:0;width:2px;background:white;box-shadow:0 0 0 1px #222;pointer-events:none}.outside{position:absolute;top:0;bottom:0;right:0;background:repeating-linear-gradient(135deg,transparent 0 4px,#0007 4px 6px);pointer-events:none}
+button{font:inherit;border:1px solid transparent;border-radius:3px;padding:8px 12px;cursor:pointer;color:var(--vscode-button-foreground,#fff);background:var(--vscode-button-background,#0078d4)}button.secondary{color:var(--vscode-button-secondaryForeground,#eee);background:var(--vscode-button-secondaryBackground,#333)}button:disabled{opacity:.5;cursor:default}button:hover:not(:disabled){filter:brightness(1.1)}:focus-visible{outline:2px solid var(--vscode-focusBorder,#0078d4);outline-offset:3px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 12px}.status{min-height:36px}.gamut{padding:10px 12px;border:1px solid var(--vscode-panel-border,#555);border-radius:5px;line-height:1.5}.gamut[data-out=true]{border-color:var(--vscode-editorWarning-foreground,#c99a25)}.note{font-size:12px;margin-top:8px}
+@media(max-width:340px){body{padding:16px}.plane{height:160px}}
+body{padding:16px}h1{font-size:18px;margin-bottom:4px}p{margin-bottom:12px}.preview{height:40px}.plane{height:150px}.axes{margin-bottom:12px}.channel{margin:10px 0}.label{margin-bottom:4px}input[type=number]{padding:3px 7px}.actions{margin-top:14px}.status{min-height:24px}code{padding:10px 0}
+</style></head><body><main>
+<h1>OKLCH Color</h1><p class="muted">Adjust lightness, chroma, and hue independently.</p>
+<div class="preview"><div id="preview"></div></div><code id="output">Loading color…</code>
+<div class="plane" id="plane" aria-label="Lightness and chroma plane. Use the sliders below for keyboard editing."><canvas id="canvas" width="180" height="120"></canvas><span class="marker" id="marker"></span></div>
+<div class="axes muted"><span>↑ Lightness</span><span>Chroma → · stripes = outside sRGB</span></div>
+${[
+  ['lightness', 'Lightness', '%', '100', '0.01'],
+  ['chroma', 'Chroma', '', '', '0.0001'],
+  ['hueDegrees', 'Hue', '°', '360', '0.01'],
+  ['alpha', 'Alpha', '%', '100', '0.01'],
+].map(([key, label, unit, max, step]) => `<div class="channel"><div class="label"><label for="${key}">${label}</label><span class="number"><input id="${key}-number" type="number" aria-label="${label} value" min="0" ${max ? `max="${max}"` : ''} step="${step}"><span>${unit}</span></span></div><div class="track" id="${key}-track"><input type="range" id="${key}" min="0" max="${max || '0.4'}" step="${step}" aria-label="${label}">${key === 'chroma' ? '<span class="outside" id="outside"></span><span class="boundary" id="boundary"></span>' : ''}</div></div>`).join('')}
+<div class="gamut" id="gamut"></div><p class="muted note">Preview uses sRGB chroma reduction. Outside-gamut OKLCH values remain editable; actual display colors may differ.</p>
+<div class="actions"><button id="apply" disabled>Apply color</button><button class="secondary" id="fit">Fit to sRGB</button><button class="secondary" id="reset">Reset</button></div>
+<p class="muted status" id="status" role="status" aria-live="polite">Changes preview here. Apply writes one undoable edit.</p>
+</main><script nonce="${nonce}" src="${scriptUri}"></script></body></html>`;

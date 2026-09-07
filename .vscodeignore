@@ -4,6 +4,7 @@
 .vscode-test/**
 coverage/**
 docs/**
+site-dist/**
 node_modules/**
 scripts/**
 src/**

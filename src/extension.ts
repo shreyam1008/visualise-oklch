@@ -6,6 +6,7 @@ import { buildColorPresentationEntries, detectDocumentColors } from './picker';
 import { buildDecorationRenderOptions } from './render';
 import { scanOklchFunctions } from './scanner';
 import { shouldUseCustomDecorations } from './strategy';
+import { registerOklchEditor } from './oklchEditor';
 
 interface AppliedDecorationState {
   appliedKeys: Set<string>;
@@ -108,7 +109,7 @@ class OklchDocumentColorProvider implements vscode.DocumentColorProvider {
       blue: color.blue,
       green: color.green,
       red: color.red,
-    }).map((entry) => {
+    }, context.document.getText(context.range)).map((entry) => {
       const presentation = new vscode.ColorPresentation(entry.label);
       presentation.textEdit = new vscode.TextEdit(context.range, entry.text);
       return presentation;
@@ -501,6 +502,7 @@ let controller: OklchDecorationController | undefined;
 export const activate = (context: vscode.ExtensionContext): void => {
   controller = new OklchDecorationController(context);
   context.subscriptions.push(vscode.languages.registerColorProvider(SUPPORTED_DOCUMENT_SELECTOR, new OklchDocumentColorProvider()));
+  context.subscriptions.push(registerOklchEditor(context));
 };
 
 export const deactivate = (): void => {

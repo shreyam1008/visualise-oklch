@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "slug": "visualise-oklch",
   "name": "Visualise OKLCH",
-  "summary": "A VS Code extension for visualizing and editing OKLCH colors with a native color-picker workflow.",
+  "summary": "A VS Code extension for inline OKLCH previews and independent lightness, chroma, hue, and alpha editing with sRGB gamut guidance.",
   "visibility": "public",
   "portfolioApproved": true,
   "lifecycle": "released",

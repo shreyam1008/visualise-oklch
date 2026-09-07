@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.1.0
+
+- Added an on-demand OKLCH editor with independent L/C/H/alpha controls, lightness/chroma plane, sRGB gamut boundary, and optional Fit to sRGB.
+- Keep wide-gamut source channels and missing components when unchanged or editing other channels; prevent native-picker opening and alpha-only edits from losing original chroma.
+- Correct CSS chroma percentages (100% = 0.4), clamp bare lightness to 0–1, and reject comma-separated colors and empty alpha values.
+- Preview at animation-frame cadence with cached plane rendering; Apply creates one undoable edit and checks for intervening document changes.
+- Cache repeated literals during document color scans and keep extreme-chroma gamut mapping bounded.
+- Exclude generated website files from the VSIX and support literal editing in restricted and virtual workspaces without executing workspace code.
+- Clarified release triggers and separate Marketplace/Open VSX publishing requirements.
+
 ## 2.0.5
 
 - Fixed duplicate swatches after native picker support by deferring to the editor's built-in color decorators when they are enabled.

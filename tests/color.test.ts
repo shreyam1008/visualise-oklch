@@ -1,8 +1,20 @@
 import { describe, expect, test } from 'bun:test';
 
-import { formatNormalizedOklch, oklchToSrgb, parseOklch, resolveSwatch, rgbToHex } from '../src/color';
+import { formatNormalizedOklch, isOklchInSrgbGamut, maxSrgbChroma, oklchToSrgb, parseOklch, resolveSwatch, rgbToHex } from '../src/color';
 
 describe('parseOklch', () => {
+  test('uses the CSS percentage reference range for chroma', () => {
+    expect(parseOklch('oklch(50% 100% 20)')?.chroma).toBe(0.4);
+    expect(parseOklch('oklch(50% 50% 20)')?.chroma).toBe(0.2);
+  });
+
+  test('clamps numeric lightness and rejects invalid modern syntax', () => {
+    expect(parseOklch('oklch(2 0.2 20)')?.lightness).toBe(1);
+    expect(parseOklch('oklch(-1 0.2 20)')?.lightness).toBe(0);
+    for (const source of ['oklch(50%, 0.2, 20)', 'oklch(50% 0.2 20 /)', 'oklch(50% 0.2 20 / / 1)']) {
+      expect(parseOklch(source)).toBeNull();
+    }
+  });
   test('parses percentage lightness with percentage alpha', () => {
     expect(parseOklch('oklch(62.8% 0.258 29.23 / 80%)')).toEqual({
       alpha: 0.8,
@@ -23,6 +35,29 @@ describe('parseOklch', () => {
 
   test('rejects invalid hue percentages', () => {
     expect(parseOklch('oklch(62% 0.258 45%)')).toBeNull();
+  });
+});
+
+describe('sRGB gamut boundary', () => {
+  test('finds the varying chroma limit while keeping lightness and hue', () => {
+    for (const lightness of [0.1, 0.5, 0.9]) {
+      for (const hueDegrees of [0, 90, 142, 260, 330]) {
+        const chroma = maxSrgbChroma(lightness, hueDegrees);
+        expect(chroma).toBeGreaterThan(0);
+        expect(isOklchInSrgbGamut({ lightness, chroma, hueDegrees, alpha: 1 })).toBe(true);
+        expect(isOklchInSrgbGamut({ lightness, chroma: chroma + 0.00001, hueDegrees, alpha: 1 })).toBe(false);
+      }
+    }
+    expect(maxSrgbChroma(0, 20)).toBe(0);
+    expect(maxSrgbChroma(1, 20)).toBe(0);
+  });
+
+  test('maps extreme chroma to finite RGB and lightness endpoints to black/white', () => {
+    expect(resolveSwatch('oklch(0 100 30)')?.hex).toBe('#000000');
+    expect(resolveSwatch('oklch(1 100 30)')?.hex).toBe('#ffffff');
+    const rgb = oklchToSrgb({ lightness: 0.5, chroma: 1e300, hueDegrees: 20, alpha: 0.4 });
+    expect([rgb.red, rgb.green, rgb.blue].every((value) => Number.isFinite(value) && value >= 0 && value <= 1)).toBe(true);
+    expect(rgb.alpha).toBe(0.4);
   });
 });
 

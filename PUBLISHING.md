@@ -41,7 +41,7 @@ git push origin vX.Y.Z
 
 Publishing the GitHub release triggers the registry workflow once. It verifies that the release tag exactly matches `package.json`, packages the VSIX, attaches it to the release, and publishes only to registries whose repository token is configured. A manual workflow run packages an artifact but does not publish to either registry.
 
-The `shreyam1008` Visual Studio Marketplace publisher is now created. The signed-in web dashboard can upload `visualise-oklch-2.0.5.vsix` directly; the unattended alternative is to create a Marketplace PAT and store it as the repository `VSCE_PAT` secret. Never commit or paste that token into source or chat.
+The `shreyam1008` Visual Studio Marketplace publisher exists. The signed-in web dashboard can upload the matching versioned VSIX directly; the unattended alternative is a Marketplace PAT stored as the repository `VSCE_PAT` secret. Open VSX automation separately needs `OVSX_PAT`. No repository registry secrets were configured when checked on 7 September 2026. Never commit or paste tokens into source or chat.
 
 ## Rollback
 
@@ -53,5 +53,6 @@ The `shreyam1008` Visual Studio Marketplace publisher is now created. The signed
 
 - Open VSX listing refreshes only when a new extension version is published.
 - If the icon on Open VSX still looks old, check that `package.json` points to `icon.png`, then publish a new version.
-- GitHub Pages deploys automatically from `main`.
+- GitHub Pages deploys automatically when site files on `main` change.
+- Store updates are separate from a GitHub push. Installed clients receive newer store versions according to their extension auto-update settings, only after the version is published to the store they use.
 - The custom domain is **live; verified 6 September 2026 UTC**. Re-run the checks in `docs/domain-release.md` after any Pages or DNS change.

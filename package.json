@@ -2,7 +2,7 @@
   "name": "visualise-oklch",
   "displayName": "Visualise OKLCH",
   "description": "Low-overhead inline OKLCH swatches with native color picker editing for VS Code, Cursor, Windsurf, VSCodium, and Open VSX-compatible editors.",
-  "version": "2.0.5",
+  "version": "2.1.0",
   "preview": false,
   "license": "Apache-2.0",
   "icon": "icon.png",
@@ -44,11 +44,16 @@
   "extensionKind": [
     "workspace"
   ],
+  "capabilities": {
+    "untrustedWorkspaces": { "supported": true },
+    "virtualWorkspaces": true
+  },
   "engines": {
     "vscode": "^1.96.0"
   },
   "activationEvents": [
     "onCommand:visualiseOklch.refresh",
+    "onCommand:visualiseOklch.editColor",
     "onLanguage:astro",
     "onLanguage:css",
     "onLanguage:html",
@@ -73,10 +78,19 @@
   "contributes": {
     "commands": [
       {
+        "command": "visualiseOklch.editColor",
+        "title": "Visualise OKLCH: Edit Color in OKLCH"
+      },
+      {
         "command": "visualiseOklch.refresh",
         "title": "Visualise OKLCH: Refresh Previews"
       }
     ],
+    "menus": {
+      "editor/context": [
+        { "command": "visualiseOklch.editColor", "when": "editorTextFocus", "group": "1_modification@20" }
+      ]
+    },
     "configuration": {
       "title": "Visualise OKLCH",
       "properties": {
@@ -117,8 +131,9 @@
   },
   "scripts": {
     "art:icon": "node scripts/generate-icon.mjs",
-    "build": "bun build ./src/extension.ts --outfile ./dist/extension.js --target=node --format=cjs --external=vscode --sourcemap=linked",
-    "build:prod": "bun build ./src/extension.ts --outfile ./dist/extension.js --target=node --format=cjs --external=vscode --minify --sourcemap=none",
+    "build": "bun build ./src/extension.ts --outfile ./dist/extension.js --target=node --format=cjs --external=vscode --sourcemap=linked && bun run build:picker",
+    "build:prod": "bun build ./src/extension.ts --outfile ./dist/extension.js --target=node --format=cjs --external=vscode --minify --sourcemap=none && bun run build:picker",
+    "build:picker": "bun build ./src/pickerClient.ts --outfile ./dist/picker.js --target=browser --minify",
     "build:watch": "bun build ./src/extension.ts --outfile ./dist/extension.js --target=node --format=cjs --external=vscode --watch --sourcemap=linked",
     "build:site": "node scripts/prepare-pages.mjs",
     "changeset": "changeset",
@@ -138,7 +153,9 @@
     "verify": "bun run lint && bun run typecheck && bun run typecheck:compat && bun run test && bun run build:prod",
     "version-packages": "changeset version",
     "vscode:prepublish": "bun run build:prod",
-    "watch": "run-p typecheck:watch build:watch"
+    "watch": "run-p typecheck:watch build:watch picker:watch",
+    "picker:watch": "bun build ./src/pickerClient.ts --outfile ./dist/picker.js --target=browser --watch",
+    "preview:picker": "bun run build:picker && bun --hot scripts/preview-picker.ts"
   },
   "devDependencies": {
     "@changesets/cli": "^2.30.0",
