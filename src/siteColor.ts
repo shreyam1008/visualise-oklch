@@ -89,4 +89,26 @@ export const lightnessSamples = (color: ParsedOklch) => Array.from({ length: 101
   return { lightness: i, red: rgb.red * 255, green: rgb.green * 255, blue: rgb.blue * 255, hex: rgbToHex(rgb), inGamut: isOklchInSrgbGamut(value) };
 });
 
+// CIELCH (CSS D50), explicitly derived from the tool's sRGB fallback, not
+// the original wide-gamut OKLCH coordinates. CSS Color 4 conversion stages:
+// encoded sRGB -> linear sRGB -> XYZ D65 -> Bradford D50 -> Lab -> LCH.
+export const srgbFallbackLch = (color: ParsedOklch): string => {
+  const rgb = oklchToSrgb(color);
+  const linear = (v: number): number => v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4;
+  const b = linear(rgb.blue), g = linear(rgb.green), r = linear(rgb.red);
+  const x = .4123907992659595 * r + .35758433938387796 * g + .1804807884018343 * b;
+  const y = .21263900587151036 * r + .7151686787677559 * g + .07219231536073371 * b;
+  const z = .01933081871559185 * r + .11919477979462599 * g + .9505321522496607 * b;
+  const xd = 1.0479297925449969 * x + .022946870601609652 * y - .05019226628920524 * z;
+  const yd = .02962780877005599 * x + .9904344267538799 * y - .017073799063418826 * z;
+  const zd = -.009243040646204504 * x + .015055191490298152 * y + .7518742814281371 * z;
+  const f = (v: number): number => v > 216 / 24389 ? Math.cbrt(v) : (24389 / 27 * v + 16) / 116;
+  const fx = f(xd / (.3457 / .3585)), fy = f(yd), fz = f(zd / ((1 - .3457 - .3585) / .3585));
+  const labA = 500 * (fx - fy), labB = 200 * (fy - fz);
+  const c = Math.hypot(labA, labB);
+  const h = c < .0001 ? 0 : (Math.atan2(labB, labA) * 180 / Math.PI + 360) % 360;
+  const alpha = color.alpha < 1 ? ` / ${fmt(color.alpha * 100)}%` : '';
+  return `lch(${fmt(clamp(116 * fy - 16, 0, 100))}% ${fmt(c < .0001 ? 0 : c)} ${fmt(h)}${alpha})`;
+};
+
 export { isOklchInSrgbGamut, oklchToSrgb, rgbToHsl, maxSrgbChroma } from './color';

@@ -1233,6 +1233,22 @@ input {
 .nav-menu { position: absolute; right: 0; top: calc(100% + 8px); width: 210px; padding: 8px; border: 1px solid #43546a; border-radius: 12px; background: #0e1d30; box-shadow: 0 12px 30px #0006; }
 .nav-menu a { display: block; padding: 12px; min-height: 44px; border-radius: 6px; }
 .nav-menu a:hover { background: #203149; }
+.fallback-guide { border-top: 1px solid #394b62; margin-top: 18px; padding-top: 14px; }
+.fallback-guide:target { outline: 1px solid #79998d; outline-offset: 8px; }
+.fallback-guide summary { cursor: pointer; font-size: 14px; min-height: 36px; }
+.fallback-guide p, .fallback-guide output { font-size: 12px; line-height: 1.7; color: #bbcce0; }
+.fallback-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.fallback-pair figure { margin: 0; min-width: 0; background: repeating-conic-gradient(#344257 0% 25%, #172335 0% 50%) 0 0 / 16px 16px; border-radius: 8px; overflow: hidden; }
+.fallback-tile { height: 64px; }
+.fallback-pair figcaption { background: #0c192a; padding: 8px; font-size: 11px; line-height: 1.5; }
+.fallback-guide pre { font-size: 11px; padding: 12px; background: #091322; border-radius: 8px; }
+.lch-output { display: grid; gap: 8px; font-size: 12px; }
+.lch-output input { width: 100%; min-width: 0; padding: 10px; background: #091322; border: 1px solid #405773; border-radius: 8px; color: #dbefdf; font-size: 12px; }
+.extension-showcase { margin: 0 0 32px; padding: 20px; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 24px; align-items: center; }
+.extension-showcase img { width: 100%; height: auto; border-radius: 12px; }
+.extension-showcase strong { font-size: 22px; }
+.extension-showcase p { color: #b5c6de; font-size: 14px; line-height: 1.8; overflow-wrap: anywhere; }
+@media (max-width: 760px) { .extension-showcase { grid-template-columns: 1fr; padding: 14px; } }
 .living-glow { position: fixed; right: -90px; top: 16vh; width: min(650px, 80vw); height: min(650px, 80vh); border-radius: 50%; background-color: #ff4d52; opacity: .08; mask-image: radial-gradient(ellipse, #000 0%, transparent 70%); transition: background-color 700ms ease, opacity 700ms ease; pointer-events: none; z-index: 0; contain: strict; }
 .ambient-toggle { margin-left: auto; display: flex; gap: 6px; align-items: center; color: #b5c6de; font-size: 11px; min-height: 44px; cursor: pointer; }
 .ambient-toggle input { accent-color: #95e5ca; }

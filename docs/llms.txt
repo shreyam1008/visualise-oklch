@@ -15,6 +15,8 @@
 - [Releases and VSIX downloads](https://github.com/shreyam1008/visualise-oklch/releases)
 
 ## Interpretation
+The site also explains [sRGB fallback](https://visualise-oklch.shreyam1008.com.np/#srgb-fallback) and [CIELCH versus OKLCH](https://visualise-oklch.shreyam1008.com.np/#lch-and-oklch). The CIELCH D50 readout is read-only and converts the mapped sRGB fallback, not the original wide-gamut color. It is not a seventh editable converter input. The install section shows an explicitly labeled older project screenshot; it is not a current 2.1.0 panel capture.
+
 OKLCH and Oklab fields preserve authored wide-gamut values. HEX, RGB, HSL and HWB outputs use chroma-reduced sRGB where necessary and are rounded. The hue wheel uses labeled reference hues, not a plot of every displayable color. The graph samples are opaque. OKLCH lightness is not a contrast-ratio guarantee. The ambient glow is decoration, not a color-accuracy reference. Color conversion runs locally in the browser.
 
 This optional guide is a navigation aid for tools that read it; it is not an indexing, ranking, or AI-citation guarantee.

@@ -42,7 +42,7 @@
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Sora:wght@400;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=20260908-living" />
+    <link rel="stylesheet" href="./styles.css?v=20260908-fallback" />
     <link rel="alternate" type="text/plain" title="Machine-readable site guide" href="./llms.txt" />
     <script type="application/ld+json">
       {
@@ -390,6 +390,25 @@
             </div>
             <p class="converter-status" data-converter-status role="status">Everything runs locally in your browser. No color data is uploaded.</p>
             <p class="gamut-note" data-gamut-note></p>
+            <details class="fallback-guide" id="srgb-fallback" open>
+              <summary>What does “fallback” mean?</summary>
+              <p>A fallback is a version that fits a target color range. Here the target is sRGB. We reduce OKLCH chroma when needed, keeping lightness and hue fixed; your original value stays untouched until you choose Fit to sRGB.</p>
+              <div class="fallback-pair">
+                <figure><div class="fallback-tile" data-original-preview></div><figcaption>Original OKLCH · browser-rendered</figcaption></figure>
+                <figure><div class="fallback-tile" data-fallback-preview></div><figcaption>Chroma-reduced sRGB fallback</figcaption></figure>
+              </div>
+              <output data-fallback-change></output>
+              <p>The original preview depends on your browser and screen, so the two may look alike. These previews preserve alpha over the same checkerboard. This tool’s chroma-reduction policy is not a guarantee of identical browser gamut mapping.</p>
+              <pre><code data-fallback-css></code></pre>
+              <p>The first CSS declaration is also a syntax fallback for browsers that cannot parse OKLCH. Browser support and display gamut are separate issues.</p>
+            </details>
+            <details class="fallback-guide" id="lch-and-oklch">
+              <summary>OKLCH and LCH: same letters, different spaces</summary>
+              <p>Both describe lightness, chroma and hue. CSS <code>lch()</code> is CIELCH, based on CIELAB with a D50 white point. <code>oklch()</code> is based on Oklab with D65. A hue angle, chroma number or lightness value cannot simply be copied from one to the other.</p>
+              <p>For example, 100% chroma means 150 in CSS LCH, but 0.4 in OKLCH. Those percentage references are not gamut limits.</p>
+              <label class="lch-output">Your sRGB fallback expressed as CIELCH <input data-lch-output readonly aria-label="CIELCH representation of sRGB fallback" /></label>
+              <p>This read-only value converts the fallback—not the original wide-gamut color. It is separate from the six editable formats above. <a class="text-link" href="https://www.w3.org/TR/css-color-4/#specifying-lab-lch">Read the CSS color definitions ↗</a></p>
+            </details>
             <a class="text-link" href="#lightness-lab">Watch this color’s RGB channels change with lightness →</a>
             <div class="code-block">
               <p>CSS snippet</p>
@@ -523,6 +542,10 @@
       </section>
 
       <section id="install" class="section">
+        <figure class="extension-showcase panel">
+          <img src="./extension-inline.png" width="934" height="678" loading="lazy" decoding="async" alt="Earlier Visualise OKLCH inline swatches next to pink, slate and rose OKLCH values in a VS Code editor example" />
+          <figcaption><strong>What it looks like in the editor</strong><p>Existing project screenshot: inline color swatches beside OKLCH code. This is an older, pre-2.0.5 example—not a screenshot of the current 2.1.0 OKLCH editing panel.</p><p>In 2.1.0, place the cursor inside an OKLCH value and run <code>Visualise OKLCH: Edit Color in OKLCH</code>. That opens the independent L/C/H editor with its gamut map. The inline swatch also offers VS Code’s native picker.</p></figcaption>
+        </figure>
         <div class="section-heading">
           <p class="eyebrow">From playground to editor</p>
           <h2>Make your next color change in context.</h2>
@@ -670,6 +693,6 @@ git push origin main --tags
       <p class="footer-note">&copy; <span data-current-year></span> Lightweight interactive OKLCH guide for GitHub Pages.</p>
     </footer>
 
-    <script src="./app.js?v=20260908-living" type="module"></script>
+    <script src="./app.js?v=20260908-fallback" type="module"></script>
   </body>
 </html>

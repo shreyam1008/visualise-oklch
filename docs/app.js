@@ -1,4 +1,4 @@
-import * as colorTools from './color-tools.js';
+import * as colorTools from './color-tools.js?v=20260908-lch';
 const header = document.querySelector('.topbar');
 const moreNavigation = document.querySelector('.nav-more');
 new ResizeObserver(([entry]) => {
@@ -571,6 +571,12 @@ new IntersectionObserver(([entry]) => { labVisible = entry.isIntersecting; if (l
 function renderConverter(color) {
   renderGamutMap(color);
   currentFormats = colorTools.colorFormats(color);
+  const fallbackC = colorTools.isOklchInSrgbGamut(color) ? color.chroma : Math.min(color.chroma, colorTools.maxSrgbChroma(color.lightness, color.hueDegrees));
+  document.querySelector('[data-original-preview]').style.backgroundColor = currentFormats.oklch;
+  document.querySelector('[data-fallback-preview]').style.backgroundColor = currentFormats.rgb;
+  document.querySelector('[data-fallback-change]').textContent = `C ${format(color.chroma, 4)} → ${format(fallbackC, 4)} · L and H unchanged · ${currentFormats.hex}`;
+  document.querySelector('[data-fallback-css]').textContent = `.brand {\n  color: ${currentFormats.rgb};\n  color: ${currentFormats.oklch};\n}`;
+  document.querySelector('[data-lch-output]').value = colorTools.srgbFallbackLch(color);
   formatInputs.forEach((input) => {
     if (input !== document.activeElement) {
       input.value = currentFormats[input.dataset.formatInput];

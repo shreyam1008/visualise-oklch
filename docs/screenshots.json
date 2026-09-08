@@ -3,7 +3,8 @@
   "screenshots": [
     {
       "path": "screenshot.png",
-      "alt": "Visualise OKLCH color controls displayed inside Visual Studio Code",
+      "sitePath": "extension-inline.png",
+      "alt": "Older project screenshot showing inline OKLCH swatches in a VS Code editor example",
       "platform": "Visual Studio Code",
       "capturedVersion": "pre-2.0.5",
       "capturedAt": "2025-04-19",

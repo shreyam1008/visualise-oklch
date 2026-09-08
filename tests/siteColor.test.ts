@@ -1,7 +1,20 @@
 import { describe, expect, test } from 'bun:test';
-import { colorFormats, lightnessSamples, parseColorInput } from '../src/siteColor';
+import { colorFormats, lightnessSamples, parseColorInput, srgbFallbackLch } from '../src/siteColor';
 
 describe('linked CSS color converter', () => {
+  test('CIELCH D50 fallback matches the sRGB red reference, not OKLCH coordinates', () => {
+    const value = srgbFallbackLch(parseColorInput('#ff0000')!);
+    const coordinates = value.match(/[\d.]+/g)!.map(Number);
+    expect(coordinates[0]!).toBeCloseTo(54.29, 1);
+    expect(coordinates[1]!).toBeCloseTo(106.84, 1);
+    expect(coordinates[2]!).toBeCloseTo(40.86, 1);
+  });
+  test('CIELCH fallback neutral endpoints and alpha remain finite', () => {
+    expect(srgbFallbackLch(parseColorInput('#000')!)).toBe('lch(0% 0 0)');
+    expect(srgbFallbackLch(parseColorInput('#fff')!)).toBe('lch(100% 0 0)');
+    expect(srgbFallbackLch(parseColorInput('oklch(70% 0.4 150 / 30%)')!)).toContain('/ 30%');
+    expect(srgbFallbackLch(parseColorInput('oklch(70% 0.4 150)')!)).not.toMatch(/NaN|Infinity/);
+  });
   test.each(['#f00', '#ff0000', 'rgb(255 0 0)', 'rgb(100%, 0%, 0%)', 'hsl(0 100% 50%)', 'hwb(0 0% 0%)'])('red in %s', (input) => {
     expect(colorFormats(parseColorInput(input)!).hex).toBe('#ff0000');
   });

@@ -18,6 +18,8 @@ const pagesUrl = requestedUrl.toString();
 
 await rm(outputRoot, { recursive: true, force: true });
 await cp(docsRoot, outputRoot, { recursive: true });
+// Keep the genuine repository image as the source; no generated UI mockup.
+await cp(join(repoRoot, 'screenshot.png'), join(outputRoot, 'extension-inline.png'));
 
 for (const relativePath of ['index.html', 'robots.txt', 'sitemap.xml', 'site.webmanifest', 'llms.txt']) {
   const outputPath = join(outputRoot, relativePath);
