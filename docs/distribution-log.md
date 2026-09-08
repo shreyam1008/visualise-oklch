@@ -32,3 +32,8 @@ Anonymous store checks and signed-in dashboards still report **2.0.5** for both 
 - Evidence: https://github.com/shreyam1008/visualise-oklch/actions/runs/34187671875 . The workflow verified the GitHub release asset's SHA-256 and package identity before publishing those exact bytes.
 - Automation: repository `OVSX_PAT` configured; exposed setup token revoked and replaced, older owner token untouched. No token values belong in this log. Published matching GitHub releases trigger Open VSX publishing; manual retry supports existing releases.
 - Marketplace **2.0.5** remains pending; authentication is separate, and browser local-file upload still requires owner help. Website and GitHub VSIX 2.1.0 were already live.
+# Marketplace and visual follow-up — 8 September 2026
+
+Marketplace accepted the owner's 2.1.0 upload, displayed Verifying 2.1.0, then the anonymous public listing returned Version 2.1.0. Both stores now serve the GitHub-released version. Marketplace release automation still needs separately authorized Microsoft publisher authentication; the Azure account observed differed from the Marketplace account. No new Microsoft identity or token was created.
+
+Website-only update: an interactive L/C gamut slice beside the current swatch, hue-dependent sRGB boundary, moving source/fallback markers, keyboard and pointer editing, Fit to sRGB, before/after lightness swatches, shaded comparison interval and readable RGB channel deltas. Inspired by the explanatory gamut views at https://oklch.com/; implemented with the project's own shared color math and cached Canvas/SVG, no 3D or chart dependency. Numeric out-of-map chroma is preserved and clearly labelled. This does not require a new VSIX version.

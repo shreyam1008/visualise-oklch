@@ -391,7 +391,87 @@ let sampleKey = '';
 let samples = [];
 const signed = (value) => `${value >= 0 ? '+' : ''}${Math.round(value)}`;
 const channelNames = ['red', 'green', 'blue'];
+const gamutMap = document.querySelector('[data-gamut-map]');
+const gamutCanvas = document.querySelector('[data-gamut-canvas]');
+const gamutContext = gamutCanvas.getContext('2d');
+let gamutCacheKey = '';
+let gamutScale = 0.4;
+function renderGamutMap(color) {
+  gamutScale = Math.max(0.4, Math.ceil(Math.min(color.chroma, 1) * 10) / 10);
+  const key = `${color.hueDegrees}/${gamutScale}`;
+  if (key !== gamutCacheKey && gamutContext) {
+    gamutCacheKey = key;
+    const { width, height } = gamutCanvas;
+    const raster = gamutContext.createImageData(width, height);
+    const boundary = [];
+    for (let y = 0; y < height; y++) {
+      const lightness = 1 - y / (height - 1);
+      const limit = colorTools.maxSrgbChroma(lightness, color.hueDegrees, 0.5);
+      boundary.push(`${y ? 'L' : 'M'}${limit / gamutScale * width},${y / (height - 1) * height}`);
+      for (let x = 0; x < width; x++) {
+        const chroma = x / (width - 1) * gamutScale;
+        const offset = (y * width + x) * 4;
+        if (chroma > limit) {
+          const stripe = (x + y) % 12 < 3;
+          raster.data.set(stripe ? [47, 58, 76, 255] : [19, 27, 42, 255], offset);
+        } else {
+          const rgb = colorTools.oklchToSrgb({ lightness, chroma, hueDegrees: color.hueDegrees, alpha: 1 });
+          raster.data.set([rgb.red * 255, rgb.green * 255, rgb.blue * 255, 255], offset);
+        }
+      }
+    }
+    gamutContext.putImageData(raster, 0, 0);
+    document.querySelector('[data-map-boundary]').setAttribute('d', boundary.join(' '));
+  }
+  const boundaryC = colorTools.maxSrgbChroma(color.lightness, color.hueDegrees);
+  const x = Math.min(1, color.chroma / gamutScale) * 256, y = (1 - color.lightness) * 176;
+  const fallbackX = Math.min(color.chroma, boundaryC) / gamutScale * 256;
+  for (const [selector, position] of [['[data-map-marker]', x], ['[data-map-fallback]', fallbackX]]) {
+    const node = document.querySelector(selector); node.setAttribute('cx', position); node.setAttribute('cy', y);
+  }
+  const guide = document.querySelector('[data-map-guide]');
+  guide.setAttribute('x1', x); guide.setAttribute('x2', fallbackX); guide.setAttribute('y1', y); guide.setAttribute('y2', y);
+  document.querySelector('[data-map-hue]').textContent = `Hue ${format(color.hueDegrees)}°`;
+  document.querySelector('[data-map-scale]').textContent = `Vivid · C ${format(gamutScale)} →`;
+  const inside = colorTools.isOklchInSrgbGamut(color);
+  document.querySelector('[data-map-status]').textContent = `L ${format(color.lightness * 100, 1)}% · C ${format(color.chroma, 4)} · ${inside ? 'Inside sRGB' : `Outside sRGB — fallback C ${format(boundaryC, 4)}`}${color.chroma > gamutScale ? ' · Marker pinned: chroma exceeds map scale' : ''}`;
+  document.querySelector('[data-fit-gamut]').disabled = inside;
+}
+function customColorChanged() {
+  state.name = 'Your custom color'; updatePresetButtons(''); updateControls(); scheduleApplyState();
+}
+function mapPointer(event) {
+  const rect = gamutMap.getBoundingClientRect();
+  state.chroma = clamp((event.clientX - rect.left) / rect.width, 0, 1) * gamutScale;
+  state.lightness = clamp(1 - (event.clientY - rect.top) / rect.height, 0, 1) * 100;
+  customColorChanged();
+}
+gamutMap.addEventListener('pointerdown', (event) => { if (event.button !== 0) return; gamutMap.focus(); gamutMap.setPointerCapture(event.pointerId); mapPointer(event); });
+gamutMap.addEventListener('pointermove', (event) => { if (gamutMap.hasPointerCapture(event.pointerId)) mapPointer(event); });
+gamutMap.addEventListener('pointerup', (event) => { if (gamutMap.hasPointerCapture(event.pointerId)) gamutMap.releasePointerCapture(event.pointerId); });
+gamutMap.addEventListener('keydown', (event) => {
+  if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+  event.preventDefault(); const step = event.shiftKey ? 10 : 1;
+  if (event.key === 'ArrowUp') state.lightness = Math.min(100, state.lightness + step);
+  if (event.key === 'ArrowDown') state.lightness = Math.max(0, state.lightness - step);
+  if (event.key === 'ArrowRight') state.chroma = Math.min(gamutScale, state.chroma + step * 0.001);
+  if (event.key === 'ArrowLeft') state.chroma = Math.max(0, state.chroma - step * 0.001);
+  customColorChanged();
+});
+document.querySelector('[data-fit-gamut]').addEventListener('click', () => {
+  state.chroma = Math.min(state.chroma, colorTools.maxSrgbChroma(state.lightness / 100, state.hue)); customColorChanged();
+});
+const rgbChart = document.querySelector('.rgb-chart');
+function chartPointer(event) {
+  const rect = rgbChart.getBoundingClientRect();
+  state.lightness = clamp(((event.clientX - rect.left) / rect.width * 600 - 50) / 500, 0, 1) * 100;
+  customColorChanged();
+}
+rgbChart.addEventListener('pointerdown', (event) => { if (event.button !== 0) return; rgbChart.setPointerCapture(event.pointerId); chartPointer(event); });
+rgbChart.addEventListener('pointermove', (event) => { if (rgbChart.hasPointerCapture(event.pointerId)) chartPointer(event); });
+rgbChart.addEventListener('pointerup', (event) => { if (rgbChart.hasPointerCapture(event.pointerId)) rgbChart.releasePointerCapture(event.pointerId); });
 function renderConverter(color) {
+  renderGamutMap(color);
   currentFormats = colorTools.colorFormats(color);
   formatInputs.forEach((input) => {
     if (input !== document.activeElement) {
@@ -427,11 +507,23 @@ function renderConverter(color) {
   const x = 50 + color.lightness * 500;
   const cursor = document.querySelector('[data-chart-cursor]');
   cursor.setAttribute('x1', x); cursor.setAttribute('x2', x);
+  const beforeX = 50 + Math.max(0, color.lightness - 0.1) * 500;
+  const beforeLine = document.querySelector('[data-chart-before]'); beforeLine.setAttribute('x1', beforeX); beforeLine.setAttribute('x2', beforeX);
+  const band = document.querySelector('[data-chart-band]'); band.setAttribute('x', beforeX); band.setAttribute('width', x - beforeX);
+  for (const [which, value, lightness] of [['before', previous, Math.max(0, state.lightness - 10)], ['after', rgb, state.lightness]]) {
+    document.querySelector(`[data-compare-${which}]`).style.background = rgbToHex(value);
+    document.querySelector(`[data-compare-${which}-label]`).textContent = `L ${format(lightness, 1)}%`;
+    document.querySelector(`[data-compare-${which}-hex]`).textContent = rgbToHex(value);
+  }
+  document.querySelector('[data-chart-takeaway]').textContent = `One lightness change. Watch each RGB channel respond: R ${signed((rgb.red - previous.red) * 255)}, G ${signed((rgb.green - previous.green) * 255)}, B ${signed((rgb.blue - previous.blue) * 255)}.`;
   document.querySelector('[data-channel-readouts]').replaceChildren(...channelNames.map((channel) => {
     const point = document.querySelector(`[data-channel-point="${channel}"]`);
     point.setAttribute('cx', x); point.setAttribute('cy', 205 - rgb[channel] * 180);
     const card = document.createElement('div'); card.className = `channel-readout ${channel}`;
-    card.textContent = `${channel.toUpperCase()} ${Math.round(rgb[channel] * 255)}  (${signed((rgb[channel] - previous[channel]) * 255)})`;
+    const label = document.createElement('span'); label.textContent = channel.toUpperCase();
+    const values = document.createElement('strong'); values.textContent = `${Math.round(previous[channel] * 255)} → ${Math.round(rgb[channel] * 255)}`;
+    const delta = document.createElement('span'); delta.textContent = `Δ ${signed((rgb[channel] - previous[channel]) * 255)} / 255`;
+    card.append(label, values, delta);
     return card;
   }));
   document.querySelector('[data-step-note]').textContent = `Channel changes from L ${format(Math.max(0, state.lightness - 10), 1)}% to ${format(state.lightness, 1)}%, with identical C and H. Curves use chroma-reduced sRGB where needed; they are not raw OKLCH channels.`;

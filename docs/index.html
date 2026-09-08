@@ -231,6 +231,19 @@
               </div>
             </div>
             <div class="format-grid">
+              <section class="gamut-window" aria-labelledby="gamut-title">
+                <div class="gamut-heading"><h3 id="gamut-title">Where your color lives</h3><span data-map-hue>Hue 29.23°</span></div>
+                <p>Up = lighter. Right = more vivid. Drag the ring to explore.</p>
+                <div class="gamut-map" data-gamut-map tabindex="0" role="group" aria-label="Interactive lightness and chroma map" aria-describedby="map-help">
+                  <canvas data-gamut-canvas width="256" height="176" aria-hidden="true"></canvas>
+                  <svg viewBox="0 0 256 176" preserveAspectRatio="none" aria-hidden="true"><path data-map-boundary/><line data-map-guide/><circle data-map-fallback r="3"/><circle data-map-marker r="5"/></svg>
+                  <span class="map-light">L 100%</span><span class="map-dark">L 0%</span>
+                </div>
+                <div class="map-axis"><span>Neutral · C 0</span><span data-map-scale>Vivid · C 0.4 →</span></div>
+                <div class="map-key"><span>◯ Your color</span><span>● sRGB fallback</span><span>▧ Outside sRGB</span></div>
+                <p id="map-help">The colored shape is sRGB at this hue—not a fixed triangle. Arrow keys adjust C and L; Shift makes larger steps. Stripes are unavailable in sRGB, not additional displayable colors.</p>
+                <div class="map-status"><output data-map-status></output><button type="button" data-fit-gamut>Fit to sRGB</button></div>
+              </section>
               <article class="format-card">
                 <span>OKLCH</span>
                 <code data-output-oklch-full hidden>oklch(62.8% 0.258 29.23)</code>
@@ -334,9 +347,18 @@
             <p data-fixed-channels>Chroma 0.258 · hue 29.23° stay fixed</p>
           </div>
           <div class="chart-legend"><span class="red">Red</span><span class="green">Green</span><span class="blue">Blue</span><span>RGB channels: 0–255</span></div>
+          <div class="lightness-pair">
+            <article><div data-compare-before class="compare-color"></div><div><span>10 points darker</span><strong data-compare-before-label></strong><code data-compare-before-hex></code></div></article>
+            <span class="compare-arrow" aria-hidden="true">→</span>
+            <article><div data-compare-after class="compare-color"></div><div><span>Your current lightness</span><strong data-compare-after-label></strong><code data-compare-after-hex></code></div></article>
+          </div>
+          <p class="chart-takeaway" data-chart-takeaway></p>
+          <p class="chart-instructions">Read left to right: lightness increases. Read up: the RGB channel increases. The shaded slice compares the two swatches above. Drag across the chart, or use the lightness slider.</p>
           <svg class="rgb-chart" viewBox="0 0 600 270" role="img" aria-labelledby="rgb-chart-title rgb-chart-description">
             <title id="rgb-chart-title">RGB channels across OKLCH lightness</title>
             <desc id="rgb-chart-description">Red, green and blue channel values for a constant chroma and hue. A vertical line marks the selected lightness. Exact values are listed in the table below.</desc>
+            <rect data-chart-band y="25" height="180" fill="#c2dfef" opacity="0.08"/>
+            <line data-chart-before y1="25" y2="205" stroke="#bac8db" stroke-dasharray="2 6" opacity="0.5"/>
             <path class="chart-grid" d="M50 25H550M50 115H550M50 205H550M50 25V205M300 25V205M550 25V205" />
             <text x="7" y="30">255</text><text x="7" y="120">128</text><text x="25" y="210">0</text>
             <text x="50" y="245">L 0%</text><text x="280" y="245">50%</text><text x="515" y="245">100%</text>

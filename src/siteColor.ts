@@ -89,4 +89,4 @@ export const lightnessSamples = (color: ParsedOklch) => Array.from({ length: 101
   return { lightness: i, red: rgb.red * 255, green: rgb.green * 255, blue: rgb.blue * 255, hex: rgbToHex(rgb), inGamut: isOklchInSrgbGamut(value) };
 });
 
-export { isOklchInSrgbGamut, oklchToSrgb, rgbToHsl } from './color';
+export { isOklchInSrgbGamut, oklchToSrgb, rgbToHsl, maxSrgbChroma } from './color';
