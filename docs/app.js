@@ -1,4 +1,21 @@
 import * as colorTools from './color-tools.js';
+const header = document.querySelector('.topbar');
+const moreNavigation = document.querySelector('.nav-more');
+new ResizeObserver(([entry]) => {
+  document.documentElement.style.setProperty('--header-height', `${entry.target.getBoundingClientRect().height}px`);
+}).observe(header);
+moreNavigation.addEventListener('click', event => {
+  if (event.target.closest('a')) moreNavigation.open = false;
+});
+document.addEventListener('click', event => {
+  if (!moreNavigation.contains(event.target)) moreNavigation.open = false;
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && moreNavigation.open) {
+    moreNavigation.open = false;
+    moreNavigation.querySelector('summary').focus();
+  }
+});
 const presets = {
   cherry: { alpha: 100, chroma: 0.258, hue: 29.23, lightness: 62.8, name: 'Signal Red' },
   lagoon: { alpha: 100, chroma: 0.165, hue: 218, lightness: 74, name: 'Lagoon Blue' },
