@@ -1,5 +1,11 @@
 # Visualise OKLCH distribution log
 
+## Hue wheel and interaction performance — 8 September 2026
+
+Website-only update: a keyboard/pointer-accessible OKLCH hue wheel, live sRGB channel bars, and side-by-side desktop map/controls/six-format workbench. The wheel uses explicitly labeled fixed-L/C reference hues; its center shows the authored color. Gamut rasterization runs in a dedicated module worker with one active and one latest pending request, transferable pixel buffers, stale-result rejection, and an explicit unavailable-shading fallback. Offscreen lightness-chart work and closed lesson ramps are skipped. Pointer rectangles are measured at gesture start; live CSS color changes are scoped to the workbench, and preview transitions/decorative motion are removed.
+
+Local verification: 63 tests pass, both TypeScript checks and lint pass, production/site builds pass. Chrome pointer drags and keyboard hue edits kept conversions linked; the map completed without console errors; 390px responsive check had no horizontal overflow. No measured FPS or universal speed-up claim. Existing extension version 2.1.0 and registry authentication status are unchanged. Historical distribution checks below retain their original dates.
+
 Canonical product URL: <https://visualise-oklch.shreyam1008.com.np/>  
 Repository: <https://github.com/shreyam1008/visualise-oklch>  
 Last checked: 7 September 2026, UTC

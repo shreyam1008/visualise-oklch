@@ -1179,3 +1179,39 @@ input {
 .channel-readout strong { font-size: 25px; font-weight: 500; }
 @media (max-width: 760px) { .lightness-pair { grid-template-columns: 1fr; gap: 10px; } .lightness-pair .compare-arrow { text-align: center; transform: rotate(90deg); } .compare-color { width: 64px; height: 64px; } .gamut-window { padding: 14px; } }
 .preview-panel .preview-stage { min-height: 150px; height: 150px; }
+/* The editor is a quiet, direct-manipulation workbench. No animated paint lag. */
+:root { scroll-behavior: auto; }
+.playground-grid { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: start; }
+.preview-panel, .controls-panel, .preview-card { backdrop-filter: none; }
+.preview-surface, .preview-dot { transition: none; }
+.preview-card { background: #0b1529e8; }
+.visual-tools { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 14px; align-items: start; }
+.wheel-window { min-width: 0; padding: 14px; border: 1px solid #39465c; border-radius: 18px; background: #090f1b; }
+.wheel-window h3 { margin: 0; font-size: 17px; }
+.wheel-window p { font-size: 12px; line-height: 1.6; color: #b1c0d5; }
+.hue-wheel { position: relative; width: 100%; aspect-ratio: 1; border-radius: 50%; cursor: crosshair; touch-action: none; user-select: none; }
+.hue-wheel:focus-visible { outline: 3px solid #9defd8; outline-offset: 5px; }
+.gamut-map[aria-busy=true] canvas, .gamut-map[aria-busy=true] [data-map-boundary] { opacity: .4; }
+#playground .section-heading h2 { font-size: clamp(28px, 3vw, 40px); }
+#playground .section-heading { margin-bottom: 20px; }
+.color-anatomy { padding: 14px 20px; }
+.wheel-center { position: absolute; inset: 18%; border-radius: 50%; background: #0a1323; display: grid; place-content: center; gap: 8px; pointer-events: none; text-align: center; }
+.wheel-center span { width: 40px; height: 40px; margin: auto; border-radius: 50%; border: 1px solid #ffffff80; }
+.wheel-center strong { font: 13px 'IBM Plex Mono', monospace; }
+.wheel-marker { position: absolute; width: 16px; height: 16px; border: 3px solid white; border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 0 2px #101726; pointer-events: none; }
+.mini-rgb { display: grid; gap: 8px; font: 12px 'IBM Plex Mono', monospace; }
+.mini-rgb > div { display: grid; grid-template-columns: 12px 1fr 28px; gap: 8px; align-items: center; }
+.mini-track { background: #283346; height: 6px; border-radius: 4px; overflow: hidden; }
+.mini-track i { display: block; height: 100%; background: currentColor; transform-origin: left; }
+.visual-tools .gamut-window { grid-column: auto; padding: 14px; }
+.controls-panel .control { grid-template-columns: 1fr auto; gap: 6px; margin-top: 12px; }
+.control input { grid-column: 1 / -1; touch-action: pan-y; min-height: 28px; }
+.controls-panel .format-grid { gap: 8px; margin-top: 18px; }
+.format-card { padding: 10px; border-radius: 10px; }
+.format-card input { padding: 8px 6px; font-size: 11px; }
+.converter-status { min-height: 0; }
+.controls-panel .tip-card, .controls-panel .code-block { display: none; }
+.rgb-chart { max-height: none; height: auto; aspect-ratio: 600 / 270; touch-action: none; }
+.hero-orb, .hero-beam, .mini-swatch, .token-cloud span, .hero-marquee-track, .ambient-orbit, .spotlight { animation: none; }
+@media (max-width: 1100px) { .playground-grid { grid-template-columns: 1fr; } }
+@media (max-width: 460px) { .visual-tools { grid-template-columns: 1fr; } .hue-wheel { max-width: 200px; margin: 14px auto; } }

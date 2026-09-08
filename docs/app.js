@@ -257,14 +257,16 @@ const applyState = () => {
   const oklch = oklchString(normalized);
   const canonical = { ...normalized, hueDegrees: normalized.hue };
   const rgb = colorTools.oklchToSrgb(canonical);
+  updateControls();
+  renderWheel(canonical);
   renderConverter(canonical);
   const hex = rgbToHex(rgb);
   const hsl = rgbToHsl(rgb);
   const hslEquivalent = hslString(hsl);
   const rgbEquivalent = rgbString(rgb);
 
-  document.documentElement.style.setProperty('--live-color', oklch);
-  document.documentElement.style.setProperty('--live-color-soft', oklchString({ ...normalized, alpha: 0.24 }));
+  document.querySelector('#playground').style.setProperty('--live-color', oklch);
+  document.querySelector('#playground').style.setProperty('--live-color-soft', oklchString({ ...normalized, alpha: 0.24 }));
 
   selectors.name.textContent = state.name;
   selectors.oklch.textContent = oklch;
@@ -294,7 +296,7 @@ const applyState = () => {
   document.querySelector('[data-gamut-note]').textContent = colorTools.isOklchInSrgbGamut(canonical)
     ? 'Within sRGB. HEX, RGB and HSL are rounded representations of this color.'
     : 'Outside sRGB. HEX, RGB and HSL reduce chroma to fit sRGB while keeping lightness and hue. Your browser’s OKLCH preview may differ.';
-  document.querySelectorAll('[data-lesson-ramp]').forEach((ramp) => {
+  document.querySelectorAll('.color-anatomy[open] [data-lesson-ramp]').forEach((ramp) => {
     const channel = ramp.dataset.lessonRamp;
     const maximum = { lightness: 1, chroma: 0.3, hue: 360 }[channel];
     const stops = Array.from({ length: 25 }, (_, index) =>
@@ -361,7 +363,6 @@ controls.forEach((input) => {
 
     updatePresetButtons('');
     state.name = 'Your custom color';
-    updateControls();
     scheduleApplyState();
   });
 });
@@ -396,32 +397,42 @@ const gamutCanvas = document.querySelector('[data-gamut-canvas]');
 const gamutContext = gamutCanvas.getContext('2d');
 let gamutCacheKey = '';
 let gamutScale = 0.4;
+let pendingRaster = null, rasterBusy = false, rasterWorker;
+try {
+  rasterWorker = new Worker(new URL('./gamut-worker.js', import.meta.url), { type: 'module' });
+  rasterWorker.onmessage = ({ data }) => {
+    rasterBusy = false;
+    if (data.key === gamutCacheKey) {
+      gamutContext.putImageData(new ImageData(data.pixels, data.width, data.height), 0, 0);
+      document.querySelector('[data-map-boundary]').setAttribute('d', data.boundary);
+      gamutCanvas.hidden = false;
+      gamutMap.setAttribute('aria-busy', 'false');
+    }
+    sendRaster();
+  };
+  rasterWorker.onerror = () => {
+    rasterWorker.terminate(); rasterWorker = null; rasterBusy = false;
+    gamutCanvas.hidden = true;
+    gamutMap.setAttribute('aria-busy', 'false');
+    document.querySelector('[data-map-boundary]').setAttribute('d', '');
+    document.querySelector('[data-raster-note]').textContent = 'Map shading unavailable. Coordinates, wheel and conversions still work.';
+  };
+} catch {
+  document.querySelector('[data-raster-note]').textContent = 'Map shading unavailable. Coordinates, wheel and conversions still work.';
+}
+function sendRaster() {
+  // At most one running job and one latest request; no stale drag backlog.
+  if (!rasterWorker || rasterBusy || !pendingRaster) return;
+  rasterBusy = true; rasterWorker.postMessage(pendingRaster); pendingRaster = null;
+}
 function renderGamutMap(color) {
   gamutScale = Math.max(0.4, Math.ceil(Math.min(color.chroma, 1) * 10) / 10);
   const key = `${color.hueDegrees}/${gamutScale}`;
   if (key !== gamutCacheKey && gamutContext) {
     gamutCacheKey = key;
-    const { width, height } = gamutCanvas;
-    const raster = gamutContext.createImageData(width, height);
-    const boundary = [];
-    for (let y = 0; y < height; y++) {
-      const lightness = 1 - y / (height - 1);
-      const limit = colorTools.maxSrgbChroma(lightness, color.hueDegrees, 0.5);
-      boundary.push(`${y ? 'L' : 'M'}${limit / gamutScale * width},${y / (height - 1) * height}`);
-      for (let x = 0; x < width; x++) {
-        const chroma = x / (width - 1) * gamutScale;
-        const offset = (y * width + x) * 4;
-        if (chroma > limit) {
-          const stripe = (x + y) % 12 < 3;
-          raster.data.set(stripe ? [47, 58, 76, 255] : [19, 27, 42, 255], offset);
-        } else {
-          const rgb = colorTools.oklchToSrgb({ lightness, chroma, hueDegrees: color.hueDegrees, alpha: 1 });
-          raster.data.set([rgb.red * 255, rgb.green * 255, rgb.blue * 255, 255], offset);
-        }
-      }
-    }
-    gamutContext.putImageData(raster, 0, 0);
-    document.querySelector('[data-map-boundary]').setAttribute('d', boundary.join(' '));
+    gamutMap.setAttribute('aria-busy', String(Boolean(rasterWorker)));
+    pendingRaster = { key, hue: color.hueDegrees, scale: gamutScale, width: gamutCanvas.width, height: gamutCanvas.height };
+    sendRaster();
   }
   const boundaryC = colorTools.maxSrgbChroma(color.lightness, color.hueDegrees);
   const x = Math.min(1, color.chroma / gamutScale) * 256, y = (1 - color.lightness) * 176;
@@ -438,15 +449,16 @@ function renderGamutMap(color) {
   document.querySelector('[data-fit-gamut]').disabled = inside;
 }
 function customColorChanged() {
-  state.name = 'Your custom color'; updatePresetButtons(''); updateControls(); scheduleApplyState();
+  state.name = 'Your custom color'; updatePresetButtons(''); scheduleApplyState();
 }
+let mapRect;
 function mapPointer(event) {
-  const rect = gamutMap.getBoundingClientRect();
+  const rect = mapRect;
   state.chroma = clamp((event.clientX - rect.left) / rect.width, 0, 1) * gamutScale;
   state.lightness = clamp(1 - (event.clientY - rect.top) / rect.height, 0, 1) * 100;
   customColorChanged();
 }
-gamutMap.addEventListener('pointerdown', (event) => { if (event.button !== 0) return; gamutMap.focus(); gamutMap.setPointerCapture(event.pointerId); mapPointer(event); });
+gamutMap.addEventListener('pointerdown', (event) => { if (event.button !== 0) return; mapRect = gamutMap.getBoundingClientRect(); gamutMap.focus({ preventScroll: true }); gamutMap.setPointerCapture(event.pointerId); mapPointer(event); });
 gamutMap.addEventListener('pointermove', (event) => { if (gamutMap.hasPointerCapture(event.pointerId)) mapPointer(event); });
 gamutMap.addEventListener('pointerup', (event) => { if (gamutMap.hasPointerCapture(event.pointerId)) gamutMap.releasePointerCapture(event.pointerId); });
 gamutMap.addEventListener('keydown', (event) => {
@@ -462,14 +474,62 @@ document.querySelector('[data-fit-gamut]').addEventListener('click', () => {
   state.chroma = Math.min(state.chroma, colorTools.maxSrgbChroma(state.lightness / 100, state.hue)); customColorChanged();
 });
 const rgbChart = document.querySelector('.rgb-chart');
+let chartRect;
 function chartPointer(event) {
-  const rect = rgbChart.getBoundingClientRect();
+  const rect = chartRect;
   state.lightness = clamp(((event.clientX - rect.left) / rect.width * 600 - 50) / 500, 0, 1) * 100;
   customColorChanged();
 }
-rgbChart.addEventListener('pointerdown', (event) => { if (event.button !== 0) return; rgbChart.setPointerCapture(event.pointerId); chartPointer(event); });
+rgbChart.addEventListener('pointerdown', (event) => { if (event.button !== 0) return; chartRect = rgbChart.getBoundingClientRect(); rgbChart.setPointerCapture(event.pointerId); chartPointer(event); });
 rgbChart.addEventListener('pointermove', (event) => { if (rgbChart.hasPointerCapture(event.pointerId)) chartPointer(event); });
 rgbChart.addEventListener('pointerup', (event) => { if (rgbChart.hasPointerCapture(event.pointerId)) rgbChart.releasePointerCapture(event.pointerId); });
+const hueWheel = document.querySelector('[data-hue-wheel]');
+const wheelMarker = document.querySelector('[data-wheel-marker]');
+const wheelSwatch = document.querySelector('[data-wheel-swatch]');
+const wheelValue = document.querySelector('[data-wheel-value]');
+const wheelStops = Array.from({ length: 73 }, (_, i) => {
+  const hue = i * 5;
+  return `${rgbToHex(colorTools.oklchToSrgb({ lightness: .72, chroma: .14, hueDegrees: hue, alpha: 1 }))} ${hue}deg`;
+});
+hueWheel.style.background = `conic-gradient(${wheelStops.join(',')})`;
+function renderWheel(color) {
+  const angle = color.hueDegrees * Math.PI / 180;
+  wheelMarker.style.left = `${50 + 42 * Math.sin(angle)}%`;
+  wheelMarker.style.top = `${50 - 42 * Math.cos(angle)}%`;
+  wheelSwatch.style.background = oklchString({ ...color, hue: color.hueDegrees });
+  wheelValue.textContent = `${format(color.hueDegrees, 1)}°`;
+  hueWheel.setAttribute('aria-valuenow', format(color.hueDegrees, 2));
+  hueWheel.setAttribute('aria-valuetext', `${format(color.hueDegrees, 1)} degrees OKLCH hue`);
+  const rgb = colorTools.oklchToSrgb(color);
+  for (const channel of channelNames) {
+    document.querySelector(`[data-mini-value="${channel}"]`).textContent = Math.round(rgb[channel] * 255);
+    document.querySelector(`[data-mini-bar="${channel}"]`).style.transform = `scaleX(${rgb[channel]})`;
+  }
+}
+let wheelRect;
+function wheelPointer(event) {
+  const x = event.clientX - wheelRect.left - wheelRect.width / 2;
+  const y = event.clientY - wheelRect.top - wheelRect.height / 2;
+  if (Math.hypot(x, y) < wheelRect.width * .25) return;
+  state.hue = (Math.atan2(x, -y) * 180 / Math.PI + 360) % 360;
+  customColorChanged();
+}
+hueWheel.addEventListener('pointerdown', (event) => {
+  if (event.button !== 0) return;
+  wheelRect = hueWheel.getBoundingClientRect();
+  hueWheel.focus({ preventScroll: true }); hueWheel.setPointerCapture(event.pointerId); wheelPointer(event);
+});
+hueWheel.addEventListener('pointermove', (event) => { if (hueWheel.hasPointerCapture(event.pointerId)) wheelPointer(event); });
+hueWheel.addEventListener('pointerup', (event) => { if (hueWheel.hasPointerCapture(event.pointerId)) hueWheel.releasePointerCapture(event.pointerId); });
+hueWheel.addEventListener('keydown', (event) => {
+  if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(event.key)) return;
+  event.preventDefault();
+  const step = event.shiftKey ? 10 : 1;
+  state.hue = event.key === 'Home' ? 0 : event.key === 'End' ? 359 : (state.hue + (['ArrowRight', 'ArrowUp'].includes(event.key) ? step : -step) + 360) % 360;
+  customColorChanged();
+});
+let labVisible = false;
+new IntersectionObserver(([entry]) => { labVisible = entry.isIntersecting; if (labVisible) scheduleApplyState(); }, { rootMargin: '150px' }).observe(document.querySelector('#lightness-lab'));
 function renderConverter(color) {
   renderGamutMap(color);
   currentFormats = colorTools.colorFormats(color);
@@ -482,6 +542,7 @@ function renderConverter(color) {
   if (!formatInputs.some((input) => input.getAttribute('aria-invalid') === 'true')) {
     converterStatus.textContent = 'All six formats are linked. Numeric CSS colors only; conversions stay in your browser. Rounded sRGB formats may lose wide-gamut color and precision.';
   }
+  if (!labVisible) return;
   document.querySelector('[data-lab-value]').textContent = `${format(state.lightness, 1)}%`;
   document.querySelector('[data-fixed-channels]').textContent = `Fixed C ${format(state.chroma, 4)} · H ${format(state.hue, 2)}° · opaque samples`;
   const key = `${color.chroma}/${color.hueDegrees}`;
@@ -543,7 +604,9 @@ document.querySelectorAll('[data-copy-format]').forEach((button) => button.addEv
   try { await navigator.clipboard.writeText(currentFormats[button.dataset.copyFormat]); converterStatus.textContent = `${button.dataset.copyFormat.toUpperCase()} copied.`; }
   catch { converterStatus.textContent = 'Clipboard unavailable. Select the value and copy it manually.'; }
 }));
-buildCloud();
+document.querySelector('.color-anatomy').addEventListener('toggle', scheduleApplyState);
+// Keep decorative backgrounds still while the color tool is in use.
+
 updateControls();
 updatePresetButtons('cherry');
 applyState();
