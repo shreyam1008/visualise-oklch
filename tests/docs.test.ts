@@ -7,6 +7,15 @@ const repoRoot = resolve(import.meta.dir, '..');
 const indexHtml = readFileSync(resolve(docsRoot, 'index.html'), 'utf8');
 
 describe('docs site', () => {
+  test('shows the real picker as an isolated, honestly labeled browser demo', () => {
+    const demo = readFileSync(resolve(docsRoot, 'picker-demo.html'), 'utf8');
+    expect(indexHtml).toContain('sandbox="allow-scripts"');
+    expect(indexHtml).toContain('extension’s actual picker HTML and client code');
+    expect(demo).toContain('Applied to this demo only. No file changed.');
+    expect(demo).toContain('id="plane"');
+    expect(demo).toContain('id="apply"');
+    expect(demo).not.toContain('src="demo-client.js"');
+  });
   test('machine-readable entities describe the real tool and tutorial without rating claims', () => {
     const blocks = [...indexHtml.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
     const entities = blocks.flatMap(match => {

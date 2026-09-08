@@ -42,7 +42,7 @@
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Sora:wght@400;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=20260908-fallback" />
+    <link rel="stylesheet" href="./styles.css?v=20260908-picker-demo" />
     <link rel="alternate" type="text/plain" title="Machine-readable site guide" href="./llms.txt" />
     <script type="application/ld+json">
       {
@@ -542,6 +542,17 @@
       </section>
 
       <section id="install" class="section">
+        <section class="custom-picker-showcase panel" aria-labelledby="custom-picker-title">
+          <div>
+            <p class="eyebrow">The extension’s custom picker</p>
+            <h2 id="custom-picker-title">Edit the color in OKLCH.</h2>
+            <p>This working browser demo uses the extension’s actual picker HTML and client code—not a mock screenshot. Try the plane, L/C/H/alpha controls, Fit to sRGB, Reset and Apply.</p>
+            <p>In VS Code, place your cursor inside an OKLCH value, then right-click and choose <strong>Visualise OKLCH: Edit Color in OKLCH</strong>, or run it from the command palette.</p>
+            <p>The demo has no editor connection: Apply changes only its in-memory example. In the extension, Apply makes one undoable document edit. VS Code’s theme may change the panel’s appearance.</p>
+            <a class="text-link" href="./picker-demo.html" target="_blank" rel="noopener">Open the picker demo at full size ↗</a>
+          </div>
+          <iframe title="Interactive demo of the Visualise OKLCH custom extension picker" src="./picker-demo.html" loading="lazy" sandbox="allow-scripts" class="custom-picker-frame"></iframe>
+        </section>
         <figure class="extension-showcase panel">
           <img src="./extension-inline.png" width="934" height="678" loading="lazy" decoding="async" alt="Earlier Visualise OKLCH inline swatches next to pink, slate and rose OKLCH values in a VS Code editor example" />
           <figcaption><strong>What it looks like in the editor</strong><p>Existing project screenshot: inline color swatches beside OKLCH code. This is an older, pre-2.0.5 example—not a screenshot of the current 2.1.0 OKLCH editing panel.</p><p>In 2.1.0, place the cursor inside an OKLCH value and run <code>Visualise OKLCH: Edit Color in OKLCH</code>. That opens the independent L/C/H editor with its gamut map. The inline swatch also offers VS Code’s native picker.</p></figcaption>

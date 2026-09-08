@@ -1233,6 +1233,11 @@ input {
 .nav-menu { position: absolute; right: 0; top: calc(100% + 8px); width: 210px; padding: 8px; border: 1px solid #43546a; border-radius: 12px; background: #0e1d30; box-shadow: 0 12px 30px #0006; }
 .nav-menu a { display: block; padding: 12px; min-height: 44px; border-radius: 6px; }
 .nav-menu a:hover { background: #203149; }
+.custom-picker-showcase { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 28px; padding: 24px; margin-bottom: 32px; align-items: start; }
+.custom-picker-showcase h2 { font-size: clamp(28px, 4vw, 44px); }
+.custom-picker-showcase p:not(.eyebrow) { font-size: 14px; color: #b5c6de; line-height: 1.8; }
+.custom-picker-frame { width: 100%; height: 780px; border: 1px solid #455369; border-radius: 12px; background: #181818; }
+@media (max-width: 760px) { .custom-picker-showcase { grid-template-columns: 1fr; padding: 14px; gap: 18px; } .custom-picker-frame { height: 830px; } }
 .fallback-guide { border-top: 1px solid #394b62; margin-top: 18px; padding-top: 14px; }
 .fallback-guide:target { outline: 1px solid #79998d; outline-offset: 8px; }
 .fallback-guide summary { cursor: pointer; font-size: 14px; min-height: 36px; }
