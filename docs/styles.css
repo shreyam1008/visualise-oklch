@@ -1233,6 +1233,17 @@ input {
 .nav-menu { position: absolute; right: 0; top: calc(100% + 8px); width: 210px; padding: 8px; border: 1px solid #43546a; border-radius: 12px; background: #0e1d30; box-shadow: 0 12px 30px #0006; }
 .nav-menu a { display: block; padding: 12px; min-height: 44px; border-radius: 6px; }
 .nav-menu a:hover { background: #203149; }
+.living-glow { position: fixed; right: -90px; top: 16vh; width: min(650px, 80vw); height: min(650px, 80vh); border-radius: 50%; background-color: #ff4d52; opacity: .08; mask-image: radial-gradient(ellipse, #000 0%, transparent 70%); transition: background-color 700ms ease, opacity 700ms ease; pointer-events: none; z-index: 0; contain: strict; }
+.ambient-toggle { margin-left: auto; display: flex; gap: 6px; align-items: center; color: #b5c6de; font-size: 11px; min-height: 44px; cursor: pointer; }
+.ambient-toggle input { accent-color: #95e5ca; }
+.shared-color-strip { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; margin: 0 0 24px; padding: 16px; border: 1px solid #466279; border-radius: 12px; background: #0b1b2e; }
+.shared-color-swatch { flex: 0 0 44px; height: 44px; border: 1px solid #ffffff55; border-radius: 10px; }
+.shared-color-strip > div { display: grid; gap: 7px; min-width: 0; flex: 1 1 220px; }
+.shared-color-strip strong { font-size: 14px; }
+.shared-color-strip code { color: #d2eddf; font-size: 12px; overflow-wrap: anywhere; }
+.shared-color-strip span:not(.shared-color-swatch) { color: #afc2d5; font-size: 12px; line-height: 1.5; }
+.shared-color-strip a { font-size: 12px; padding: 12px 0; }
+@media (prefers-reduced-motion: reduce) { .living-glow { transition: none; } }
 .compatibility-card { min-width: 0; overflow-wrap: anywhere; }
 .compatibility-card > * { min-width: 0; }
 pre { max-width: 100%; overflow-x: auto; }

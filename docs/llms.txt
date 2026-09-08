@@ -1,0 +1,20 @@
+# Visualise OKLCH
+
+> Free OKLCH editor extension and browser-based CSS color converter with a practical interactive color tutorial. Maintained by Shreyam Adhikari.
+
+## Canonical website and sections
+- [Website](https://visualise-oklch.shreyam1008.com.np/): Public static explanations; interactive controls require JavaScript.
+- [Color picker and conversion](https://visualise-oklch.shreyam1008.com.np/#playground): OKLCH hue wheel, lightness/chroma map, six linked numeric CSS formats and alpha.
+- [Lightness experiment](https://visualise-oklch.shreyam1008.com.np/#lightness-lab): The same selected color; vary L while holding C and H fixed, and inspect the resulting sRGB channel curves.
+- [Practical extension tutorial](https://visualise-oklch.shreyam1008.com.np/#install): Install and use the independent OKLCH editor in VS Code-compatible editors.
+
+## Source and distribution
+- [Source and license](https://github.com/shreyam1008/visualise-oklch): Apache-2.0 source and tests.
+- [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=shreyam1008.visualise-oklch)
+- [Open VSX](https://open-vsx.org/extension/shreyam1008/visualise-oklch)
+- [Releases and VSIX downloads](https://github.com/shreyam1008/visualise-oklch/releases)
+
+## Interpretation
+OKLCH and Oklab fields preserve authored wide-gamut values. HEX, RGB, HSL and HWB outputs use chroma-reduced sRGB where necessary and are rounded. The hue wheel uses labeled reference hues, not a plot of every displayable color. The graph samples are opaque. OKLCH lightness is not a contrast-ratio guarantee. The ambient glow is decoration, not a color-accuracy reference. Color conversion runs locally in the browser.
+
+This optional guide is a navigation aid for tools that read it; it is not an indexing, ranking, or AI-citation guarantee.

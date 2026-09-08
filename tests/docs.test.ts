@@ -7,6 +7,19 @@ const repoRoot = resolve(import.meta.dir, '..');
 const indexHtml = readFileSync(resolve(docsRoot, 'index.html'), 'utf8');
 
 describe('docs site', () => {
+  test('machine-readable entities describe the real tool and tutorial without rating claims', () => {
+    const blocks = [...indexHtml.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
+    const entities = blocks.flatMap(match => {
+      const value = JSON.parse(match[1] ?? '{}');
+      return value['@graph'] ?? [value];
+    });
+    expect(entities.some(entity => entity['@type'] === 'WebApplication')).toBe(true);
+    expect(entities.some(entity => Array.isArray(entity['@type']) && entity['@type'].includes('LearningResource'))).toBe(true);
+    expect(JSON.stringify(entities)).not.toContain('aggregateRating');
+    expect(readFileSync(resolve(docsRoot, 'llms.txt'), 'utf8')).toContain('#lightness-lab');
+    expect(indexHtml).toContain('data-shared-color');
+    expect(indexHtml).toContain('data-ambient-toggle');
+  });
   test('ships essential crawler assets', () => {
     expect(existsSync(resolve(docsRoot, '.nojekyll'))).toBe(true);
     expect(existsSync(resolve(docsRoot, 'logo-mark.svg'))).toBe(true);

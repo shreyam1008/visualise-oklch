@@ -19,7 +19,7 @@ const pagesUrl = requestedUrl.toString();
 await rm(outputRoot, { recursive: true, force: true });
 await cp(docsRoot, outputRoot, { recursive: true });
 
-for (const relativePath of ['index.html', 'robots.txt', 'sitemap.xml', 'site.webmanifest']) {
+for (const relativePath of ['index.html', 'robots.txt', 'sitemap.xml', 'site.webmanifest', 'llms.txt']) {
   const outputPath = join(outputRoot, relativePath);
   const source = await readFile(outputPath, 'utf8');
   if (!source.includes(canonicalUrl)) {

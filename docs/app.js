@@ -74,6 +74,24 @@ const rampNodes = { hsl: [], oklch: [] };
 
 const state = { ...presets.cherry };
 let renderFrame = 0;
+const livingGlow = document.querySelector('[data-living-glow]');
+const ambientToggle = document.querySelector('[data-ambient-toggle]');
+let ambientTimer = 0;
+function paintAmbient() {
+  ambientTimer = 0;
+  if (!ambientToggle.checked || document.hidden) return;
+  const rgb = colorTools.oklchToSrgb({ lightness: state.lightness / 100, chroma: state.chroma, hueDegrees: state.hue, alpha: 1 });
+  livingGlow.style.backgroundColor = `rgb(${Math.round(rgb.red * 255)} ${Math.round(rgb.green * 255)} ${Math.round(rgb.blue * 255)})`;
+  livingGlow.style.opacity = String(.045 + state.lightness / 100 * .075);
+}
+function scheduleAmbient() {
+  if (!ambientTimer && ambientToggle.checked && !document.hidden) ambientTimer = window.setTimeout(paintAmbient, 120);
+}
+ambientToggle.addEventListener('change', () => {
+  livingGlow.hidden = !ambientToggle.checked;
+  if (ambientToggle.checked) paintAmbient();
+});
+document.addEventListener('visibilitychange', () => { if (!document.hidden) scheduleAmbient(); });
 
 const oklchToSrgb = (color) => colorTools.oklchToSrgb({ ...color, hueDegrees: color.hue });
 
@@ -274,6 +292,9 @@ const applyState = () => {
   const oklch = oklchString(normalized);
   const canonical = { ...normalized, hueDegrees: normalized.hue };
   const rgb = colorTools.oklchToSrgb(canonical);
+  scheduleAmbient();
+  document.querySelector('[data-shared-swatch]').style.background = oklch;
+  document.querySelector('[data-shared-color]').textContent = oklch;
   updateControls();
   renderWheel(canonical);
   renderConverter(canonical);
