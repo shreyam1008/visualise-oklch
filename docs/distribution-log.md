@@ -26,3 +26,9 @@ The website now links editable OKLCH, HEX, RGB, HSL, HWB and Oklab fields, inclu
 Browser verification covered all six editable inputs, alpha, incomplete values retaining the last valid color, keyboard lightness adjustment and rendered curve/table data. Technical SEO includes converter-focused metadata, canonical URL, truthful application schema, static explanatory content and sitemap date. Search indexing/ranking and publisher badges are not claimed.
 
 Anonymous store checks and signed-in dashboards still report **2.0.5** for both registries. GitHub **2.1.0** remains the downloadable release. Missing repository publishing secrets and blocked browser local-file uploads remain unresolved. See PUBLISHING.md for the authentication audit; Git-only portfolio evidence lives in `shreyam1008/buggy/docs/projects/backlinks.md`.
+# Open VSX published — 8 September 2026
+
+- **Live:** Open VSX `shreyam1008.visualise-oklch` **2.1.0**. Anonymous `/api/shreyam1008/visualise-oklch/2.1.0` and refreshed `/latest` both returned 2.1.0; signed-in dashboard agrees.
+- Evidence: https://github.com/shreyam1008/visualise-oklch/actions/runs/34187671875 . The workflow verified the GitHub release asset's SHA-256 and package identity before publishing those exact bytes.
+- Automation: repository `OVSX_PAT` configured; exposed setup token revoked and replaced, older owner token untouched. No token values belong in this log. Published matching GitHub releases trigger Open VSX publishing; manual retry supports existing releases.
+- Marketplace **2.0.5** remains pending; authentication is separate, and browser local-file upload still requires owner help. Website and GitHub VSIX 2.1.0 were already live.
