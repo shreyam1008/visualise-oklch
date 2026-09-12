@@ -2,13 +2,22 @@
   "schemaVersion": 1,
   "screenshots": [
     {
-      "path": "screenshot.png",
-      "sitePath": "extension-inline.png",
-      "alt": "Older project screenshot showing inline OKLCH swatches in a VS Code editor example",
-      "platform": "Visual Studio Code",
-      "capturedVersion": "pre-2.0.5",
-      "capturedAt": "2025-04-19",
-      "workflow": "Open the extension against a public sample stylesheet, capture only the editor and picker, and verify that no private workspace data is visible. Re-capture for the next release."
+      "path": "images/inline-colors.png",
+      "sitePath": "images/inline-colors.png",
+      "alt": "Inline OKLCH swatches with the native hover picker and Open OKLCH picker action",
+      "platform": "Visual Studio Code on Windows",
+      "capturedVersion": "2.1.1",
+      "capturedAt": "2026-09-12",
+      "workflow": "Actual VS Code extension development host, examples/palette.json, Show or Focus Hover on the blue color. Cropped to editor; lossless PNG."
+    },
+    {
+      "path": "images/oklch-picker.png",
+      "sitePath": "images/oklch-picker.png",
+      "alt": "Custom OKLCH picker beside the JSON palette",
+      "platform": "Visual Studio Code on Windows",
+      "capturedVersion": "2.1.0",
+      "capturedAt": "2026-09-12",
+      "workflow": "Cursor inside the blue token, then Visualise OKLCH: Edit Color in OKLCH. Cropped to editor and picker; PNG palette optimized."
     }
   ]
 }

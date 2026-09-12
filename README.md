@@ -1,5 +1,21 @@
 # Visualise OKLCH
 
+See your OKLCH colors before the code. Preview colors inline, hover a swatch for VS Code's native picker, or open the custom OKLCH editor for independent lightness, chroma, hue, and alpha controls.
+
+**Extension size:** approximately **1.02 MiB for the VSIX**, including both screenshots. The bundled JavaScript is only **32 KiB**, with **zero runtime dependencies**. The two documentation screenshots account for about **92% of the download**.
+
+## See colors inline
+
+![Inline OKLCH swatches with native hover picker and Open OKLCH picker action](images/inline-colors.png)
+
+Try [examples/palette.json](examples/palette.json): 24 colors covering the hue wheel, neutrals, transparency, and wide gamut. Open it in VS Code with Visualise OKLCH enabled. Each preview appears immediately before its color value. Hover or click a swatch for the native color picker. In the color hover, click **Open OKLCH picker** to use our independent L/C/H controls.
+
+## Open the custom OKLCH picker
+
+![The custom OKLCH picker beside the JSON palette in VS Code](images/oklch-picker.png)
+
+Hover over an `oklch(...)` value and click **Open OKLCH picker**. Or place your cursor inside a color, then right-click and choose **Visualise OKLCH: Edit Color in OKLCH**, or run it from the command palette. Adjust the color and choose **Apply color**. The custom picker opens beside your code; hovering a swatch opens VS Code's native picker.
+
 Public product metadata and release state are recorded in [`product.json`](product.json) and [`docs/distribution-log.md`](docs/distribution-log.md).
 
 Low-overhead inline OKLCH swatches for VS Code and Open VSX-compatible editors such as VSCodium, Cursor, and Windsurf.

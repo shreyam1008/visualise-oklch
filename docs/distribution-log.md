@@ -1,5 +1,44 @@
 # Visualise OKLCH distribution log
 
+## Current distribution — 12 September 2026 UTC
+
+Version 2.1.1 is being prepared. Public stores last verified at 2.1.0; pending entries below are release targets, not claims of publication.
+
+| Channel | Version | Status |
+| --- | --- | --- |
+| Package | 2.1.1 | Prepared locally |
+| GitHub Release | 2.1.1 | Pending |
+| Product website | 2.1.1 | Pending |
+| Open VSX | 2.1.1 | Pending |
+| VS Code Marketplace | 2.1.1 | Pending |
+
+## Historical entries
+
+## Current distribution — 12 September 2026 UTC
+
+All public release channels serve **2.1.0**. This snapshot supersedes the pending-upload and 2.0.5 statements in the dated history below.
+
+| Channel | Version | Status | Evidence |
+| --- | --- | --- | --- |
+| Package | 2.1.0 | Released | `package.json` is the version source. |
+| GitHub Release | 2.1.0 | Live | [v2.1.0](https://github.com/shreyam1008/visualise-oklch/releases/tag/v2.1.0) includes `visualise-oklch-2.1.0.vsix`. |
+| Product website | 2.1.0 | Live | [Canonical site](https://visualise-oklch.shreyam1008.com.np/) advertises v2.1.0 and links both stores. |
+| Open VSX | 2.1.0 | Live | [Anonymous latest API](https://open-vsx.org/api/shreyam1008/visualise-oklch/latest) reports 2.1.0, verified, and 1,882 downloads at review time. Downloads are a dated observation, not a fixed verification threshold. |
+| VS Code Marketplace | 2.1.0 | Live | [Public listing](https://marketplace.visualstudio.com/items?itemName=shreyam1008.visualise-oklch) returns HTTP 200 and current VersionValue 2.1.0. |
+
+The supplied review reports CI and Pages green. No public state was changed by this reconciliation. Microsoft publishing automation authentication is separate from the already-live Marketplace listing.
+
+Review scores (out of 3): user pain 1; discoverability/installability 3; evidence confidence 3; reusable value 3; effort 1; risk 0.
+
+`bun run verify` now includes `verify:distribution`: package version must agree with product records, this current table, local and live site metadata/release links, the latest stable GitHub release with its VSIX, Open VSX latest, and the Marketplace current listing field. Missing evidence, HTTP errors, and version drift fail verification; a reachable listing alone is insufficient.
+
+For development or prepublication packaging, `bun run verify:local` runs the local checks without requiring an unpublished version to exist in public stores. The publish workflow uses this command before upload. After publication and store validation/site deployment, run the full `bun run verify`; CI also runs the full command. Temporary propagation delays remain failures until every public channel agrees.
+
+
+
+The following dated snapshots document what was observed then; pending uploads and old store versions below are historical, not current distribution status.
+
+
 ## Hue wheel and interaction performance — 8 September 2026
 
 Website-only update: a keyboard/pointer-accessible OKLCH hue wheel, live sRGB channel bars, and side-by-side desktop map/controls/six-format workbench. The wheel uses explicitly labeled fixed-L/C reference hues; its center shows the authored color. Gamut rasterization runs in a dedicated module worker with one active and one latest pending request, transferable pixel buffers, stale-result rejection, and an explicit unavailable-shading fallback. Offscreen lightness-chart work and closed lesson ramps are skipped. Pointer rectangles are measured at gesture start; live CSS color changes are scoped to the workbench, and preview transitions/decorative motion are removed.

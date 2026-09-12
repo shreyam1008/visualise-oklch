@@ -6,7 +6,7 @@ import { buildColorPresentationEntries, detectDocumentColors } from './picker';
 import { buildDecorationRenderOptions } from './render';
 import { scanOklchFunctions } from './scanner';
 import { shouldUseCustomDecorations } from './strategy';
-import { registerOklchEditor } from './oklchEditor';
+import { provideOklchHover, registerOklchEditor } from './oklchEditor';
 
 interface AppliedDecorationState {
   appliedKeys: Set<string>;
@@ -503,6 +503,7 @@ export const activate = (context: vscode.ExtensionContext): void => {
   controller = new OklchDecorationController(context);
   context.subscriptions.push(vscode.languages.registerColorProvider(SUPPORTED_DOCUMENT_SELECTOR, new OklchDocumentColorProvider()));
   context.subscriptions.push(registerOklchEditor(context));
+  context.subscriptions.push(vscode.languages.registerHoverProvider(SUPPORTED_DOCUMENT_SELECTOR, { provideHover: provideOklchHover }));
 };
 
 export const deactivate = (): void => {

@@ -5,13 +5,42 @@ import { buildOklchEdit, findOklchAtOffset, isPickerColor } from './picker';
 import { getConfig } from './config';
 import { pickerHtml } from './pickerHtml';
 
+interface HoverColorTarget {
+  uri: string;
+  version: number;
+  offset: number;
+  source: string;
+}
+
+export const provideOklchHover = (
+  document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken,
+): vscode.Hover | undefined => {
+  if (token.isCancellationRequested || !getConfig().enabled) { return; }
+  const offset = document.offsetAt(position);
+  const start = document.positionAt(Math.max(0, offset - 4096));
+  const base = document.offsetAt(start);
+  const match = findOklchAtOffset(document.getText(new vscode.Range(start, document.positionAt(offset + 4096))), offset - base);
+  if (!match || token.isCancellationRequested) { return; }
+  const target: HoverColorTarget = { uri: document.uri.toString(), version: document.version, offset: base + match.start, source: match.source };
+  const args = encodeURIComponent(JSON.stringify([target])).replaceAll('(', '%28').replaceAll(')', '%29');
+  const contents = new vscode.MarkdownString();
+  contents.appendMarkdown(`**Visualise OKLCH**\n\n[Open OKLCH picker](command:visualiseOklch.editColor?${args})\n\nAdjust lightness, chroma, hue, and alpha independently.`);
+  contents.isTrusted = { enabledCommands: ['visualiseOklch.editColor'] };
+  return new vscode.Hover(contents, new vscode.Range(document.positionAt(base + match.start), document.positionAt(base + match.end)));
+};
+
 export const registerOklchEditor = (context: vscode.ExtensionContext): vscode.Disposable => {
   let panel: vscode.WebviewPanel | undefined;
-  const command = vscode.commands.registerCommand('visualiseOklch.editColor', () => {
-    const editor = vscode.window.activeTextEditor;
+  const command = vscode.commands.registerCommand('visualiseOklch.editColor', (target?: HoverColorTarget) => {
+    if (target !== undefined && (!target || typeof target.uri !== 'string' || !Number.isSafeInteger(target.version) || !Number.isSafeInteger(target.offset) || target.offset < 0 || typeof target.source !== 'string')) { return; }
+    const editor = target ? vscode.window.visibleTextEditors.find(item => item.document.uri.toString() === target.uri) : vscode.window.activeTextEditor;
     if (!editor || !getConfig().enabled) { return; }
     const document = editor.document;
-    const position = editor.selection.active;
+    if (target && (document.version !== target.version || document.getText(new vscode.Range(document.positionAt(target.offset), document.positionAt(target.offset + target.source.length))) !== target.source)) {
+      void vscode.window.showInformationMessage('This color changed. Hover it again to open the OKLCH picker.');
+      return;
+    }
+    const position = target ? document.positionAt(target.offset) : editor.selection.active;
     // Bound work by characters, including in minified single-line documents.
     const cursorOffset = document.offsetAt(position);
     const start = document.positionAt(Math.max(0, cursorOffset - 4096));

@@ -1,8 +1,8 @@
 {
   "name": "visualise-oklch",
   "displayName": "Visualise OKLCH",
-  "description": "Low-overhead inline OKLCH swatches with native color picker editing for VS Code, Cursor, Windsurf, VSCodium, and Open VSX-compatible editors.",
-  "version": "2.1.0",
+  "description": "See OKLCH colors inline, use the native color picker, and open a custom OKLCH editor from hover with independent lightness, chroma, hue, and alpha controls.",
+  "version": "2.1.1",
   "preview": false,
   "license": "Apache-2.0",
   "icon": "icon.png",
@@ -45,7 +45,9 @@
     "workspace"
   ],
   "capabilities": {
-    "untrustedWorkspaces": { "supported": true },
+    "untrustedWorkspaces": {
+      "supported": true
+    },
     "virtualWorkspaces": true
   },
   "engines": {
@@ -88,7 +90,11 @@
     ],
     "menus": {
       "editor/context": [
-        { "command": "visualiseOklch.editColor", "when": "editorTextFocus", "group": "1_modification@20" }
+        {
+          "command": "visualiseOklch.editColor",
+          "when": "editorTextFocus",
+          "group": "1_modification@20"
+        }
       ]
     },
     "configuration": {
@@ -142,7 +148,7 @@
     "coverage": "bun test --coverage",
     "lint": "oxlint .",
     "lint:fix": "oxlint --fix .",
-    "package": "bun run verify && bunx @vscode/vsce package --no-dependencies",
+    "package": "bun run verify:local && bunx @vscode/vsce package --no-dependencies",
     "package:openvsx": "bun run package",
     "publish:marketplace": "bunx @vscode/vsce publish --no-dependencies",
     "publish:openvsx": "bunx ovsx publish --no-dependencies",
@@ -151,7 +157,10 @@
     "typecheck": "tsgo --project tsconfig.json --noEmit",
     "typecheck:compat": "tsc --project tsconfig.json --noEmit",
     "typecheck:watch": "tsc --project tsconfig.json --noEmit --watch",
-    "verify": "bun run lint && bun run typecheck && bun run typecheck:compat && bun run test && bun run build:prod",
+    "verify": "bun run verify:local && bun run verify:distribution",
+    "verify:local": "bun run verify:distribution:local && bun run lint && bun run typecheck && bun run typecheck:compat && bun run test && bun run build:prod",
+    "verify:distribution": "node scripts/verify-distribution.mjs",
+    "verify:distribution:local": "node scripts/verify-distribution.mjs --local",
     "version-packages": "changeset version",
     "vscode:prepublish": "bun run build:prod",
     "watch": "run-p typecheck:watch build:watch picker:watch",

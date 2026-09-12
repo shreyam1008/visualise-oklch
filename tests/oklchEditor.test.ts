@@ -10,15 +10,17 @@ class Range {
 class Disposable {
   constructor(readonly dispose: () => void) {}
 }
-let invoke: () => void;
+let invoke: (target?: { uri: string; version: number; offset: number; source: string }) => void;
 let receive: (message: unknown) => Promise<void>;
 let source = '';
 let disposed: () => void;
 let editCount = 0;
 let editOptions: unknown;
 let rejectEdit = false;
+let panelCount = 0;
 const messages: { type: string; source?: string; text?: string }[] = [];
 const document = {
+  uri: { toString: () => 'file:///palette.json' },
   version: 1, lineCount: 1, isClosed: false,
   offsetAt: (position: Position) => position.character,
   positionAt: (offset: number) => new Position(0, offset),
@@ -37,23 +39,26 @@ const editor = {
 };
 mock.module('vscode', () => ({
   Position, Range, Disposable,
+  MarkdownString: class { value = ''; appendMarkdown(text: string) { this.value += text; } },
+  Hover: class { constructor(readonly contents: unknown, readonly range: Range) {} },
   ViewColumn: { Beside: 2 }, Uri: { joinPath: (_uri: unknown, ...paths: string[]) => paths.join('/') },
   workspace: { getConfiguration: () => ({ get: (_key: string, fallback: unknown) => fallback }) },
   commands: { registerCommand: (_id: string, callback: () => void) => { invoke = callback; return new Disposable(() => {}); } },
   window: {
     activeTextEditor: editor,
+    visibleTextEditors: [editor],
     showInformationMessage: () => {},
-    createWebviewPanel: () => ({
+    createWebviewPanel: () => { panelCount += 1; return ({
       dispose: () => disposed?.(), onDidDispose: (callback: () => void) => { disposed = callback; },
       webview: {
         cspSource: 'test:', asWebviewUri: (uri: string) => uri, html: '',
         onDidReceiveMessage: (callback: typeof receive) => { receive = callback; return new Disposable(() => {}); },
         postMessage: (message: typeof messages[number]) => { messages.push(message); return Promise.resolve(true); },
       },
-    }),
+    }); },
   },
 }));
-const { registerOklchEditor } = await import('../src/oklchEditor');
+const { registerOklchEditor, provideOklchHover } = await import('../src/oklchEditor');
 beforeEach(() => {
   source = '--brand: oklch(62% 0.35 260 / 80%);';
   document.version = 1; document.isClosed = false;
@@ -98,4 +103,36 @@ test('failed edits report failure and leave original source intact', async () =>
   await receive({ type: 'apply', color });
   expect(source).toBe('--brand: oklch(62% 0.35 260 / 80%);');
   expect(messages.at(-1)?.type).toBe('error');
+});
+
+test('hover action targets the hovered color instead of the cursor', async () => {
+  source = 'oklch(50% 0.1 10) oklch(70% 0.2 200)';
+  editor.selection.active = new Position(0, 3);
+  const hover = provideOklchHover(document as unknown as vscode.TextDocument, new Position(0, 25) as vscode.Position, { isCancellationRequested: false } as vscode.CancellationToken);
+  const markdown = hover?.contents as unknown as { value: string; isTrusted: unknown };
+  expect(markdown.isTrusted).toEqual({ enabledCommands: ['visualiseOklch.editColor'] });
+  const encoded = markdown.value.match(/editColor\?([^)]*)/)?.[1];
+  const [target] = JSON.parse(decodeURIComponent(encoded!));
+  invoke(target);
+  await receive({ type: 'ready' });
+  expect(messages.at(-1)?.source).toBe('oklch(70% 0.2 200)');
+  await receive({ type: 'apply', color });
+  expect(source).toBe('oklch(50% 0.1 10) oklch(62% 0.2 260 / 80%)');
+  editor.selection.active = new Position(0, 18);
+});
+
+test('hover is absent outside colors and when cancelled', () => {
+  const doc = document as unknown as vscode.TextDocument;
+  expect(provideOklchHover(doc, new Position(0, 0) as vscode.Position, { isCancellationRequested: false } as vscode.CancellationToken)).toBeUndefined();
+  expect(provideOklchHover(doc, new Position(0, 18) as vscode.Position, { isCancellationRequested: true } as vscode.CancellationToken)).toBeUndefined();
+});
+
+test('stale hover links cannot open a picker for shifted content', () => {
+  const before = panelCount;
+  const target = { uri: document.uri.toString(), version: document.version, offset: 9, source: 'oklch(62% 0.35 260 / 80%)' };
+  document.version += 1;
+  invoke(target);
+  expect(panelCount).toBe(before);
+  invoke({ ...target, version: document.version, source: 'oklch(0% 0 0)' });
+  expect(panelCount).toBe(before);
 });

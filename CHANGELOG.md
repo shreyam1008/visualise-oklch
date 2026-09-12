@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.1.1
+
+- Discover the custom OKLCH editor directly from a color hover using Open OKLCH picker. The action targets the hovered color and rejects stale links.
+- Show two actual editor screenshots, package size, and a 24-color JSON example prominently in the extension listing.
+- Remove the legacy screenshot and clarify native hover versus custom OKLCH controls.
+
 ## 2.1.0
 
 - Added an on-demand OKLCH editor with independent L/C/H/alpha controls, lightness/chroma plane, sRGB gamut boundary, and optional Fit to sRGB.

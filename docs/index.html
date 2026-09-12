@@ -62,7 +62,7 @@
         "name": "Visualise OKLCH",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Cross-platform",
-        "softwareVersion": "2.1.0",
+        "softwareVersion": "2.1.1",
         "author": {
           "@type": "Person",
           "name": "Shreyam Adhikari",
@@ -70,7 +70,7 @@
         },
         "license": "https://www.apache.org/licenses/LICENSE-2.0",
         "url": "https://visualise-oklch.shreyam1008.com.np/",
-        "downloadUrl": "https://github.com/shreyam1008/visualise-oklch/releases/tag/v2.1.0",
+        "downloadUrl": "https://github.com/shreyam1008/visualise-oklch/releases/tag/v2.1.1",
         "sameAs": [
           "https://github.com/shreyam1008/visualise-oklch",
           "https://open-vsx.org/extension/shreyam1008/visualise-oklch",
@@ -180,7 +180,7 @@
             <li>Native picker editing</li>
             <li>TypeScript 6 RC</li>
             <li>`tsgo` verified</li>
-            <li>83 KB VSIX · v2.1.0 release</li>
+            <li>1.02 MiB VSIX · v2.1.1 release</li>
             <li>Zero runtime color dependency</li>
           </ul>
           <div class="hero-marquee">
@@ -554,8 +554,12 @@
           <iframe title="Interactive demo of the Visualise OKLCH custom extension picker" src="./picker-demo.html" loading="lazy" sandbox="allow-scripts" class="custom-picker-frame"></iframe>
         </section>
         <figure class="extension-showcase panel">
-          <img src="./extension-inline.png" width="934" height="678" loading="lazy" decoding="async" alt="Earlier Visualise OKLCH inline swatches next to pink, slate and rose OKLCH values in a VS Code editor example" />
-          <figcaption><strong>What it looks like in the editor</strong><p>Existing project screenshot: inline color swatches beside OKLCH code. This is an older, pre-2.0.5 example—not a screenshot of the current 2.1.0 OKLCH editing panel.</p><p>In 2.1.0, place the cursor inside an OKLCH value and run <code>Visualise OKLCH: Edit Color in OKLCH</code>. That opens the independent L/C/H editor with its gamut map. The inline swatch also offers VS Code’s native picker.</p></figcaption>
+          <img src="./images/inline-colors.png" width="796" height="575" loading="lazy" decoding="async" alt="Inline OKLCH swatches with the native hover picker and Open OKLCH picker action" />
+          <figcaption><strong>See the color before the code</strong><p>Open <a href="./examples/palette.json" download>the 24-color JSON palette</a> to try inline previews, transparency, and wide-gamut colors. Hover or click a swatch for VS Code’s native picker.</p></figcaption>
+        </figure>
+        <figure class="extension-showcase panel">
+          <img src="./images/oklch-picker.png" width="1235" height="800" loading="lazy" decoding="async" alt="Visualise OKLCH custom picker beside the JSON palette, with lightness, chroma, hue, alpha and gamut controls" />
+          <figcaption><strong>Edit with the custom OKLCH picker</strong><p>Hover an <code>oklch(...)</code> value and click <strong>Open OKLCH picker</strong>. Or place the cursor inside a color, then right-click and choose <code>Visualise OKLCH: Edit Color in OKLCH</code>. Adjust independent L/C/H/alpha controls, then Apply color. Approximately 1.02 MiB VSIX download, including both screenshots. Only 32 KiB of bundled JavaScript with zero runtime dependencies; the two documentation screenshots account for about 92% of the download.</p></figcaption>
         </figure>
         <div class="section-heading">
           <p class="eyebrow">From playground to editor</p>
