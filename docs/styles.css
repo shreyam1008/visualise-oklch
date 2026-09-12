@@ -1278,3 +1278,27 @@ pre { max-width: 100%; overflow-x: auto; }
   .nav { width: 100%; justify-content: space-between; gap: 0; font-size: 12px; }
   .nav > a, .nav-more summary { padding: 12px 8px; }
 }
+
+/* Extension gallery: contained overlay, with no changes to the color tools. */
+.extension-preview-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; margin: 0 0 32px; }
+.extension-preview-actions > span, .screenshots-intro { color: #b5c6de; font-size: 14px; line-height: 1.7; }
+.screenshots-dialog { box-sizing: border-box; width: min(1080px, calc(100% - 32px)); max-height: calc(100dvh - 40px); padding: 24px; color: #edf4ff; background: #0d1625; border: 1px solid #35465e; border-radius: 20px; overflow: auto; box-shadow: 0 24px 100px #0009; }
+.screenshots-dialog::backdrop { background: #020714cc; }
+.screenshots-dialog-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.screenshots-dialog-header h2 { margin: 0; font-size: clamp(22px, 4vw, 32px); }
+.screenshots-dialog .extension-showcase { display: block; margin: 24px 0 0; }
+.screenshots-dialog figcaption { margin-top: 16px; }
+.screenshots-dialog .button { cursor: pointer; flex-shrink: 0; }
+body:has(.screenshots-dialog[open]) { overflow: hidden; }
+.developer-notes { padding-top: 24px; }
+.developer-notes > details { padding: 24px; }
+.developer-notes summary { cursor: pointer; font-size: 18px; font-weight: 600; }
+.developer-notes summary span { margin-left: 12px; color: #b5c6de; font-size: 14px; font-weight: 400; }
+.developer-notes details[open] > summary { margin-bottom: 28px; }
+@media (max-width: 600px) {
+  .screenshots-dialog { padding: 16px; width: calc(100% - 16px); max-height: calc(100dvh - 16px); }
+  .developer-notes summary span { display: block; margin: 8px 0 0; }
+}
+
+.extension-preview-actions .button, .screenshots-dialog .button { color: #edf4ff; font: inherit; font-weight: 700; gap: 8px; cursor: pointer; }
+.screenshots-dialog-header { position: sticky; top: 0; z-index: 1; padding: 8px 0; background: #0d1625; }

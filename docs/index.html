@@ -553,14 +553,10 @@
           </div>
           <iframe title="Interactive demo of the Visualise OKLCH custom extension picker" src="./picker-demo.html" loading="lazy" sandbox="allow-scripts" class="custom-picker-frame"></iframe>
         </section>
-        <figure class="extension-showcase panel">
-          <img src="./images/inline-colors.png" width="796" height="575" loading="lazy" decoding="async" alt="Inline OKLCH swatches with the native hover picker and Open OKLCH picker action" />
-          <figcaption><strong>See the color before the code</strong><p>Open <a href="./examples/palette.json" download>the 24-color JSON palette</a> to try inline previews, transparency, and wide-gamut colors. Hover or click a swatch for VS Code’s native picker.</p></figcaption>
-        </figure>
-        <figure class="extension-showcase panel">
-          <img src="./images/oklch-picker.png" width="1235" height="800" loading="lazy" decoding="async" alt="Visualise OKLCH custom picker beside the JSON palette, with lightness, chroma, hue, alpha and gamut controls" />
-          <figcaption><strong>Edit with the custom OKLCH picker</strong><p>Hover an <code>oklch(...)</code> value and click <strong>Open OKLCH picker</strong>. Or place the cursor inside a color, then right-click and choose <code>Visualise OKLCH: Edit Color in OKLCH</code>. Adjust independent L/C/H/alpha controls, then Apply color. Approximately 1.02 MiB VSIX download, including both screenshots. Only 32 KiB of bundled JavaScript with zero runtime dependencies; the two documentation screenshots account for about 92% of the download.</p></figcaption>
-        </figure>
+        <div class="extension-preview-actions">
+          <button class="button button-secondary" type="button" data-open-screenshots aria-haspopup="dialog" aria-controls="extension-screenshots">View extension screenshots <span aria-hidden="true">↗</span></button>
+          <span>Inline previews · native hover · custom OKLCH picker</span>
+        </div>
         <div class="section-heading">
           <p class="eyebrow">From playground to editor</p>
           <h2>Make your next color change in context.</h2>
@@ -639,7 +635,9 @@
         </div>
       </section>
 
-      <section id="ship" class="section">
+      <section id="ship" class="section developer-notes">
+        <details class="panel">
+          <summary>Developer notes <span>Testing, releases &amp; supported editors</span></summary>
         <div class="section-heading">
           <p class="eyebrow">Test And Ship</p>
           <h2>Built to teach, verify, package, publish, and deploy.</h2>
@@ -691,9 +689,28 @@ git push origin main --tags
             </span>
           </div>
         </div>
+        </details>
       </section>
 
     </main>
+
+    <dialog id="extension-screenshots" class="screenshots-dialog" aria-labelledby="screenshots-title">
+      <div class="screenshots-dialog-header">
+        <h2 id="screenshots-title">Inside the extension</h2>
+        <button class="button button-secondary" type="button" data-close-screenshots autofocus aria-label="Close screenshots">Close <span aria-hidden="true">×</span></button>
+      </div>
+      <p class="screenshots-intro">Actual VS Code screenshots. Hover a color value, then choose Open OKLCH picker for independent L/C/H controls.</p>
+        <figure class="extension-showcase panel">
+          <img src="./images/inline-colors.png" width="796" height="575" loading="lazy" decoding="async" alt="Inline OKLCH swatches with the native hover picker and Open OKLCH picker action" />
+          <figcaption><strong>See the color before the code</strong><p>Open <a href="./examples/palette.json" download>the 24-color JSON palette</a> to try inline previews, transparency, and wide-gamut colors. Hover or click a swatch for VS Code’s native picker.</p></figcaption>
+        </figure>
+        <figure class="extension-showcase panel">
+          <img src="./images/oklch-picker.png" width="1235" height="800" loading="lazy" decoding="async" alt="Visualise OKLCH custom picker beside the JSON palette, with lightness, chroma, hue, alpha and gamut controls" />
+          <figcaption><strong>Edit with the custom OKLCH picker</strong><p>Hover an <code>oklch(...)</code> value and click <strong>Open OKLCH picker</strong>. Or place the cursor inside a color, then right-click and choose <code>Visualise OKLCH: Edit Color in OKLCH</code>. Adjust independent L/C/H/alpha controls, then Apply color. Approximately 1.02 MiB VSIX download, including both screenshots. Only 32 KiB of bundled JavaScript with zero runtime dependencies; the two documentation screenshots account for about 92% of the download.</p></figcaption>
+        </figure>
+    </dialog>
+
+
 
     <footer class="footer">
       <p><a href="https://shreyam1008.com.np/projects/#distribution-visualise-oklch">Install channels and publication status</a></p>
@@ -708,6 +725,6 @@ git push origin main --tags
       <p class="footer-note">&copy; <span data-current-year></span> Lightweight interactive OKLCH guide for GitHub Pages.</p>
     </footer>
 
-    <script src="./app.js?v=20260908-fallback" type="module"></script>
+    <script src="./app.js?v=20260912-gallery" type="module"></script>
   </body>
 </html>

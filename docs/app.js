@@ -654,3 +654,14 @@ document.querySelector('.color-anatomy').addEventListener('toggle', scheduleAppl
 updateControls();
 updatePresetButtons('cherry');
 applyState();
+
+// Native dialog keeps keyboard focus inside the gallery and supports Escape.
+const screenshotsDialog = document.querySelector('#extension-screenshots');
+const screenshotsTrigger = document.querySelector('[data-open-screenshots]');
+screenshotsTrigger.addEventListener('click', () => screenshotsDialog.showModal());
+document.querySelector('[data-close-screenshots]').addEventListener('click', () => screenshotsDialog.close());
+screenshotsDialog.addEventListener('click', (event) => {
+  const bounds = screenshotsDialog.getBoundingClientRect();
+  if (event.target === screenshotsDialog && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) screenshotsDialog.close();
+});
+screenshotsDialog.addEventListener('close', () => screenshotsTrigger.focus({ preventScroll: true }));
