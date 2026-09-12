@@ -54,7 +54,9 @@ export async function verifyDistribution({ live = true, fetcher = fetch, records
     assertVersion(`distribution log ${channel}`, row?.split('|')[2]?.trim(), expected);
   }
   async function get(url, json = false) {
-    const response = await fetcher(url, { signal: AbortSignal.timeout(20000), headers: { 'User-Agent': 'visualise-oklch-distribution-verifier' } });
+    const requestUrl = new URL(url);
+    requestUrl.searchParams.set('release', expected);
+    const response = await fetcher(requestUrl.href, { signal: AbortSignal.timeout(20000), headers: { 'User-Agent': 'visualise-oklch-distribution-verifier', 'Cache-Control': 'no-cache' } });
     if (!response.ok) throw new Error(`${url}: HTTP ${response.status}`);
     return json ? response.json() : response.text();
   }

@@ -2,15 +2,19 @@
 
 ## Current distribution — 12 September 2026 UTC
 
-Version 2.1.1 is being prepared. Public stores last verified at 2.1.0; pending entries below are release targets, not claims of publication.
+Version 2.1.1 is live on GitHub, the website, Open VSX, and the VS Code Marketplace, and installed locally. Fresh anonymous store requests confirm 2.1.1; previously cached unqualified listing URLs may briefly show 2.1.0.
 
 | Channel | Version | Status |
 | --- | --- | --- |
-| Package | 2.1.1 | Prepared locally |
-| GitHub Release | 2.1.1 | Pending |
-| Product website | 2.1.1 | Pending |
-| Open VSX | 2.1.1 | Pending |
-| VS Code Marketplace | 2.1.1 | Pending |
+| Package | 2.1.1 | Released |
+| GitHub Release | 2.1.1 | Live |
+| Product website | 2.1.1 | Live |
+| Open VSX | 2.1.1 | Live; anonymous latest API verified |
+| VS Code Marketplace | 2.1.1 | Live; anonymous VersionValue 2.1.1 verified |
+
+Release workflow: https://github.com/shreyam1008/visualise-oklch/actions/runs/34700295801 . Both registry uploads use the GitHub release asset (1,073,957 bytes; SHA-256 `f95a6dd9a63bdaf34c845e9740822fee41cf046d48a1d3fd0934b384b2bd8a3f`). Marketplace was uploaded through the authenticated publisher dashboard; automated Marketplace authentication remains unconfigured.
+
+The public Open VSX README and Marketplace page both include Open OKLCH picker, the two screenshots, and the package-size explanation. The website serves both image assets with HTTP 200. CI verifies local source before publication; `bun run verify` additionally verifies live channel alignment using release-qualified requests to avoid stale CDN snapshots.
 
 ## Historical entries
 

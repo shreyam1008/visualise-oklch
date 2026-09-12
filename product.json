@@ -19,27 +19,31 @@
   "distributions": [
     {
       "channel": "Product website",
-      "status": "pending",
+      "status": "live",
       "url": "https://visualise-oklch.shreyam1008.com.np/",
-      "version": "2.1.1"
+      "version": "2.1.1",
+      "verifiedAt": "2026-09-12"
     },
     {
       "channel": "Git tag",
-      "status": "pending",
+      "status": "live",
       "url": "https://github.com/shreyam1008/visualise-oklch/releases/tag/v2.1.1",
-      "version": "2.1.1"
+      "version": "2.1.1",
+      "verifiedAt": "2026-09-12"
     },
     {
       "channel": "Open VSX",
-      "status": "pending",
+      "status": "live",
       "url": "https://open-vsx.org/extension/shreyam1008/visualise-oklch",
-      "version": "2.1.1"
+      "version": "2.1.1",
+      "verifiedAt": "2026-09-12"
     },
     {
       "channel": "Visual Studio Marketplace",
-      "status": "pending",
+      "status": "live",
       "url": "https://marketplace.visualstudio.com/items?itemName=shreyam1008.visualise-oklch",
-      "version": "2.1.1"
+      "version": "2.1.1",
+      "verifiedAt": "2026-09-12"
     }
   ]
 }

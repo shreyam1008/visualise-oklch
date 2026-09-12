@@ -70,3 +70,7 @@ Open VSX [merged trusted publishing support](https://github.com/eclipse-openvsx/
 Open VSX 2.1.0 is live, confirmed by the anonymous version/latest API and publisher dashboard. `OVSX_PAT` is configured as a GitHub Actions repository secret; the superseded setup token was revoked. The [verified-release publishing run](https://github.com/shreyam1008/visualise-oklch/actions/runs/34187671875) succeeded. Future published matching GitHub releases now have Open VSX authentication, and the manual retry workflow can publish an existing release asset.
 
 Marketplace 2.1.0 is also live after owner upload and Microsoft validation, confirmed from its anonymous public listing on 8 September. Marketplace automation remains pending: no `VSCE_PAT` or federated publisher identity is configured. The earlier authentication audit below is historical; store versions are now aligned, but authentication is configured only for Open VSX.
+
+## 2.1.1 listing and hover release — 12 September 2026
+
+GitHub, Open VSX, and Marketplace now serve 2.1.1. GitHub Actions published Open VSX, and the authenticated Marketplace dashboard accepted the same release VSIX. Browser file upload works with the current tooling. No Marketplace PAT or federated identity was added. The public listings include the hover action and real screenshots. See docs/distribution-log.md for the asset digest and validation evidence.
