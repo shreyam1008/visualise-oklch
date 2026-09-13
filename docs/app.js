@@ -80,6 +80,12 @@ let ambientTimer = 0;
 function paintAmbient() {
   ambientTimer = 0;
   if (!ambientToggle.checked || document.hidden) return;
+  // Soft related hues tint decoration only; UI and instructional colors stay stable.
+  const chroma = Math.min(state.chroma, 0.17) * state.alpha / 100;
+  const lightness = 60 + state.lightness * 0.16;
+  for (const [name, offset] of [['primary', 0], ['secondary', 32], ['tertiary', -32]]) {
+    document.body.style.setProperty(`--ambient-${name}`, `oklch(${lightness}% ${chroma} ${(state.hue + offset + 360) % 360})`);
+  }
   const rgb = colorTools.oklchToSrgb({ lightness: state.lightness / 100, chroma: state.chroma, hueDegrees: state.hue, alpha: 1 });
   livingGlow.style.backgroundColor = `rgb(${Math.round(rgb.red * 255)} ${Math.round(rgb.green * 255)} ${Math.round(rgb.blue * 255)})`;
   livingGlow.style.opacity = String(.045 + state.lightness / 100 * .075);
@@ -90,6 +96,9 @@ function scheduleAmbient() {
 ambientToggle.addEventListener('change', () => {
   livingGlow.hidden = !ambientToggle.checked;
   if (ambientToggle.checked) paintAmbient();
+  else {
+    for (const name of ['primary', 'secondary', 'tertiary']) document.body.style.removeProperty(`--ambient-${name}`);
+  }
 });
 document.addEventListener('visibilitychange', () => { if (!document.hidden) scheduleAmbient(); });
 
@@ -649,7 +658,7 @@ document.querySelectorAll('[data-copy-format]').forEach((button) => button.addEv
   catch { converterStatus.textContent = 'Clipboard unavailable. Select the value and copy it manually.'; }
 }));
 document.querySelector('.color-anatomy').addEventListener('toggle', scheduleApplyState);
-// Keep decorative backgrounds still while the color tool is in use.
+// Background positions stay still; their hues follow the shared color state.
 
 updateControls();
 updatePresetButtons('cherry');
