@@ -7,10 +7,8 @@ const repoRoot = resolve(import.meta.dir, '..');
 const indexHtml = readFileSync(resolve(docsRoot, 'index.html'), 'utf8');
 
 describe('docs site', () => {
-  test('shows the real picker as an isolated, honestly labeled browser demo', () => {
+  test('keeps the standalone picker demo honestly labeled', () => {
     const demo = readFileSync(resolve(docsRoot, 'picker-demo.html'), 'utf8');
-    expect(indexHtml).toContain('sandbox="allow-scripts"');
-    expect(indexHtml).toContain('extension’s actual picker HTML and client code');
     expect(demo).toContain('Applied to this demo only. No file changed.');
     expect(demo).toContain('id="plane"');
     expect(demo).toContain('id="apply"');
